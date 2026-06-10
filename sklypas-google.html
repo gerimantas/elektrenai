@@ -35,6 +35,8 @@
     .sznsLegend.show { display: block; }
     .sznsLegend ul { margin: 4px 0 4px 0; padding-left: 18px; }
     .sznsLegend li { margin: 1px 0; }
+    .sznsTypes { list-style: none; padding-left: 2px; }
+    .sznsTypes li { margin: 2px 0; }
     .sznsLegend small { color: #666; }
   </style>
   <!-- proj4 for LKS94 (EPSG:3346) <-> WGS84, needed for the SŽNS raster overlay -->
@@ -65,14 +67,14 @@
           <b>SŽNS apribojimai</b> (RC sluoksnis)
         </label>
         <div id="sznsLegend" class="sznsLegend">
-          Sklypą kerta (RC SŽNS registras):
-          <ul>
-            <li>Magistralinių dujotiekių AZ (107) — Ambergrid</li>
-            <li>Dujotiekių vietovių klasės (171)</li>
-            <li>Elektros tinklų AZ (106)</li>
-            <li>Kultūros paveldo AZ (119)</li>
+          Sklypą kerta (RC SŽNS spalvos):
+          <ul class="sznsTypes">
+            <li><span class="sw" style="background:#74FFE0;border:1px solid #2bbfa0"></span>Magistralinių dujotiekių AZ (107) — Ambergrid</li>
+            <li><span class="sw" style="background:#74FFE0;border:1px solid #2bbfa0"></span>Dujotiekių vietovių klasės (171)</li>
+            <li><span class="sw" style="background:#FF7F7F;border:1px solid #d05050"></span>Elektros tinklų AZ (106)</li>
+            <li><span class="sw" style="background:#FFE100;border:1px solid #c0a800"></span>Kultūros paveldo AZ (119)</li>
           </ul>
-          <small>Rastras iš geoportal.lt rc_szns. Įjungus matosi tikros zonų ribos.</small>
+          <small>Spalvos – RC default. 107 ir 171 abu turkio (RC neskiria). Kitos žemėlapio linijos – gretimų sklypų zonos (ne mūsų).</small>
         </div>
       </div>
     </div>
@@ -136,7 +138,9 @@
         onAdd() {
           this.layer = document.createElement('div');
           this.layer.style.position = 'absolute';
-          this.getPanes().overlayLayer.appendChild(this.layer);
+          this.layer.style.opacity = '0.55';            // see through to satellite + plots
+          // mapPane is the lowest pane -> raster sits UNDER the parcel polygons
+          this.getPanes().mapPane.appendChild(this.layer);
         }
         onRemove() {
           if (this.layer) { this.layer.remove(); this.layer = null; }
