@@ -25,12 +25,34 @@
 
 Sklypas patenka į **Ambergrid magistralinių dujotiekių ir susijusios infrastruktūros apsaugos zoną** (3 lentelė, eil. Nr. 164). Prieš bet kokius darbus sklype — būtinas Ambergrid sutikimas.
 
+### Interaktyvus žemėlapis
+
+🗺️ **https://gerimantas.github.io/elektrenai/** — Google Maps su sklypu, 6 kaimynais ir netoliese vykstančiu paskirties keitimu (`sklypas-google.html`).
+
+### Besiribojantys sklypai (6, liečiasi 0.00 m)
+
+| Kadastrinis | Plotas | Kryptis | Bendra riba |
+|---|---|---|---|
+| 7910/0001:0430 | 1.6750 ha | PV (V) | 364 m |
+| 7910/0001:0949 | 1.2266 ha | ŠR | 230 m |
+| 7910/0001:0050 | 3.0500 ha | P | 130 m |
+| 7910/0001:0023 | 3.1300 ha | Š | 60 m |
+| 7910/0001:0048 | 9.6755 ha | R | 3 m (kampas) |
+| 7910/0001:1014 | 2.0734 ha | ŠR | 2 m (kampas) |
+
+Visi paskirtis 610. Savininkų duomenų nėra (GDPR — neviešinami atviruose duomenyse).
+
+### Netoliese — paskirties keitimas
+
+**7910/0001:0005** (Sabališkių k., ~443 m PV, NE tiesioginis kaimynas): ž.ū. → pramonė/sandėliavimas. Paraiška 2026-05-27 (reg. 01.3-192), vieša apžiūra iki **2026-06-15**.
+
 ### Žemėlapiai (išsaugoti projekto failuose)
 
 | Failas | Aprašas |
 |--------|---------|
 | [nuotraukos/plot-highlight.png](nuotraukos/plot-highlight.png) | Sklypas pažymėtas (mėlynas outline + raudonas fill) ant NTR žemėlapio |
 | [nuotraukos/plot-ntr-exact.png](nuotraukos/plot-ntr-exact.png) | Švarus NTR sklypų ribų žemėlapis (Geoportal RC kadastro) |
+| [nuotraukos/plot-truescale.png](nuotraukos/plot-truescale.png) | Sklypas tikru metriniu masteliu (proporcijų įrodymas: 157.6 × 348.0 m) |
 
 ### Žemėlapių šaltiniai (API)
 
