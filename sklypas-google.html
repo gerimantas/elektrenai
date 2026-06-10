@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sklypas 7910/0001:0431 + kaimynai — Elektrėnų sav.</title>
+  <style>
+    html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; }
+    #map { height: 100%; width: 100%; }
+    #info {
+      position: absolute; top: 12px; left: 12px; z-index: 5;
+      background: rgba(255,255,255,0.93); padding: 12px 16px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3); max-width: 300px; font-size: 12.5px; line-height: 1.5;
+    }
+    #info h3 { margin: 0 0 6px; font-size: 14px; }
+    .sw { display:inline-block; width:11px; height:11px; border-radius:2px; margin-right:4px; vertical-align:middle; }
+    .btns { margin-top: 9px; }
+    .btns button { font-size: 12px; padding: 4px 8px; margin: 0 6px 4px 0; cursor: pointer; }
+    .plabel {
+      font-size: 11px; font-weight: 600; color: #fff; white-space: nowrap;
+      text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 2px #000;
+      transform: translate(-50%, -50%); pointer-events: none; text-align:center;
+    }
+    .plabel small { font-weight: 400; font-size: 10px; }
+  </style>
+  <!-- local key, git-ignored; run: python gen_config.py -->
+  <script src="config.js"></script>
+</head>
+<body>
+  <div id="info">
+    <h3>Elektrėnų sen. — sklypai</h3>
+    <span class="sw" style="background:#FFFF00;border:2px solid #FF0000"></span><b>0431</b> — mūsų (1.675 ha)<br>
+    <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>0005</b> — paskirties keitimas (0.314 ha)<br>
+    <span class="sw" style="background:#FFF176;border:2px solid #FFEA00"></span>kaimynai (6 vnt., besiribojantys)<br>
+    <small>Label ant kiekvieno: kadastro Nr. + plotas</small>
+    <div class="btns">
+      <button onclick="setType('satellite')">Satellite</button>
+      <button onclick="setType('hybrid')">Hybrid</button>
+      <button onclick="setType('roadmap')">Roadmap</button>
+      <button onclick="fitAll()">Centruoti</button>
+      <button onclick="toggleLabels()">Label on/off</button>
+    </div>
+  </div>
+  <div id="map"></div>
+
+  <script>
+    const DATA = {"7910/0001:0005": {"path": [{"lat": 54.790413, "lng": 24.678248}, {"lat": 54.790854, "lng": 24.678366}, {"lat": 54.79087, "lng": 24.677889}, {"lat": 54.790862, "lng": 24.677886}, {"lat": 54.790033, "lng": 24.677597}, {"lat": 54.789992, "lng": 24.678135}, {"lat": 54.790413, "lng": 24.678248}], "center": {"lat": 54.790491, "lng": 24.678053}, "plotas": "0.3141", "pask": 610}, "7910/0001:1014": {"path": [{"lat": 54.796081, "lng": 24.685332}, {"lat": 54.79431, "lng": 24.682815}, {"lat": 54.794092, "lng": 24.684384}, {"lat": 54.795481, "lng": 24.686286}, {"lat": 54.796081, "lng": 24.685332}], "center": {"lat": 54.795209, "lng": 24.68483}, "plotas": "2.0734", "pask": 610}, "7910/0001:0949": {"path": [{"lat": 54.794194, "lng": 24.682749}, {"lat": 54.793984, "lng": 24.682629}, {"lat": 54.793762, "lng": 24.682503}, {"lat": 54.792245, "lng": 24.68164}, {"lat": 54.792638, "lng": 24.682394}, {"lat": 54.793608, "lng": 24.683722}, {"lat": 54.79381, "lng": 24.683999}, {"lat": 54.793987, "lng": 24.68424}, {"lat": 54.794194, "lng": 24.682749}], "center": {"lat": 54.793602, "lng": 24.682958}, "plotas": "1.2266", "pask": 610}, "7910/0001:0048": {"path": [{"lat": 54.792245, "lng": 24.68164}, {"lat": 54.791606, "lng": 24.684752}, {"lat": 54.791511, "lng": 24.685175}, {"lat": 54.79138, "lng": 24.685765}, {"lat": 54.791228, "lng": 24.686444}, {"lat": 54.791158, "lng": 24.686759}, {"lat": 54.790725, "lng": 24.687036}, {"lat": 54.79076, "lng": 24.687774}, {"lat": 54.790848, "lng": 24.688522}, {"lat": 54.790971, "lng": 24.689115}, {"lat": 54.79111, "lng": 24.689606}, {"lat": 54.791223, "lng": 24.690008}, {"lat": 54.791313, "lng": 24.690293}, {"lat": 54.793425, "lng": 24.689436}, {"lat": 54.793642, "lng": 24.689347}, {"lat": 54.794532, "lng": 24.688963}, {"lat": 54.794211, "lng": 24.688414}, {"lat": 54.792291, "lng": 24.685133}, {"lat": 54.792638, "lng": 24.682394}, {"lat": 54.792245, "lng": 24.68164}], "center": {"lat": 54.791953, "lng": 24.686911}, "plotas": "9.6755", "pask": 610}, "7910/0001:0050": {"path": [{"lat": 54.790982, "lng": 24.679702}, {"lat": 54.79094, "lng": 24.681556}, {"lat": 54.790817, "lng": 24.683943}, {"lat": 54.791148, "lng": 24.684282}, {"lat": 54.791388, "lng": 24.684529}, {"lat": 54.791606, "lng": 24.684752}, {"lat": 54.792245, "lng": 24.68164}, {"lat": 54.791381, "lng": 24.680315}, {"lat": 54.790982, "lng": 24.679702}], "center": {"lat": 54.791277, "lng": 24.682269}, "plotas": "3.0500", "pask": 610}, "7910/0001:0023": {"path": [{"lat": 54.796081, "lng": 24.685332}, {"lat": 54.796125, "lng": 24.685388}, {"lat": 54.796352, "lng": 24.685669}, {"lat": 54.796696, "lng": 24.683786}, {"lat": 54.796722, "lng": 24.683674}, {"lat": 54.794575, "lng": 24.681621}, {"lat": 54.794499, "lng": 24.681966}, {"lat": 54.79431, "lng": 24.682815}, {"lat": 54.796081, "lng": 24.685332}], "center": {"lat": 54.795716, "lng": 24.683954}, "plotas": "3.1300", "pask": 610}, "7910/0001:0431": {"path": [{"lat": 54.79431, "lng": 24.682815}, {"lat": 54.794499, "lng": 24.681966}, {"lat": 54.791381, "lng": 24.680315}, {"lat": 54.792245, "lng": 24.68164}, {"lat": 54.793762, "lng": 24.682503}, {"lat": 54.793984, "lng": 24.682629}, {"lat": 54.794194, "lng": 24.682749}, {"lat": 54.794212, "lng": 24.682759}, {"lat": 54.79431, "lng": 24.682815}], "center": {"lat": 54.793655, "lng": 24.682243}, "plotas": "1.6750", "pask": 610}, "7910/0001:0430": {"path": [{"lat": 54.794575, "lng": 24.681621}, {"lat": 54.794628, "lng": 24.68135}, {"lat": 54.790991, "lng": 24.679441}, {"lat": 54.790982, "lng": 24.679702}, {"lat": 54.791381, "lng": 24.680315}, {"lat": 54.794499, "lng": 24.681966}, {"lat": 54.794575, "lng": 24.681621}], "center": {"lat": 54.79309, "lng": 24.680859}, "plotas": "1.6750", "pask": 610}};
+
+    // styling per parcel: our / change / neighbor
+    const STYLE = {
+      '7910/0001:0431': {stroke:'#FF0000', fill:'#FFFF00', op:0.30, z:5},
+      '7910/0001:0005': {stroke:'#0066FF', fill:'#00AAFF', op:0.35, z:4},
+    };
+    const NEIGHBOR = {stroke:'#FFEA00', fill:'#FFF176', op:0.12, z:2};
+
+    let map, labels = [], labelsOn = true, TextLabel;
+
+    function defineTextLabel() {
+      // defined inside initMap so google.maps is loaded
+      TextLabel = class extends google.maps.OverlayView {
+        constructor(pos, html) { super(); this.pos = pos; this.html = html; }
+        onAdd() {
+          this.div = document.createElement('div');
+          this.div.className = 'plabel';
+          this.div.style.position = 'absolute';
+          this.div.innerHTML = this.html;
+          // overlayLayer moves with the map (floatPane is screen-fixed -> wrong)
+          this.getPanes().overlayLayer.appendChild(this.div);
+        }
+        draw() {
+          const proj = this.getProjection();
+          if (!proj || !this.div) return;
+          const p = proj.fromLatLngToDivPixel(this.pos);
+          this.div.style.left = p.x + 'px';
+          this.div.style.top = p.y + 'px';
+        }
+        onRemove() { if (this.div) { this.div.remove(); this.div = null; } }
+        setVisible(v) { if (this.div) this.div.style.display = v ? '' : 'none'; }
+      };
+    }
+
+    function initMap() {
+      defineTextLabel();
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 54.7929, lng: 24.6829}, zoom: 16, mapTypeId: 'hybrid', tilt: 0
+      });
+      for (const [kn, d] of Object.entries(DATA)) {
+        const st = STYLE[kn] || NEIGHBOR;
+        new google.maps.Polygon({
+          paths: d.path, strokeColor: st.stroke, strokeWeight: 3,
+          fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
+        });
+        const short = kn.split(':')[1].replace(/^0+/, '');  // 0431 -> 431
+        const lbl = new TextLabel(
+          new google.maps.LatLng(d.center.lat, d.center.lng),
+          `:${short}<br><small>${d.plotas} ha</small>`
+        );
+        lbl.setMap(map);
+        labels.push(lbl);
+      }
+      fitAll();
+    }
+    function setType(t) { map.setMapTypeId(t); }
+    function fitAll() {
+      const b = new google.maps.LatLngBounds();
+      for (const d of Object.values(DATA)) d.path.forEach(p => b.extend(p));
+      map.fitBounds(b);
+    }
+    function toggleLabels() {
+      labelsOn = !labelsOn;
+      labels.forEach(l => l.setVisible(labelsOn));
+    }
+    window.initMap = initMap;
+
+    // Maps JS API key is injected at deploy time:
+    //  - Local dev: config.js (git-ignored) sets window.MAPS_API_KEY (run: python gen_config.py)
+    //  - GitHub Pages: Actions replaces __MAPS_API_KEY__ from the MAPS_API_KEY repo secret
+    // The key is never committed in plain text. It is also referrer-locked in
+    // Google Cloud Console to gerimantas.github.io + localhost.
+    (function () {
+      let key = window.MAPS_API_KEY;
+      if (!key) {
+        const injected = '__MAPS_API_KEY__';
+        if (injected.indexOf('MAPS_API_KEY') === -1) key = injected; // replaced at deploy
+      }
+      if (!key) {
+        document.getElementById('map').innerHTML =
+          '<div style="padding:40px;font-family:sans-serif">' +
+          '<h2>Trūksta API rakto</h2>Lokaliai: <code>python gen_config.py</code>. ' +
+          'Pages: nustatyk <code>MAPS_API_KEY</code> repo secret.</div>';
+        return;
+      }
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://maps.googleapis.com/maps/api/js?key=' +
+        encodeURIComponent(key) + '&callback=initMap';
+      document.head.appendChild(s);
+    })();
+  </script>
+</body>
+</html>
