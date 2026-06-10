@@ -12,7 +12,14 @@
       background: rgba(255,255,255,0.93); padding: 12px 16px; border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,.3); max-width: 300px; font-size: 12.5px; line-height: 1.5;
     }
-    #info h3 { margin: 0 0 6px; font-size: 14px; }
+    #info h3 {
+      margin: 0; font-size: 14px; cursor: pointer; user-select: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    #info h3 .chev { transition: transform .2s; font-size: 11px; }
+    #info.collapsed h3 .chev { transform: rotate(-90deg); }
+    #info.collapsed #infoBody { display: none; }
+    #infoBody { margin-top: 8px; }
     .sw { display:inline-block; width:11px; height:11px; border-radius:2px; margin-right:4px; vertical-align:middle; }
     .btns { margin-top: 9px; }
     .btns button { font-size: 12px; padding: 4px 8px; margin: 0 6px 4px 0; cursor: pointer; }
@@ -28,17 +35,21 @@
 </head>
 <body>
   <div id="info">
-    <h3>Elektrėnų sen. — sklypai</h3>
-    <span class="sw" style="background:#FFFF00;border:2px solid #FF0000"></span><b>0431</b> — mūsų (1.675 ha)<br>
-    <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>0005</b> — paskirties keitimas (0.314 ha)<br>
-    <span class="sw" style="background:#FFF176;border:2px solid #FFEA00"></span>kaimynai (6 vnt., besiribojantys)<br>
-    <small>Label ant kiekvieno: kadastro Nr. + plotas</small>
-    <div class="btns">
-      <button onclick="setType('satellite')">Satellite</button>
-      <button onclick="setType('hybrid')">Hybrid</button>
-      <button onclick="setType('roadmap')">Roadmap</button>
-      <button onclick="fitAll()">Centruoti</button>
-      <button onclick="toggleLabels()">Label on/off</button>
+    <h3 onclick="document.getElementById('info').classList.toggle('collapsed')">
+      <span class="chev">▼</span> Elektrėnų sen. — sklypai
+    </h3>
+    <div id="infoBody">
+      <span class="sw" style="background:#FFFF00;border:2px solid #FF0000"></span><b>7910/0001:0431</b> — mūsų (1.675 ha)<br>
+      <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>7910/0001:0005</b> — paskirties keitimas (0.314 ha)<br>
+      <span class="sw" style="background:#FFF176;border:2px solid #FFEA00"></span>kaimynai (6 vnt., besiribojantys)<br>
+      <small>Label ant kiekvieno: pilnas kadastro Nr. + plotas</small>
+      <div class="btns">
+        <button onclick="setType('satellite')">Satellite</button>
+        <button onclick="setType('hybrid')">Hybrid</button>
+        <button onclick="setType('roadmap')">Roadmap</button>
+        <button onclick="fitAll()">Centruoti</button>
+        <button onclick="toggleLabels()">Label on/off</button>
+      </div>
     </div>
   </div>
   <div id="map"></div>
@@ -90,10 +101,9 @@
           paths: d.path, strokeColor: st.stroke, strokeWeight: 3,
           fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
         });
-        const short = kn.split(':')[1].replace(/^0+/, '');  // 0431 -> 431
         const lbl = new TextLabel(
           new google.maps.LatLng(d.center.lat, d.center.lng),
-          `:${short}<br><small>${d.plotas} ha</small>`
+          `${kn}<br><small>${d.plotas} ha</small>`  // full cadastral nr
         );
         lbl.setMap(map);
         labels.push(lbl);
