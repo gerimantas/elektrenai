@@ -219,11 +219,31 @@
       }
     }
 
+    // polygon's interior span (deg) through the label point: horizontal and
+    // vertical chords — narrow diagonal strips get their true width, not bbox
+    function chordSpans(path, c) {
+      const xs = [], ys = [];
+      for (let i = 0; i < path.length - 1; i++) {
+        const a = path[i], b = path[i + 1];
+        if ((a.lat - c.lat) * (b.lat - c.lat) < 0)
+          xs.push(a.lng + (b.lng - a.lng) * (c.lat - a.lat) / (b.lat - a.lat));
+        if ((a.lng - c.lng) * (b.lng - c.lng) < 0)
+          ys.push(a.lat + (b.lat - a.lat) * (c.lng - a.lng) / (b.lng - a.lng));
+      }
+      xs.sort((p, q) => p - q); ys.sort((p, q) => p - q);
+      let w = 0, h = 0;
+      for (let i = 0; i + 1 < xs.length; i += 2)
+        if (xs[i] <= c.lng && c.lng <= xs[i + 1]) { w = xs[i + 1] - xs[i]; break; }
+      for (let i = 0; i + 1 < ys.length; i += 2)
+        if (ys[i] <= c.lat && c.lat <= ys[i + 1]) { h = ys[i + 1] - ys[i]; break; }
+      return {w, h};
+    }
+
     function defineTextLabel() {
       // defined inside initMap so google.maps is loaded
       TextLabel = class extends google.maps.OverlayView {
-        constructor(pos, html, bounds) {
-          super(); this.pos = pos; this.html = html; this.bounds = bounds;
+        constructor(pos, html, span) {
+          super(); this.pos = pos; this.html = html; this.span = span;
         }
         onAdd() {
           this.div = document.createElement('div');
@@ -242,11 +262,14 @@
           const p = proj.fromLatLngToDivPixel(this.pos);
           this.div.style.left = p.x + 'px';
           this.div.style.top = p.y + 'px';
-          // shrink label to fit the parcel's on-screen extent
-          if (this.bounds && this.nw) {
-            const sw = proj.fromLatLngToDivPixel(this.bounds.getSouthWest());
-            const ne = proj.fromLatLngToDivPixel(this.bounds.getNorthEast());
-            const pw = Math.abs(ne.x - sw.x), ph = Math.abs(sw.y - ne.y);
+          // shrink label to fit the parcel's interior at the label point
+          if (this.span && this.nw) {
+            const c = this.pos;
+            const pw1 = proj.fromLatLngToDivPixel(new google.maps.LatLng(c.lat(), c.lng() - this.span.w / 2));
+            const pw2 = proj.fromLatLngToDivPixel(new google.maps.LatLng(c.lat(), c.lng() + this.span.w / 2));
+            const ph1 = proj.fromLatLngToDivPixel(new google.maps.LatLng(c.lat() - this.span.h / 2, c.lng()));
+            const ph2 = proj.fromLatLngToDivPixel(new google.maps.LatLng(c.lat() + this.span.h / 2, c.lng()));
+            const pw = Math.abs(pw2.x - pw1.x), ph = Math.abs(ph1.y - ph2.y);
             const s = Math.min(1, pw * 0.9 / this.nw, ph * 0.9 / this.nh);
             this.div.style.transform = `translate(-50%, -50%) scale(${s})`;
             this.div.style.display = (this.hidden || s < 0.35) ? 'none' : '';
@@ -272,12 +295,10 @@
           paths: d.path, strokeColor: st.stroke, strokeWeight: 1,
           fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
         });
-        const pb = new google.maps.LatLngBounds();
-        d.path.forEach(pt => pb.extend(pt));
         const lbl = new TextLabel(
           new google.maps.LatLng(d.center.lat, d.center.lng),
           `${kn}<br><small>${d.plotas} ha</small>`,  // full cadastral nr
-          pb
+          chordSpans(d.path, d.center)
         );
         lbl.setMap(map);
         labels.push(lbl);
