@@ -130,6 +130,9 @@ Map shows hatched red no-build AZ zones inside the merged block (toggle in legen
   `.firecrawl/restricted_v2.py` (zones), `.firecrawl/grid119.py` (heritage grid)
 - Tyrimas tab also documents entrance-through-road-AZ legality (SŽNS law art. 19(2):
   allowed with road owner approval; art. 19(3): refusal must be motivated)
+- **Neighbor 0428 (3.0501 ha), same method:** hard ban 0.8530 ha (28.0%), heritage AZ
+  1.6887 ha (55%), fully free only 1.2265 ha (40.2%), with KPD up to 2.1971 ha.
+  Data `.firecrawl/restricted-0428.json`, script `.firecrawl/restricted_0428.py`
 - Caveats: whole strip is in pipeline location-class territory (171) — design
   constraints, not a ban; 110 kV line passes 47 m away (its AZ misses the block);
   in AZ paved yards/roads allowed with Ambergrid/road-owner approval

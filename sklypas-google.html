@@ -143,6 +143,9 @@
               Tai ne absoliutus draudimas — statybai reikia KPD derinimo</li>
             <li><b>Visiškai be apribojimų: 3.2793 ha (65.3%)</b>; jei KPD pritaria paveldo zonoje — iki <b>3.8144 ha</b></li>
             <li>Draudimo AZ pastatai negalimi, bet keliai, dangos ir aikštelės — galimi su Ambergrid / kelio valdytojo derinimu</li>
+            <li><b>Kaimynas 0428 (3.0501 ha):</b> griežtas draudimas <b>0.8530 ha</b> (28.0%; dujotiekiai 0.7473 +
+              kelio AZ 0.1057), paveldo AZ 119 net <b>1.6887 ha (55%)</b> — visiškai be apribojimų tik
+              <b>1.2265 ha (40.2%)</b>, su KPD pritarimu iki 2.1971 ha. Zonos rodomos žemėlapyje kartu su bloko</li>
             <li><b>Caveat:</b> visa juosta patenka į dujotiekio vietovės klasės teritoriją (171) — ne draudimas, bet pastatų
               tankiui/atstumams taikomi projektavimo reikalavimai. 110 kV linija praeina už 47 m — jos AZ bloko nesiekia.
               Dujotiekių/kelio zonos atkurtos pagal įstatymines normas + OSM ašis (RC vektorių neteikia, 401; paklaida ±2–3 m);
@@ -175,6 +178,11 @@
     // (kampas.lt id 1047812, "Gėlių g. 14, Ausieniškių km."). Matched to RC
     // parcel by area 3.0000 ha + pask 995 + adjacency to both A1 (27 m) and
     // Gėlių g.; ~7 km E of our block, next to Vievis.
+    // Same AZ analysis for neighbor 0428 (.firecrawl/restricted_0428.py):
+    // hard ban 0.8530 ha (28.0%), heritage 119 1.6887 ha (55%!),
+    // fully free 1.2265 ha (40.2%), with KPD approval 2.1971 ha.
+    const RESTRICTED_0428 = {"hardOutline":[[{"lat":54.793928,"lng":24.679042},{"lat":54.794814,"lng":24.679329},{"lat":54.79462,"lng":24.680617},{"lat":54.793907,"lng":24.680281},{"lat":54.793928,"lng":24.679042}],[{"lat":54.791215,"lng":24.678164},{"lat":54.791186,"lng":24.678998},{"lat":54.791009,"lng":24.678914},{"lat":54.791037,"lng":24.678107},{"lat":54.791215,"lng":24.678164}]],"hardHatch":[[{"lat":54.794802,"lng":24.679325},{"lat":54.794812,"lng":24.679343}],[{"lat":54.794678,"lng":24.679285},{"lat":54.794791,"lng":24.679484}],[{"lat":54.794555,"lng":24.679245},{"lat":54.794769,"lng":24.679624}],[{"lat":54.794432,"lng":24.679206},{"lat":54.794748,"lng":24.679764}],[{"lat":54.794308,"lng":24.679166},{"lat":54.794727,"lng":24.679905}],[{"lat":54.794185,"lng":24.679126},{"lat":54.794706,"lng":24.680045}],[{"lat":54.794062,"lng":24.679086},{"lat":54.794685,"lng":24.680185}],[{"lat":54.793938,"lng":24.679046},{"lat":54.794664,"lng":24.680326}],[{"lat":54.793925,"lng":24.6792},{"lat":54.794643,"lng":24.680466}],[{"lat":54.793922,"lng":24.679372},{"lat":54.794622,"lng":24.680607}],[{"lat":54.793919,"lng":24.679545},{"lat":54.794493,"lng":24.680558}],[{"lat":54.793916,"lng":24.679717},{"lat":54.794356,"lng":24.680493}],[{"lat":54.793913,"lng":24.67989},{"lat":54.794218,"lng":24.680428}],[{"lat":54.79391,"lng":24.680062},{"lat":54.794081,"lng":24.680363}],[{"lat":54.793907,"lng":24.680235},{"lat":54.793944,"lng":24.680298}],[{"lat":54.791102,"lng":24.678128},{"lat":54.79121,"lng":24.678317}],[{"lat":54.791034,"lng":24.678185},{"lat":54.791204,"lng":24.678485}],[{"lat":54.791029,"lng":24.678353},{"lat":54.791198,"lng":24.678652}],[{"lat":54.791023,"lng":24.67852},{"lat":54.791193,"lng":24.67882}],[{"lat":54.791017,"lng":24.678688},{"lat":54.791187,"lng":24.678987}],[{"lat":54.791011,"lng":24.678855},{"lat":54.791058,"lng":24.678937}]],"heritOutline":[[{"lat":54.793742,"lng":24.679083},{"lat":54.794074,"lng":24.67909},{"lat":54.794535,"lng":24.679239},{"lat":54.794549,"lng":24.67933},{"lat":54.794834,"lng":24.679336},{"lat":54.795008,"lng":24.679392},{"lat":54.794966,"lng":24.679608},{"lat":54.794916,"lng":24.679629},{"lat":54.794914,"lng":24.679879},{"lat":54.794833,"lng":24.680295},{"lat":54.794781,"lng":24.680312},{"lat":54.794776,"lng":24.68059},{"lat":54.794758,"lng":24.680682},{"lat":54.79462,"lng":24.680618},{"lat":54.794601,"lng":24.6805},{"lat":54.794362,"lng":24.680496},{"lat":54.79408,"lng":24.680363},{"lat":54.794064,"lng":24.680258},{"lat":54.793849,"lng":24.680254},{"lat":54.793541,"lng":24.680108},{"lat":54.793526,"lng":24.680016},{"lat":54.793337,"lng":24.680012},{"lat":54.793016,"lng":24.679861},{"lat":54.793012,"lng":24.679796},{"lat":54.792891,"lng":24.67977},{"lat":54.792897,"lng":24.678838},{"lat":54.793317,"lng":24.678845},{"lat":54.793725,"lng":24.678977},{"lat":54.793742,"lng":24.679083}]],"hard_ha":0.853,"herit_ha":1.6887,"usable_ha":1.2265,"usable_kpd_ha":2.1971,"total_ha":3.0501};
+
     const PRECEDENT = {
       kn: '7910/0005:0094',
       path: [{lat: 54.783158, lng: 24.783712}, {lat: 54.783314, lng: 24.782952}, {lat: 54.783406, lng: 24.782504}, {lat: 54.783386, lng: 24.782488}, {lat: 54.780384, lng: 24.780118}, {lat: 54.780369, lng: 24.780248}, {lat: 54.780238, lng: 24.781419}, {lat: 54.783158, lng: 24.783712}],
@@ -445,6 +453,25 @@
       }
       // heritage AZ 119: softer restriction (KPD approval), amber, no hatch
       for (const ring of RESTRICTED.heritOutline) {
+        azShapes.push(new google.maps.Polygon({
+          paths: ring, strokeColor: '#FF8F00', strokeWeight: 2,
+          fillColor: '#FFB300', fillOpacity: 0.13, zIndex: 6, map
+        }));
+      }
+      // same AZ layers for neighbor 0428
+      for (const ring of RESTRICTED_0428.hardOutline) {
+        azShapes.push(new google.maps.Polygon({
+          paths: ring, strokeColor: '#B71C1C', strokeWeight: 2,
+          fillColor: '#FF0000', fillOpacity: 0.08, zIndex: 7, map
+        }));
+      }
+      for (const seg of RESTRICTED_0428.hardHatch) {
+        azShapes.push(new google.maps.Polyline({
+          path: seg, strokeColor: '#D32F2F', strokeWeight: 1,
+          strokeOpacity: 0.9, zIndex: 7, map
+        }));
+      }
+      for (const ring of RESTRICTED_0428.heritOutline) {
         azShapes.push(new google.maps.Polygon({
           paths: ring, strokeColor: '#FF8F00', strokeWeight: 2,
           fillColor: '#FFB300', fillOpacity: 0.13, zIndex: 6, map
