@@ -69,9 +69,9 @@
         <button id="tabBtnTyrimas" onclick="showTab('Tyrimas')">Tyrimas</button>
       </div>
       <div id="tabLegenda" class="tabPane active">
-      <span class="sw" style="background:#FFFF00;border:2px solid #FF0000"></span><b>7910/0001:0431</b> — mūsų (1.675 ha)<br>
+      <span class="sw" style="background:#FFFF00;border:2px solid #FF0000"></span><b>Apjungtas blokas 0429+0430+0431</b> — 5.0250 ha (mūsų 0431 viduje)<br>
+      <span class="sw" style="background:#FFF176;border:2px solid #FFEA00"></span>vidinės ribos + kaimynai — geltona, su Nr. ir plotu<br>
       <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>7910/0001:0005</b> — paskirties keitimas (0.314 ha)<br>
-      <span class="sw" style="background:#FFF176;border:2px solid #FFEA00"></span>kaimynai (7 vnt., besiribojantys)<br>
       <small>Label ant kiekvieno: pilnas kadastro Nr. + plotas</small>
       <div class="btns">
         <button onclick="setType('satellite')">Satellite</button>
@@ -117,13 +117,13 @@
           <span class="src">Šaltiniai: registrucentras.lt/masvert, kampas.lt, alio.lt</span>
         </details>
         <details>
-          <summary>Įvaža iš kelio 4728 (per 0430)</summary>
+          <summary>Įvaža iš kelio 4728 (apjungtas blokas)</summary>
           <ul>
-            <li>0430 riba su keliu 4728: <b>16.8 m</b> (pietinis galas, paryškinta žemėlapyje)</li>
-            <li>Fura (16.5 m, posūkio R 12.5 m): telpa <b>dvipusė 7 m įvaža</b>; posūkio lankai — kelio juostoje (standartinė praktika)</li>
-            <li>Apsisukimo aikštelė 12×12 m — giliau sklype (juosta praplatėja iki ~30–40 m)</li>
+            <li>Apjungto bloko 0429+0430+0431 (5.025 ha) riba su keliu 4728: <b>51.9 m</b> (0429 ~35 m + 0430 ~16.8 m; 0431 kelio nesiekia — tarp jų 0050). Paryškinta žemėlapyje.</li>
+            <li>Fura (16.5 m, posūkio R 12.5 m): <b>telpa laisvai</b> — dvipusė 7 m įvaža su pilnais posūkio lankais pačiame sklype, lieka vietos ir antrai įvažai ar laukimo kišenei</li>
+            <li>Apsisukimo aikštelė 12×12 m telpa prie pat įvažos (bloko plotis prie kelio ~52 m)</li>
             <li>Būtina: <b>prisijungimo sąlygos</b> iš kelio valdytojo (VĮ „Via Lietuva", valstybinės reikšmės rajoninis kelias) + Ambergrid derinimas, jei dujotiekio AZ kerta įvažą</li>
-            <li><b>Vertinimas: pakanka, bet minimumas</b> — komfortui projektuojama ≥20 m</li>
+            <li><b>Vertinimas: pakanka su atsarga</b> — 51.9 m gerokai viršija komforto normą (≥20 m); logistikos objektui tinkamas frontas</li>
           </ul>
         </details>
       </div>
@@ -136,10 +136,15 @@
 
     // styling per parcel: our / change / neighbor
     const STYLE = {
-      '7910/0001:0431': {stroke:'#FF0000', fill:'#FFFF00', op:0.30, z:5},
       '7910/0001:0005': {stroke:'#0066FF', fill:'#00AAFF', op:0, z:4},
     };
     const NEIGHBOR = {stroke:'#FFEA00', fill:'#FFF176', op:0.12, z:2};
+    // 0429+0430+0431 merged block (shapely union of RC parcels): red outline,
+    // strips stay as yellow inner division lines with their own labels
+    const MERGED = {
+      path: [{lat: 54.794575, lng: 24.681621}, {lat: 54.794499, lng: 24.681966}, {lat: 54.79431, lng: 24.682815}, {lat: 54.794212, lng: 24.682759}, {lat: 54.794194, lng: 24.682749}, {lat: 54.793984, lng: 24.682629}, {lat: 54.793762, lng: 24.682503}, {lat: 54.792245, lng: 24.68164}, {lat: 54.791381, lng: 24.680315}, {lat: 54.790982, lng: 24.679702}, {lat: 54.790991, lng: 24.679441}, {lat: 54.791009, lng: 24.678914}, {lat: 54.794758, lng: 24.680682}, {lat: 54.794628, lng: 24.68135}, {lat: 54.794575, lng: 24.681621}],
+      center: {lat: 54.792967, lng: 24.680847}, plotas: '5.0250'
+    };
 
     let map, labels = [], labelsOn = true, TextLabel;
     let sznsOverlay = null;
@@ -353,14 +358,29 @@
         lbl.setMap(map);
         labels.push(lbl);
       }
-      // 0430 frontage on road 4728 (16.8 m) — highlighted with measurement label
-      const edge4728 = [{lat: 54.790991, lng: 24.679441}, {lat: 54.790982, lng: 24.679702}];
+      // merged block outline (red) + total-area label, offset south of strip labels
+      new google.maps.Polygon({
+        paths: MERGED.path, strokeColor: '#FF0000', strokeWeight: 2,
+        fillColor: '#FFFF00', fillOpacity: 0.10, zIndex: 3, map
+      });
+      const mergedLbl = new TextLabel(
+        new google.maps.LatLng(54.7921, 24.68045),
+        'Apjungta 0429+0430+0431<br><small>5.0250 ha</small>',
+        chordSpans(MERGED.path, {lat: 54.7921, lng: 24.68045})
+      );
+      mergedLbl.setMap(map);
+      labels.push(mergedLbl);
+      // merged-block frontage on road 4728 (51.9 m: 0429 ~35 m + 0430 ~16.8 m)
+      const edge4728 = [
+        {lat: 54.790982, lng: 24.679702}, {lat: 54.790991, lng: 24.679441},
+        {lat: 54.791009, lng: 24.678914}
+      ];
       new google.maps.Polyline({
         path: edge4728, strokeColor: '#FF6D00', strokeWeight: 4, zIndex: 6, map
       });
       const edgeLbl = new TextLabel(
-        new google.maps.LatLng(54.790925, 24.679572),
-        '16.8 m<br><small>riba su keliu 4728</small>',
+        new google.maps.LatLng(54.790925, 24.679308),
+        '51.9 m<br><small>riba su keliu 4728</small>',
         {w: 0.002, h: 0.001}  // hides when zoomed out past usefulness
       );
       edgeLbl.setMap(map);

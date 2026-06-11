@@ -90,14 +90,19 @@ Togglable raster overlay of RC special land-use conditions, live on the map.
 ## Dashboard "Tyrimas" Tab (2026-06-11)
 
 Info panel has two tabs: **Legenda** (layers/SŽNS) and **Tyrimas** (research findings):
-purpose changes nearby, market prices, 0430 road-access analysis. Map shows the 16.8 m
-0430/road-4728 frontage as an orange polyline with a measurement label (visible z17+).
+purpose changes nearby, market prices, road-access analysis.
 
-**0430 access verdict:** 16.8 m frontage fits a 7 m two-way truck entrance (semitrailer
-R 12.5 m turning arcs extend into the road corridor — standard practice). 12×12 m turning
-pad must sit deeper in the plot (strip widens to ~30–40 m). Requires connection conditions
-from VĮ "Via Lietuva" (state regional road) + Ambergrid approval if pipeline AZ crosses
-the entrance. Adequate but minimal — ≥20 m is comfortable.
+**Merged block (2026-06-11):** map shows 0429+0430+0431 as one unit — red outline with
+total area label (**5.0250 ha**, shapely union of RC parcels), strips kept as yellow
+inner division lines with their own Nr/area labels. Orange polyline marks the combined
+road-4728 frontage: **51.9 m** (0429 ~35 m + 0430 ~16.8 m; 0431 doesn't reach the road —
+0050 in between).
+
+**Access verdict (merged):** 51.9 m frontage fits a 7 m two-way truck entrance with full
+R 12.5 m turning arcs inside the plot, plus room for a second entrance or waiting pocket;
+12×12 m turning pad fits right at the entrance. Requires connection conditions from
+VĮ "Via Lietuva" (state regional road) + Ambergrid approval if pipeline AZ crosses the
+entrance. Comfortable margin — well above the ≥20 m comfort norm.
 
 Neighbors of 0430 (RC open data): 0429 (NW twin strip, 423 m), 0431, 0050, 0023,
 0031 (N tip), 7910/7001:0009 (road parcel 4728, pask 995).
