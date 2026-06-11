@@ -5,3 +5,4 @@
 2026-06-11: Spalvų schema: šeimos sklypai 0428–0431 ryški geltona, visi kiti neon žalia, 0005 mėlynas, apjungimo kontūras raudonas punktyras; ribos virš AZ sluoksnių. Reason: vartotojo pasirinkimas, AZ štrichas nebeuždengia ribų.
 2026-06-11: Legendoje tik vienas naudingo ploto skaičius (3.39 ha be kelio AZ), detali aritmetika su zonų persidengimu — Tyrimas tab'e. Reason: du skirtingi skaičiai be konteksto klaidino, plotai nesisumuoja dėl 0.3453 ha persidengimo.
 2026-06-11: 0005 sprendimo patikra automatizuota cloud routine (2026-06-16 09:00). Reason: viešinimas baigiasi 2026-06-15, rankinis sekimas nereikalingas.
+2026-06-11: Sesijos patirtis supakuota į bendrą lt-parcels skill (ne projekto vidų). Reason: metodai (data.gov.lt ZIP, masvert CSRF, SŽNS identify grid, AZ normos, map patternai) tinka bet kuriam LT sklypui — projekto CONTEXT.md jų kitos sesijos nerastų.

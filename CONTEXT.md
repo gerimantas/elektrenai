@@ -209,6 +209,16 @@ Full log: `wiki/elektrenai/geoportal-lt-api-research.md`. Summary:
   09:00 Vilnius — checks whether 0005 purpose change was approved (publicity ended
   2026-06-15). Results: https://claude.ai/code/routines/trig_01Ftvqqm6k7iXRSicMjH53Pv
 
+## Knowledge Packaged (2026-06-11, end of session)
+
+- **`lt-parcels` skill created** (`C:/Users/retco/.claude/skills/lt-parcels/`, visible to
+  Antigravity via .ai-skills junction): parcel lookup (find_parcel.py), neighbors
+  (neighbors.py), RC masvert value (masvert.py), SŽNS zones + identify-grid mapping
+  (szns_zones.py), plus references with data sources, statutory AZ widths, dead ends
+  and Google Maps display patterns. All smoke-tested against this project's data.
+  Generic LT-parcel research now works in any project/session.
+- Project `CLAUDE.md` added: pointer to CONTEXT.md + 5 operational hard rules.
+
 ## Next Session Tasks (optional)
 
 1. Optionally show plot 7910/0008:0037 too
