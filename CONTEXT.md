@@ -107,6 +107,22 @@ entrance. Comfortable margin — well above the ≥20 m comfort norm.
 Neighbors of 0430 (RC open data): 0429 (NW twin strip, 423 m), 0431, 0050, 0023,
 0031 (N tip), 7910/7001:0009 (road parcel 4728, pask 995).
 
+## No-Build Zones in Merged Block (2026-06-11)
+
+Map shows hatched red no-build AZ zones inside the merged block (toggle in legend):
+
+- **Restricted: 1.2250 ha (24.4%)** of 5.0250 ha — pipeline AZ 1.0973 ha (25 m each side
+  of both Minskas–Kaliningradas and GIPL axes, crossing the north part), road-4728 AZ
+  0.1133 ha (20 m beyond road parcel), heritage AZ ~0.02 ha (corner)
+- **Usable for buildings/logistics: ~3.80 ha (75.6%)**
+- Method: RC blocks zone vectors (401) → zones reconstructed from statutory widths
+  (SŽNS law) + OSM axes; heritage 119 digitized from RC raster (yellow pixels).
+  Verified visually against RC raster corridor — pixel-aligned. Script:
+  `.firecrawl/restricted_zones.py`, data `.firecrawl/restricted.json`
+- Caveats: whole strip is in pipeline location-class territory (171) — design
+  constraints, not a ban; 110 kV line passes 47 m away (its AZ misses the block);
+  in AZ paved yards/roads allowed with Ambergrid/road-owner approval
+
 ## Files
 
 - `sklypas-google.html` — interactive map (our plot + neighbors + change plot, labels, collapsible info)
