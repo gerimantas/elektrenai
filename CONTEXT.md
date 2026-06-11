@@ -113,6 +113,14 @@ Ausieniškių k., 3.00 ha, pask 995, next to A1 (27 m) near Vievis, listed at 13
 (kampas.lt id 1047812). Matched to RC parcel by area + purpose + adjacency to A1 and
 Gėlių g. (kampas pin itself lands on a road parcel ~1 km off).
 
+## Rimi Logistics Centre Next Door (found 2026-06-11)
+
+The big building W of the block (visible on satellite) = **7910/0001:0922**, 12.8495 ha,
+pask 995, parcel formed 2025-11-26. **Darnu Group is building Rimi's central Baltic
+logistics centre**: 31k m2, 60 MEUR, ~800 jobs (Delfi/sa.lt/kronika.lt; press states
+12.85 ha — exact match). Adjacent to 0428, i.e. one parcel away from our block.
+Strongest industrialization signal for the area. Drawn teal on map with label.
+
 ## No-Build Zones in Merged Block (2026-06-11)
 
 Map shows hatched red no-build AZ zones inside the merged block (toggle in legend):
