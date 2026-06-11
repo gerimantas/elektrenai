@@ -72,10 +72,11 @@
       </div>
       <div id="tabLegenda" class="tabPane active">
       <span class="sw" style="background:#FFFF00;border:2px solid #FF0000"></span><b>Apjungtas blokas 0429+0430+0431</b> — 5.0250 ha; be apribojimų (neskaitant kelio AZ) — <b>3.39 ha</b><br>
-      <span class="sw" style="background:#FFF176;border:2px solid #FFEA00"></span>vidinės ribos + kaimynai — geltona, su Nr. ir plotu<br>
+      <span class="sw" style="background:#FFF176;border:2px solid #FFFF00"></span>šeimos sklypai <b>0428–0431</b> — ryški geltona, su vardu/Nr./plotu<br>
+      <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span>kiti sklypai (Rimi 0922, kaimynai, precedentas) — neon žalia<br>
       <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>7910/0001:0005</b> — paskirties keitimas (0.314 ha)<br>
-      <span class="sw" style="background:#CE93D8;border:2px solid #9C27B0"></span><b>Precedentas 7910/0005:0094</b> — pramonė 3 ha, 130 k€/ha <button style="font-size:11px;padding:1px 6px;cursor:pointer" onclick="map.setCenter({lat:54.781795,lng:24.781933});map.setZoom(16)">rodyti →</button><br>
-      <span class="sw" style="background:#4DD0E1;border:2px solid #00838F"></span><b>7910/0001:0922</b> — Rimi logistikos centras (12.85 ha, statoma)<br>
+      <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span><b>Precedentas 7910/0005:0094</b> — pramonė 3 ha, 130 k€/ha <button style="font-size:11px;padding:1px 6px;cursor:pointer" onclick="map.setCenter({lat:54.781795,lng:24.781933});map.setZoom(16)">rodyti →</button><br>
+      <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span><b>7910/0001:0922</b> — Rimi logistikos centras (12.85 ha, statoma)<br>
       <label class="sznsToggle" style="margin-top:4px">
         <input type="checkbox" checked onchange="toggleAz(this.checked)">
         <span><span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span><b>Statybų draudimo AZ</b> — 1.21 ha · <span class="sw" style="background:#FFB300;border:2px solid #FF8F00"></span><b>paveldo AZ 119</b> — 0.88 ha (be apribojimų lieka 3.28 ha)</span>
@@ -209,10 +210,16 @@
     };
 
     // styling per parcel: our / change / neighbor
+    // family strips bright yellow on top; everything else neon green; 0005 blue
+    const FAMILY = {stroke:'#FFFF00', fill:'#FFF176', op:0.12, z:11, w:2};
     const STYLE = {
-      '7910/0001:0005': {stroke:'#0066FF', fill:'#00AAFF', op:0, z:4},
+      '7910/0001:0005': {stroke:'#0066FF', fill:'#00AAFF', op:0, z:10},
+      '7910/0001:0428': FAMILY,
+      '7910/0001:0429': FAMILY,
+      '7910/0001:0430': FAMILY,
+      '7910/0001:0431': FAMILY,
     };
-    const NEIGHBOR = {stroke:'#FFEA00', fill:'#FFF176', op:0.12, z:2};
+    const NEIGHBOR = {stroke:'#39FF14', fill:'#76FF03', op:0.07, z:10};
     // 0429+0430+0431 merged block (shapely union of RC parcels): red outline,
     // strips stay as yellow inner division lines with their own labels
     const MERGED = {
@@ -455,7 +462,7 @@
       for (const [kn, d] of Object.entries(DATA)) {
         const st = STYLE[kn] || NEIGHBOR;
         new google.maps.Polygon({
-          paths: d.path, strokeColor: st.stroke, strokeWeight: 1,
+          paths: d.path, strokeColor: st.stroke, strokeWeight: st.w || 1,
           fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
         });
         const fit = fitLabelPoint(d.path, d.center);
@@ -470,8 +477,8 @@
       }
       // Rimi logistics centre parcel (teal) just W of the block
       new google.maps.Polygon({
-        paths: RIMI.path, strokeColor: '#00838F', strokeWeight: 2,
-        fillColor: '#4DD0E1', fillOpacity: 0.15, zIndex: 4, map
+        paths: RIMI.path, strokeColor: '#39FF14', strokeWeight: 2,
+        fillColor: '#76FF03', fillOpacity: 0.10, zIndex: 10, map
       });
       const rimiFit = fitLabelPoint(RIMI.path, RIMI.center);
       const rimiLbl = new TextLabel(
@@ -483,8 +490,8 @@
       labels.push(rimiLbl);
       // precedent plot (violet) near Vievis/A1 — outside fitAll bounds on purpose
       new google.maps.Polygon({
-        paths: PRECEDENT.path, strokeColor: '#9C27B0', strokeWeight: 2,
-        fillColor: '#CE93D8', fillOpacity: 0.25, zIndex: 4, map
+        paths: PRECEDENT.path, strokeColor: '#39FF14', strokeWeight: 2,
+        fillColor: '#76FF03', fillOpacity: 0.15, zIndex: 10, map
       });
       const precLbl = new TextLabel(
         new google.maps.LatLng(PRECEDENT.center.lat, PRECEDENT.center.lng),
@@ -496,7 +503,7 @@
       // merged block outline (red) + total-area label, offset south of strip labels
       new google.maps.Polygon({
         paths: MERGED.path, strokeColor: '#FF0000', strokeWeight: 2,
-        fillColor: '#FFFF00', fillOpacity: 0.10, zIndex: 3, map
+        fillColor: '#FFFF00', fillOpacity: 0.08, zIndex: 12, map
       });
       // no-build AZ zones: outlined + hatched, toggle in legend
       for (const ring of RESTRICTED.hardOutline) {
@@ -550,7 +557,7 @@
         {lat: 54.791009, lng: 24.678914}
       ];
       new google.maps.Polyline({
-        path: edge4728, strokeColor: '#FF6D00', strokeWeight: 4, zIndex: 6, map
+        path: edge4728, strokeColor: '#FF6D00', strokeWeight: 4, zIndex: 13, map
       });
       const edgeLbl = new TextLabel(
         new google.maps.LatLng(54.790925, 24.679308),
