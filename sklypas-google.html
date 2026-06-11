@@ -349,12 +349,31 @@
           ys.push(a.lat + (b.lat - a.lat) * (c.lng - a.lng) / (b.lng - a.lng));
       }
       xs.sort((p, q) => p - q); ys.sort((p, q) => p - q);
-      let w = 0, h = 0;
+      let w = 0, h = 0, mx = c.lng, my = c.lat;
       for (let i = 0; i + 1 < xs.length; i += 2)
-        if (xs[i] <= c.lng && c.lng <= xs[i + 1]) { w = xs[i + 1] - xs[i]; break; }
+        if (xs[i] <= c.lng && c.lng <= xs[i + 1]) {
+          w = xs[i + 1] - xs[i]; mx = (xs[i] + xs[i + 1]) / 2; break;
+        }
       for (let i = 0; i + 1 < ys.length; i += 2)
-        if (ys[i] <= c.lat && c.lat <= ys[i + 1]) { h = ys[i + 1] - ys[i]; break; }
-      return {w, h};
+        if (ys[i] <= c.lat && c.lat <= ys[i + 1]) {
+          h = ys[i + 1] - ys[i]; my = (ys[i] + ys[i + 1]) / 2; break;
+        }
+      return {w, h, mx, my};
+    }
+
+    // label anchor centered inside the parcel: walk to the chord midpoints
+    // (an off-center centroid, like 0431's, would otherwise spill over the
+    // near edge since the chord width is used as the scale budget)
+    function fitLabelPoint(path, c) {
+      let p = {lat: c.lat, lng: c.lng};
+      let s = chordSpans(path, p);
+      p = {lat: p.lat, lng: s.mx};            // center horizontally
+      s = chordSpans(path, p);
+      p = {lat: s.my, lng: p.lng};            // then vertically at new lng
+      s = chordSpans(path, p);
+      p = {lat: p.lat, lng: s.mx};            // settle horizontal once more
+      s = chordSpans(path, p);
+      return {pos: p, span: s};
     }
 
     function defineTextLabel() {
@@ -413,10 +432,11 @@
           paths: d.path, strokeColor: st.stroke, strokeWeight: 1,
           fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
         });
+        const fit = fitLabelPoint(d.path, d.center);
         const lbl = new TextLabel(
-          new google.maps.LatLng(d.center.lat, d.center.lng),
+          new google.maps.LatLng(fit.pos.lat, fit.pos.lng),
           `${kn}<br><small>${d.plotas} ha</small>`,  // full cadastral nr
-          chordSpans(d.path, d.center)
+          fit.span
         );
         lbl.setMap(map);
         labels.push(lbl);
