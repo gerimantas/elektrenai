@@ -74,7 +74,7 @@
       <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>7910/0001:0005</b> — paskirties keitimas (0.314 ha)<br>
       <label class="sznsToggle" style="margin-top:4px">
         <input type="checkbox" checked onchange="toggleAz(this.checked)">
-        <span><span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span><b>Statybų draudimo AZ</b> — 1.225 ha (lieka 3.80 ha)</span>
+        <span><span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span><b>Statybų draudimo AZ</b> — 1.21 ha · <span class="sw" style="background:#FFB300;border:2px solid #FF8F00"></span><b>paveldo AZ 119</b> — 0.88 ha (be apribojimų lieka 3.28 ha)</span>
       </label><br>
       <small>Label ant kiekvieno: pilnas kadastro Nr. + plotas</small>
       <div class="btns">
@@ -133,14 +133,32 @@
         <details>
           <summary>Užstatymo apribojimai bloke (AZ)</summary>
           <ul>
-            <li><b>Draudimo zonos: 1.2250 ha (24.4%)</b> iš 5.0250 ha — žemėlapyje raudonas štrichas:
-              dujotiekių AZ <b>1.0973 ha</b> (25 m abipus ašies, Minskas–Kaliningradas + GIPL, kerta šiaurinę dalį),
-              kelio 4728 AZ <b>0.1133 ha</b> (20 m už kelio juostos),
-              kultūros paveldo AZ <b>~0.02 ha</b> (kampas)</li>
-            <li><b>Statybai / logistikos veiklai lieka: ~3.80 ha</b> (75.6%)</li>
-            <li>AZ zonose pastatai draudžiami, bet keliai, dangos ir aikštelės — galimi su Ambergrid / kelio valdytojo derinimu</li>
-            <li><b>Caveat:</b> visa juosta patenka į dujotiekio vietovės klasės teritoriją (171) — tai ne draudimas, bet pastatų tankiui/atstumams taikomi projektavimo reikalavimai. 110 kV linija praeina už 47 m — jos AZ bloko nesiekia. Zonų ribos atkurtos pagal įstatymines AZ normas (SŽNS įst.) + OSM ašis, nes RC vektorių neteikia (401); ribinė paklaida ±2–3 m</li>
+            <li><b>Griežto draudimo zonos: 1.2106 ha (24.1%)</b> iš 5.0250 ha — raudonas štrichas:
+              dujotiekių AZ <b>1.0973 ha</b> (25 m abipus ašies, Minskas–Kaliningradas + GIPL, kerta šiaurinę dalį) +
+              kelio 4728 AZ <b>0.1133 ha</b> (20 m už kelio juostos)</li>
+            <li><b>Kultūros paveldo AZ (119): 0.8804 ha</b> — gintarinė zona NW dalyje (iš jų 0.5351 ha už dujotiekių AZ ribų).
+              Tai ne absoliutus draudimas — statybai reikia KPD derinimo</li>
+            <li><b>Visiškai be apribojimų: 3.2793 ha (65.3%)</b>; jei KPD pritaria paveldo zonoje — iki <b>3.8144 ha</b></li>
+            <li>Draudimo AZ pastatai negalimi, bet keliai, dangos ir aikštelės — galimi su Ambergrid / kelio valdytojo derinimu</li>
+            <li><b>Caveat:</b> visa juosta patenka į dujotiekio vietovės klasės teritoriją (171) — ne draudimas, bet pastatų
+              tankiui/atstumams taikomi projektavimo reikalavimai. 110 kV linija praeina už 47 m — jos AZ bloko nesiekia.
+              Dujotiekių/kelio zonos atkurtos pagal įstatymines normas + OSM ašis (RC vektorių neteikia, 401; paklaida ±2–3 m);
+              paveldo zona kartografuota 15 m identify tinkleliu (paklaida ±15 m)</li>
           </ul>
+        </details>
+        <details>
+          <summary>Ar galima įvaža per kelio AZ?</summary>
+          <ul>
+            <li><b>Taip</b> — kelio AZ draudžia pastatus, ne nuovažą. SŽNS įst. <b>19 str. 2 d.</b>: gavus kelio
+              valdytojo pritarimą AZ leidžiama statyti statinius/įrenginius ir vykdyti žemės darbus</li>
+            <li><b>19 str. 3 d.:</b> valdytojas gali nepritarti tik motyvuotai (trukdys kelio plėtrai, blogins
+              būklę, kels grėsmę eismo saugai) — ne savavališkai</li>
+            <li>Procesas: prašymas VĮ „Via Lietuva" → <b>prisijungimo sąlygos</b> (vieta, spinduliai, danga,
+              matomumo trikampiai) → nuovažos projektas → derinimas → įrengimas</li>
+            <li>Pliusas: 51.9 m frontas leidžia parinkti vietą; kelias ties bloku tiesus — matomumas geras.
+              Kelio 4728 rekonstrukcijos planų nėra (tikrinta 2026-06) — realios rizikos atsisakymui nematyti</li>
+          </ul>
+          <span class="src">Šaltinis: SŽNS įstatymas 19 str. (infolex.lt/ta/540499:str19)</span>
         </details>
       </div>
     </div>
@@ -167,11 +185,11 @@
     let azShapes = [];
 
     // No-build zones inside the merged block, derived offline
-    // (.firecrawl/restricted_zones.py): pipeline AZ 25 m from OSM axes
-    // (Minskas-Kaliningradas + GIPL), road-4728 AZ 20 m beyond road parcel,
-    // heritage AZ 119 digitized from the RC SZNS raster. RC blocks zone
-    // vectors (401), so this is a statutory-width reconstruction.
-    const RESTRICTED = {"outline":[[{"lat":54.791186,"lng":24.678998},{"lat":54.791156,"lng":24.679969},{"lat":54.790982,"lng":24.679702},{"lat":54.791009,"lng":24.678914},{"lat":54.791186,"lng":24.678998}],[{"lat":54.793843,"lng":24.680954},{"lat":54.79383,"lng":24.680952},{"lat":54.793845,"lng":24.680937},{"lat":54.793904,"lng":24.680419},{"lat":54.793907,"lng":24.680281},{"lat":54.79462,"lng":24.680617},{"lat":54.794291,"lng":24.682804},{"lat":54.793673,"lng":24.682452},{"lat":54.793843,"lng":24.680954}]],"hatch":[[{"lat":54.794554,"lng":24.680587},{"lat":54.79461,"lng":24.680685}],[{"lat":54.794417,"lng":24.680522},{"lat":54.794589,"lng":24.680825}],[{"lat":54.794279,"lng":24.680457},{"lat":54.794568,"lng":24.680965}],[{"lat":54.794142,"lng":24.680392},{"lat":54.794546,"lng":24.681106}],[{"lat":54.794005,"lng":24.680327},{"lat":54.794525,"lng":24.681246}],[{"lat":54.794553,"lng":24.681296},{"lat":54.794556,"lng":24.681301}],[{"lat":54.793906,"lng":24.68033},{"lat":54.794504,"lng":24.681386}],[{"lat":54.793896,"lng":24.680491},{"lat":54.794483,"lng":24.681527}],[{"lat":54.793879,"lng":24.680639},{"lat":54.794462,"lng":24.681667}],[{"lat":54.793862,"lng":24.680787},{"lat":54.794441,"lng":24.681808}],[{"lat":54.793846,"lng":24.680935},{"lat":54.79442,"lng":24.681948}],[{"lat":54.793688,"lng":24.680834},{"lat":54.793694,"lng":24.680846}],[{"lat":54.793707,"lng":24.680869},{"lat":54.793717,"lng":24.680886}],[{"lat":54.793829,"lng":24.681083},{"lat":54.794398,"lng":24.682088}],[{"lat":54.79355,"lng":24.680769},{"lat":54.793564,"lng":24.680794}],[{"lat":54.793575,"lng":24.680813},{"lat":54.793578,"lng":24.680819}],[{"lat":54.793812,"lng":24.681231},{"lat":54.794377,"lng":24.682229}],[{"lat":54.793402,"lng":24.680685},{"lat":54.793404,"lng":24.680688}],[{"lat":54.793413,"lng":24.680704},{"lat":54.793429,"lng":24.680732}],[{"lat":54.793795,"lng":24.681379},{"lat":54.794356,"lng":24.682369}],[{"lat":54.793262,"lng":24.680616},{"lat":54.793266,"lng":24.680623}],[{"lat":54.793286,"lng":24.680658},{"lat":54.793289,"lng":24.680664}],[{"lat":54.793778,"lng":24.681527},{"lat":54.794335,"lng":24.682509}],[{"lat":54.792859,"lng":24.680081},{"lat":54.792863,"lng":24.680089}],[{"lat":54.793148,"lng":24.680592},{"lat":54.79315,"lng":24.680596}],[{"lat":54.793762,"lng":24.681675},{"lat":54.794314,"lng":24.68265}],[{"lat":54.792835,"lng":24.680217},{"lat":54.792854,"lng":24.68025}],[{"lat":54.792996,"lng":24.680501},{"lat":54.793002,"lng":24.680512}],[{"lat":54.793745,"lng":24.681823},{"lat":54.794293,"lng":24.68279}],[{"lat":54.792834,"lng":24.680393},{"lat":54.792853,"lng":24.680427}],[{"lat":54.793728,"lng":24.681971},{"lat":54.794157,"lng":24.682727}],[{"lat":54.793711,"lng":24.682119},{"lat":54.794008,"lng":24.682643}],[{"lat":54.793694,"lng":24.682267},{"lat":54.793859,"lng":24.682558}],[{"lat":54.793677,"lng":24.682415},{"lat":54.793711,"lng":24.682474}],[{"lat":54.791119,"lng":24.678966},{"lat":54.791184,"lng":24.67908}],[{"lat":54.791008,"lng":24.678948},{"lat":54.791178,"lng":24.679248}],[{"lat":54.791002,"lng":24.679116},{"lat":54.791172,"lng":24.679415}],[{"lat":54.790997,"lng":24.679283},{"lat":54.791166,"lng":24.679583}],[{"lat":54.790991,"lng":24.679451},{"lat":54.791161,"lng":24.679751}],[{"lat":54.790985,"lng":24.679618},{"lat":54.791157,"lng":24.679921}]],"restricted_ha":1.225,"usable_ha":3.8,"total_ha":5.025};
+    // (.firecrawl/restricted_v2.py): hard ban = pipeline AZ 25 m (OSM axes,
+    // Minskas-Kaliningradas + GIPL) + road-4728 AZ 20 m beyond road parcel;
+    // heritage AZ 119 mapped via 15 m identify grid (RC blocks zone vectors,
+    // 401) - separate softer restriction (KPD approval, not absolute ban).
+    const RESTRICTED = {"hardOutline":[[{"lat":54.793904,"lng":24.680419},{"lat":54.793907,"lng":24.680281},{"lat":54.79462,"lng":24.680617},{"lat":54.794291,"lng":24.682804},{"lat":54.793673,"lng":24.682452},{"lat":54.793904,"lng":24.680419}],[{"lat":54.791186,"lng":24.678998},{"lat":54.791156,"lng":24.679969},{"lat":54.790982,"lng":24.679702},{"lat":54.791009,"lng":24.678914},{"lat":54.791186,"lng":24.678998}]],"hardHatch":[[{"lat":54.794554,"lng":24.680587},{"lat":54.79461,"lng":24.680685}],[{"lat":54.794417,"lng":24.680522},{"lat":54.794589,"lng":24.680825}],[{"lat":54.794279,"lng":24.680457},{"lat":54.794568,"lng":24.680965}],[{"lat":54.794142,"lng":24.680392},{"lat":54.794546,"lng":24.681106}],[{"lat":54.794005,"lng":24.680327},{"lat":54.794525,"lng":24.681246}],[{"lat":54.793906,"lng":24.68033},{"lat":54.794504,"lng":24.681386}],[{"lat":54.793896,"lng":24.680491},{"lat":54.794483,"lng":24.681527}],[{"lat":54.793879,"lng":24.680639},{"lat":54.794462,"lng":24.681667}],[{"lat":54.793862,"lng":24.680787},{"lat":54.794441,"lng":24.681808}],[{"lat":54.793846,"lng":24.680935},{"lat":54.79442,"lng":24.681948}],[{"lat":54.793829,"lng":24.681083},{"lat":54.794398,"lng":24.682088}],[{"lat":54.793812,"lng":24.681231},{"lat":54.794377,"lng":24.682229}],[{"lat":54.793795,"lng":24.681379},{"lat":54.794356,"lng":24.682369}],[{"lat":54.793778,"lng":24.681527},{"lat":54.794335,"lng":24.682509}],[{"lat":54.793762,"lng":24.681675},{"lat":54.794314,"lng":24.68265}],[{"lat":54.793745,"lng":24.681823},{"lat":54.794293,"lng":24.68279}],[{"lat":54.793728,"lng":24.681971},{"lat":54.794157,"lng":24.682727}],[{"lat":54.793711,"lng":24.682119},{"lat":54.794008,"lng":24.682643}],[{"lat":54.793694,"lng":24.682267},{"lat":54.793859,"lng":24.682558}],[{"lat":54.793677,"lng":24.682415},{"lat":54.793711,"lng":24.682474}],[{"lat":54.791119,"lng":24.678966},{"lat":54.791184,"lng":24.67908}],[{"lat":54.791008,"lng":24.678948},{"lat":54.791178,"lng":24.679248}],[{"lat":54.791002,"lng":24.679116},{"lat":54.791172,"lng":24.679415}],[{"lat":54.790997,"lng":24.679283},{"lat":54.791166,"lng":24.679583}],[{"lat":54.790991,"lng":24.679451},{"lat":54.791161,"lng":24.679751}],[{"lat":54.790985,"lng":24.679618},{"lat":54.791157,"lng":24.679921}]],"heritOutline":[[{"lat":54.793287,"lng":24.679989},{"lat":54.793304,"lng":24.680115},{"lat":54.793569,"lng":24.680122},{"lat":54.793826,"lng":24.680243},{"lat":54.793842,"lng":24.680358},{"lat":54.79408,"lng":24.680363},{"lat":54.794366,"lng":24.680498},{"lat":54.79438,"lng":24.6806},{"lat":54.794595,"lng":24.680606},{"lat":54.79475,"lng":24.680679},{"lat":54.79475,"lng":24.680721},{"lat":54.794679,"lng":24.681089},{"lat":54.794627,"lng":24.681098},{"lat":54.794612,"lng":24.681307},{"lat":54.794343,"lng":24.681303},{"lat":54.794315,"lng":24.681075},{"lat":54.793805,"lng":24.68106},{"lat":54.793785,"lng":24.680841},{"lat":54.793402,"lng":24.68082},{"lat":54.79337,"lng":24.68059},{"lat":54.792864,"lng":24.680578},{"lat":54.792868,"lng":24.679878},{"lat":54.79306,"lng":24.679882},{"lat":54.793287,"lng":24.679989}]],"hard_ha":1.2106,"herit_ha":0.8804,"herit_only_ha":0.5351,"usable_ha":3.2793,"usable_kpd_ha":3.8144,"total_ha":5.025};
 
     // ---- SŽNS raster overlay (RC special land-use conditions) ----
     // The RC cache is published in LKS94 (EPSG:3346), NOT Web Mercator, so a plain
@@ -388,16 +406,23 @@
         fillColor: '#FFFF00', fillOpacity: 0.10, zIndex: 3, map
       });
       // no-build AZ zones: outlined + hatched, toggle in legend
-      for (const ring of RESTRICTED.outline) {
+      for (const ring of RESTRICTED.hardOutline) {
         azShapes.push(new google.maps.Polygon({
           paths: ring, strokeColor: '#B71C1C', strokeWeight: 2,
           fillColor: '#FF0000', fillOpacity: 0.08, zIndex: 7, map
         }));
       }
-      for (const seg of RESTRICTED.hatch) {
+      for (const seg of RESTRICTED.hardHatch) {
         azShapes.push(new google.maps.Polyline({
           path: seg, strokeColor: '#D32F2F', strokeWeight: 1,
           strokeOpacity: 0.9, zIndex: 7, map
+        }));
+      }
+      // heritage AZ 119: softer restriction (KPD approval), amber, no hatch
+      for (const ring of RESTRICTED.heritOutline) {
+        azShapes.push(new google.maps.Polygon({
+          paths: ring, strokeColor: '#FF8F00', strokeWeight: 2,
+          fillColor: '#FFB300', fillOpacity: 0.13, zIndex: 6, map
         }));
       }
       const mergedLbl = new TextLabel(

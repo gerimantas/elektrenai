@@ -111,14 +111,19 @@ Neighbors of 0430 (RC open data): 0429 (NW twin strip, 423 m), 0431, 0050, 0023,
 
 Map shows hatched red no-build AZ zones inside the merged block (toggle in legend):
 
-- **Restricted: 1.2250 ha (24.4%)** of 5.0250 ha — pipeline AZ 1.0973 ha (25 m each side
-  of both Minskas–Kaliningradas and GIPL axes, crossing the north part), road-4728 AZ
-  0.1133 ha (20 m beyond road parcel), heritage AZ ~0.02 ha (corner)
-- **Usable for buildings/logistics: ~3.80 ha (75.6%)**
-- Method: RC blocks zone vectors (401) → zones reconstructed from statutory widths
-  (SŽNS law) + OSM axes; heritage 119 digitized from RC raster (yellow pixels).
-  Verified visually against RC raster corridor — pixel-aligned. Script:
-  `.firecrawl/restricted_zones.py`, data `.firecrawl/restricted.json`
+- **Hard ban: 1.2106 ha (24.1%)** of 5.0250 ha — pipeline AZ 1.0973 ha (25 m each side
+  of both Minskas–Kaliningradas and GIPL axes, crossing the north part) + road-4728 AZ
+  0.1133 ha (20 m beyond road parcel)
+- **Heritage AZ 119: 0.8804 ha** (NW part; 0.5351 ha beyond pipeline AZ) — softer:
+  construction needs KPD approval, not banned outright. NOTE: RC raster draws 119 as a
+  yellow BOUNDARY LINE only (first attempt misread it as 0.02 ha); true extent mapped
+  via 15 m identify point grid (±15 m)
+- **Fully unrestricted: 3.2793 ha (65.3%)**; up to 3.8144 ha if KPD approves in 119
+- Method: RC blocks zone vectors (401) → pipeline/road zones from statutory widths
+  (SŽNS law) + OSM axes, verified against RC raster corridor. Scripts:
+  `.firecrawl/restricted_v2.py` (zones), `.firecrawl/grid119.py` (heritage grid)
+- Tyrimas tab also documents entrance-through-road-AZ legality (SŽNS law art. 19(2):
+  allowed with road owner approval; art. 19(3): refusal must be motivated)
 - Caveats: whole strip is in pipeline location-class territory (171) — design
   constraints, not a ban; 110 kV line passes 47 m away (its AZ misses the block);
   in AZ paved yards/roads allowed with Ambergrid/road-owner approval
