@@ -86,8 +86,8 @@
 
     // styling per parcel: our / change / neighbor
     const STYLE = {
-      '7910/0001:0431': {stroke:'#FF0000', fill:'#FFFF00', op:0.30, z:5},
-      '7910/0001:0005': {stroke:'#0066FF', fill:'#00AAFF', op:0.35, z:4},
+      '7910/0001:0431': {stroke:'#FF0000', fill:'#FFFF00', op:0.30, z:5, w:2},
+      '7910/0001:0005': {stroke:'#0066FF', fill:'#00AAFF', op:0.35, z:4, w:2},
     };
     const NEIGHBOR = {stroke:'#FFEA00', fill:'#FFF176', op:0.12, z:2};
 
@@ -251,7 +251,7 @@
       for (const [kn, d] of Object.entries(DATA)) {
         const st = STYLE[kn] || NEIGHBOR;
         new google.maps.Polygon({
-          paths: d.path, strokeColor: st.stroke, strokeWeight: 3,
+          paths: d.path, strokeColor: st.stroke, strokeWeight: st.w || 1,
           fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
         });
         const lbl = new TextLabel(
