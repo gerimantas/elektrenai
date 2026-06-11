@@ -87,6 +87,21 @@ Togglable raster overlay of RC special land-use conditions, live on the map.
 - **Zones crossing plot 7910/0001:0431** (11 objects, 4 types): Magistralinių dujotiekių AZ (107, Ambergrid) ×6, dujotiekių vietovių klasės (171) ×3, Elektros tinklų AZ (106) ×1, **Kultūros paveldo objektų AZ (119) ×1 — new finding**.
 - Verified in-browser (Playwright): pixel-aligned at zoom 18 (pipeline corridor matches plot long axis).
 
+## Dashboard "Tyrimas" Tab (2026-06-11)
+
+Info panel has two tabs: **Legenda** (layers/SŽNS) and **Tyrimas** (research findings):
+purpose changes nearby, market prices, 0430 road-access analysis. Map shows the 16.8 m
+0430/road-4728 frontage as an orange polyline with a measurement label (visible z17+).
+
+**0430 access verdict:** 16.8 m frontage fits a 7 m two-way truck entrance (semitrailer
+R 12.5 m turning arcs extend into the road corridor — standard practice). 12×12 m turning
+pad must sit deeper in the plot (strip widens to ~30–40 m). Requires connection conditions
+from VĮ "Via Lietuva" (state regional road) + Ambergrid approval if pipeline AZ crosses
+the entrance. Adequate but minimal — ≥20 m is comfortable.
+
+Neighbors of 0430 (RC open data): 0429 (NW twin strip, 423 m), 0431, 0050, 0023,
+0031 (N tip), 7910/7001:0009 (road parcel 4728, pask 995).
+
 ## Files
 
 - `sklypas-google.html` — interactive map (our plot + neighbors + change plot, labels, collapsible info)

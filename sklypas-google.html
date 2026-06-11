@@ -20,6 +20,20 @@
     #info.collapsed h3 .chev { transform: rotate(-90deg); }
     #info.collapsed #infoBody { display: none; }
     #infoBody { margin-top: 8px; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 8px; border-bottom: 1px solid #ddd; }
+    .tabs button {
+      font-size: 12px; padding: 4px 10px; cursor: pointer; border: none;
+      background: none; border-bottom: 2px solid transparent; color: #555;
+    }
+    .tabs button.active { border-bottom-color: #1a73e8; color: #1a73e8; font-weight: 600; }
+    .tabPane { display: none; }
+    .tabPane.active { display: block; }
+    #tabTyrimas { max-height: 62vh; overflow-y: auto; padding-right: 4px; }
+    #tabTyrimas details { margin: 6px 0; }
+    #tabTyrimas summary { cursor: pointer; font-weight: 600; font-size: 12.5px; }
+    #tabTyrimas ul { margin: 4px 0; padding-left: 17px; }
+    #tabTyrimas li { margin: 3px 0; }
+    #tabTyrimas .src { color: #777; font-size: 11px; }
     .sw { display:inline-block; width:11px; height:11px; border-radius:2px; margin-right:4px; vertical-align:middle; }
     .btns { margin-top: 9px; }
     .btns button { font-size: 12px; padding: 4px 8px; margin: 0 6px 4px 0; cursor: pointer; }
@@ -50,6 +64,11 @@
       <span class="chev">▼</span> Elektrėnų sen. — sklypai
     </h3>
     <div id="infoBody">
+      <div class="tabs">
+        <button id="tabBtnLegenda" class="active" onclick="showTab('Legenda')">Legenda</button>
+        <button id="tabBtnTyrimas" onclick="showTab('Tyrimas')">Tyrimas</button>
+      </div>
+      <div id="tabLegenda" class="tabPane active">
       <span class="sw" style="background:#FFFF00;border:2px solid #FF0000"></span><b>7910/0001:0431</b> — mūsų (1.675 ha)<br>
       <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>7910/0001:0005</b> — paskirties keitimas (0.314 ha)<br>
       <span class="sw" style="background:#FFF176;border:2px solid #FFEA00"></span>kaimynai (7 vnt., besiribojantys)<br>
@@ -76,6 +95,37 @@
           </ul>
           <small>Spalvos – RC default. 107 ir 171 abu turkio (RC neskiria). Kitos žemėlapio linijos – gretimų sklypų zonos (ne mūsų).</small>
         </div>
+      </div>
+      </div>
+      <div id="tabTyrimas" class="tabPane">
+        <details open>
+          <summary>Paskirties keitimai apylinkėje</summary>
+          <ul>
+            <li><b>7910/0001:0005</b> (mėlynas, 0.31 ha, ~440 m SW) — ž.ū. → <b>pramonės/sandėliavimo</b> (nepavojingų prekių sandėlis). Paraiška 2026-05-27, viešinimas iki <b>2026-06-15</b>. <a href="https://planuojustatau.lt/sites/default/files/01.3-192.jpg" target="_blank">Dokumentas</a></li>
+            <li><b>7910/0008:0037</b> (Kakliniškės, Vakario g., 0.067 ha) — mėgėjų sodas → gyvenamoji</li>
+            <li><b>Precedentas:</b> Ausieniškės, Gėlių g. — 3 ha jau pramonės paskirties, parduodama už 130 000 €/ha</li>
+          </ul>
+        </details>
+        <details>
+          <summary>Rinkos kainos (2026-06)</summary>
+          <ul>
+            <li><b>RC vidutinė rinkos vertė (0431): 5 880 €</b> (2026-01-01; mokestinė, paprastai 2–4× žemiau rinkos)</li>
+            <li>Tipinė ž.ū. žemė Elektrėnų sav.: <b>8 000–18 000 €/ha</b> (skelbimai: Karkučiai 8.1k, Stančikai 9.3k, Kurkliškės 18.1k €/ha)</li>
+            <li>Anomalijos šalia: Kakliniškės prie A1 — 98 000 €/ha; Ausieniškės pramonės — 130 000 €/ha</li>
+            <li><b>0431 įvertis: ~13 000–30 000 €</b> (siaura juosta + dujotiekio AZ spaudžia į apatinę ribą)</li>
+          </ul>
+          <span class="src">Šaltiniai: registrucentras.lt/masvert, kampas.lt, alio.lt</span>
+        </details>
+        <details>
+          <summary>Įvaža iš kelio 4728 (per 0430)</summary>
+          <ul>
+            <li>0430 riba su keliu 4728: <b>16.8 m</b> (pietinis galas, paryškinta žemėlapyje)</li>
+            <li>Fura (16.5 m, posūkio R 12.5 m): telpa <b>dvipusė 7 m įvaža</b>; posūkio lankai — kelio juostoje (standartinė praktika)</li>
+            <li>Apsisukimo aikštelė 12×12 m — giliau sklype (juosta praplatėja iki ~30–40 m)</li>
+            <li>Būtina: <b>prisijungimo sąlygos</b> iš kelio valdytojo (VĮ „Via Lietuva", valstybinės reikšmės rajoninis kelias) + Ambergrid derinimas, jei dujotiekio AZ kerta įvažą</li>
+            <li><b>Vertinimas: pakanka, bet minimumas</b> — komfortui projektuojama ≥20 m</li>
+          </ul>
+        </details>
       </div>
     </div>
   </div>
@@ -303,7 +353,25 @@
         lbl.setMap(map);
         labels.push(lbl);
       }
+      // 0430 frontage on road 4728 (16.8 m) — highlighted with measurement label
+      const edge4728 = [{lat: 54.790991, lng: 24.679441}, {lat: 54.790982, lng: 24.679702}];
+      new google.maps.Polyline({
+        path: edge4728, strokeColor: '#FF6D00', strokeWeight: 4, zIndex: 6, map
+      });
+      const edgeLbl = new TextLabel(
+        new google.maps.LatLng(54.790925, 24.679572),
+        '16.8 m<br><small>riba su keliu 4728</small>',
+        {w: 0.002, h: 0.001}  // hides when zoomed out past usefulness
+      );
+      edgeLbl.setMap(map);
+      labels.push(edgeLbl);
       fitAll();
+    }
+    function showTab(name) {
+      for (const t of ['Legenda', 'Tyrimas']) {
+        document.getElementById('tab' + t).classList.toggle('active', t === name);
+        document.getElementById('tabBtn' + t).classList.toggle('active', t === name);
+      }
     }
     function setType(t) { map.setMapTypeId(t); }
     function fitAll() {
