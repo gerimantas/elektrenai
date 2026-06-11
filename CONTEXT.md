@@ -107,6 +107,12 @@ entrance. Comfortable margin — well above the ≥20 m comfort norm.
 Neighbors of 0430 (RC open data): 0429 (NW twin strip, 423 m), 0431, 0050, 0023,
 0031 (N tip), 7910/7001:0009 (road parcel 4728, pask 995).
 
+**Also mapped (2026-06-11):** 0428 (3.05 ha strip NW of 0429, yellow neighbor) and the
+industrial precedent **7910/0005:0094** (violet, "rodyti" button in legend) — Gėlių g. 14,
+Ausieniškių k., 3.00 ha, pask 995, next to A1 (27 m) near Vievis, listed at 130 k€/ha
+(kampas.lt id 1047812). Matched to RC parcel by area + purpose + adjacency to A1 and
+Gėlių g. (kampas pin itself lands on a road parcel ~1 km off).
+
 ## No-Build Zones in Merged Block (2026-06-11)
 
 Map shows hatched red no-build AZ zones inside the merged block (toggle in legend):
