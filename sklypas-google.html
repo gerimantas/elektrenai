@@ -71,7 +71,7 @@
         <button id="tabBtnTyrimas" onclick="showTab('Tyrimas')">Tyrimas</button>
       </div>
       <div id="tabLegenda" class="tabPane active">
-      <span class="sw" style="background:#FFFF00;border:2px solid #FF0000"></span><b>Apjungtas blokas 0429+0430+0431</b> — 5.0250 ha; be apribojimų (neskaitant kelio AZ) — <b>3.39 ha</b><br>
+      <span class="sw" style="background:#FFFF00;border:2px dashed #FF0000"></span><b>Apjungtas blokas 0429+0430+0431</b> — 5.0250 ha; be apribojimų (neskaitant kelio AZ) — <b>3.39 ha</b><br>
       <span class="sw" style="background:#FFF176;border:2px solid #FFFF00"></span>šeimos sklypai <b>0428–0431</b> — ryški geltona, su vardu/Nr./plotu<br>
       <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span>kiti sklypai (Rimi 0922, kaimynai, precedentas) — neon žalia<br>
       <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>7910/0001:0005</b> — paskirties keitimas (0.314 ha)<br>
@@ -502,8 +502,17 @@
       labels.push(precLbl);
       // merged block outline (red) + total-area label, offset south of strip labels
       new google.maps.Polygon({
-        paths: MERGED.path, strokeColor: '#FF0000', strokeWeight: 2,
+        paths: MERGED.path, strokeOpacity: 0,
         fillColor: '#FFFF00', fillOpacity: 0.08, zIndex: 12, map
+      });
+      // dashed red outline (Polygon has no dash support -> Polyline + icons)
+      new google.maps.Polyline({
+        path: MERGED.path, strokeOpacity: 0, zIndex: 12, map,
+        icons: [{
+          icon: {path: 'M 0,-1 0,1', strokeOpacity: 1, strokeColor: '#FF0000',
+                 strokeWeight: 2, scale: 3},
+          offset: '0', repeat: '12px'
+        }]
       });
       // no-build AZ zones: outlined + hatched, toggle in legend
       for (const ring of RESTRICTED.hardOutline) {
