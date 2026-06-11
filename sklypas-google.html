@@ -86,8 +86,8 @@
 
     // styling per parcel: our / change / neighbor
     const STYLE = {
-      '7910/0001:0431': {stroke:'#FF0000', fill:'#FFFF00', op:0.30, z:5, w:2},
-      '7910/0001:0005': {stroke:'#0066FF', fill:'#00AAFF', op:0.35, z:4, w:2},
+      '7910/0001:0431': {stroke:'#FF0000', fill:'#FFFF00', op:0.30, z:5},
+      '7910/0001:0005': {stroke:'#0066FF', fill:'#00AAFF', op:0, z:4},
     };
     const NEIGHBOR = {stroke:'#FFEA00', fill:'#FFF176', op:0.12, z:2};
 
@@ -222,7 +222,9 @@
     function defineTextLabel() {
       // defined inside initMap so google.maps is loaded
       TextLabel = class extends google.maps.OverlayView {
-        constructor(pos, html) { super(); this.pos = pos; this.html = html; }
+        constructor(pos, html, bounds) {
+          super(); this.pos = pos; this.html = html; this.bounds = bounds;
+        }
         onAdd() {
           this.div = document.createElement('div');
           this.div.className = 'plabel';
@@ -230,6 +232,9 @@
           this.div.innerHTML = this.html;
           // overlayLayer moves with the map (floatPane is screen-fixed -> wrong)
           this.getPanes().overlayLayer.appendChild(this.div);
+          // natural size at base font (white-space: nowrap keeps it stable)
+          this.nw = this.div.offsetWidth;
+          this.nh = this.div.offsetHeight;
         }
         draw() {
           const proj = this.getProjection();
@@ -237,9 +242,22 @@
           const p = proj.fromLatLngToDivPixel(this.pos);
           this.div.style.left = p.x + 'px';
           this.div.style.top = p.y + 'px';
+          // shrink label to fit the parcel's on-screen extent
+          if (this.bounds && this.nw) {
+            const sw = proj.fromLatLngToDivPixel(this.bounds.getSouthWest());
+            const ne = proj.fromLatLngToDivPixel(this.bounds.getNorthEast());
+            const pw = Math.abs(ne.x - sw.x), ph = Math.abs(sw.y - ne.y);
+            const s = Math.min(1, pw * 0.9 / this.nw, ph * 0.9 / this.nh);
+            this.div.style.transform = `translate(-50%, -50%) scale(${s})`;
+            this.div.style.display = (this.hidden || s < 0.35) ? 'none' : '';
+          }
         }
         onRemove() { if (this.div) { this.div.remove(); this.div = null; } }
-        setVisible(v) { if (this.div) this.div.style.display = v ? '' : 'none'; }
+        setVisible(v) {
+          this.hidden = !v;
+          if (this.div) this.div.style.display = v ? '' : 'none';
+          if (v) this.draw(); // re-apply fit-based hiding
+        }
       };
     }
 
@@ -251,12 +269,15 @@
       for (const [kn, d] of Object.entries(DATA)) {
         const st = STYLE[kn] || NEIGHBOR;
         new google.maps.Polygon({
-          paths: d.path, strokeColor: st.stroke, strokeWeight: st.w || 1,
+          paths: d.path, strokeColor: st.stroke, strokeWeight: 1,
           fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
         });
+        const pb = new google.maps.LatLngBounds();
+        d.path.forEach(pt => pb.extend(pt));
         const lbl = new TextLabel(
           new google.maps.LatLng(d.center.lat, d.center.lng),
-          `${kn}<br><small>${d.plotas} ha</small>`  // full cadastral nr
+          `${kn}<br><small>${d.plotas} ha</small>`,  // full cadastral nr
+          pb
         );
         lbl.setMap(map);
         labels.push(lbl);
