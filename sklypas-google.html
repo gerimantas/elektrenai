@@ -43,6 +43,8 @@
       transform: translate(-50%, -50%); pointer-events: none; text-align:center;
     }
     .plabel small { font-weight: 400; font-size: 10px; }
+    .plabel .pname { color: #FFE082; font-size: 12px; letter-spacing: .3px; }
+    body.names-off .pname { display: none; }
     .szns { margin-top: 9px; padding-top: 8px; border-top: 1px solid #ddd; }
     .sznsToggle { font-size: 12.5px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 5px; }
     .sznsLegend { display: none; margin-top: 6px; font-size: 11.5px; color: #333; }
@@ -85,6 +87,7 @@
         <button onclick="setType('roadmap')">Roadmap</button>
         <button onclick="fitAll()">Centruoti</button>
         <button onclick="toggleLabels()">Label on/off</button>
+        <button onclick="toggleNames()">Vardai on/off</button>
       </div>
       <div class="szns">
         <label class="sznsToggle">
@@ -216,6 +219,13 @@
       center: {lat: 54.792967, lng: 24.680847}, plotas: '5.0250'
     };
 
+    // owner first names per parcel, toggled with the "Vardai" button
+    const NAMES = {
+      '7910/0001:0428': 'Virginija',
+      '7910/0001:0429': 'Audra',
+      '7910/0001:0430': 'Viktorija',
+      '7910/0001:0431': 'Aušra ir Gr',
+    };
     let map, labels = [], labelsOn = true, TextLabel;
     let sznsOverlay = null;
     let azShapes = [];
@@ -448,9 +458,10 @@
           fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
         });
         const fit = fitLabelPoint(d.path, d.center);
+        const nm = NAMES[kn] ? `<span class="pname">${NAMES[kn]}<br></span>` : '';
         const lbl = new TextLabel(
           new google.maps.LatLng(fit.pos.lat, fit.pos.lng),
-          `${kn}<br><small>${d.plotas} ha</small>`,  // full cadastral nr
+          `${nm}${kn}<br><small>${d.plotas} ha</small>`,  // full cadastral nr
           fit.span
         );
         lbl.setMap(map);
@@ -567,6 +578,19 @@
     function toggleLabels() {
       labelsOn = !labelsOn;
       labels.forEach(l => l.setVisible(labelsOn));
+    }
+    function toggleNames() {
+      document.body.classList.toggle('names-off');
+      // label boxes changed size — re-measure and re-fit each one
+      labels.forEach(l => {
+        if (!l.div) return;
+        const was = l.div.style.display;
+        l.div.style.display = '';
+        l.nw = l.div.offsetWidth;
+        l.nh = l.div.offsetHeight;
+        l.div.style.display = was;
+        l.draw();
+      });
     }
     window.initMap = initMap;
 
