@@ -39,13 +39,53 @@ All purpose type 610. None has a purpose change.
   public review until 2026-06-15. Doc: planuojustatau.lt/sites/default/files/01.3-192.jpg
 - Also seen: 7910/0008:0037 (Kakliniškių k., Vakario g.) — hobby garden → residential, 0.0669 ha.
 
+## Market Value (researched 2026-06-11)
+
+**Official RC mass valuation (our plot 4400-1563-8352): 5 880 €** (valuation date 2026-01-01) ≈ 3 510 €/ha.
+Source: registrucentras.lt/masvert/paieska-obj (public, queried by unique number; POST with CSRF token).
+Mass valuation is fiscal — typically 2–4× below real market.
+
+**Listing market, agricultural plots in Elektrėnų sav.** (kampas.lt + alio.lt, 2026-06; aruodas.lt blocks bots):
+
+| Location | Area | Price | €/ha |
+|---|---|---|---|
+| Karkučių k. | 4.82 ha | 39 000 € | 8 084 |
+| Stančikų k. | 2.68 ha | 25 000 € | 9 328 |
+| Žuvyčių k. (mixed) | 7.99 ha | 80 000 € | 10 013 |
+| Kurkliškių k. | 2.65 ha | 48 000 € | 18 144 |
+| Semeliškių k. (pond) | 16.34 ha | 299 900 € | 18 357 |
+| Semeliškės (kaimo plėtra) | 1.65 ha | 69 500 € | 42 121 |
+
+Typical agri land in the municipality: **~8 000–18 000 €/ha**.
+
+**Local anomalies (near our plot):**
+- Kakliniškės, 3.05 ha agri next to A1: 299 000 € (98 000 €/ha) — speculative, highway adjacency
+- **Ausieniškės, Gėlių g., 3 ha INDUSTRIAL: 390 000 € (130 000 €/ha)** — same village as our plot; confirms industrial trend (plus 0005 purpose change 443 m away)
+
+**Our plot estimate (1.675 ha, agri):**
+- As agricultural land now: **~13 000–30 000 €** (8–18 k€/ha; narrow strip + gas pipeline AZ push toward lower end)
+- RC fiscal value 5 880 € = floor
+- Speculative upside: if Ausieniškės industrial zone spreads, purpose change could lift toward 100–130 k€/ha — but pipeline AZ limits buildable area, Ambergrid approval needed
+
+Raw data: `.firecrawl/kampas-sklypai.md`, `.firecrawl/alio-sklypai.md`, `.firecrawl/rc-masvert-result.html`.
+
 ## Geometry Verification (vs official RC map)
 
 Compared our polygon to RC PDF map (geoportal.lt, M 1:2000, 2026-06-03):
 - Boundaries/shape: ✅ identical (same RC source)
 - Area from our coords (shoelace) = 1.6750 ha = RC declared → **0.00% diff**
 - Proportions correct in Google Maps (Web Mercator, conformal, <0.1% distortion at this scale; tilt=0 enforced)
-- **Difference:** RC map shows SŽNS layers (protection zones: pipeline/road/utility hatching crossing the plot) — NOT yet on our map. Geometry is exact; only the restrictions overlay is missing.
+- **Difference:** RC map shows SŽNS layers — now ADDED as a togglable raster overlay (see below).
+
+## SŽNS Overlay (DONE 2026-06-11)
+
+Togglable raster overlay of RC special land-use conditions, live on the map.
+
+- **Source:** geoportal.lt `rc_szns/MapServer` cache. Published in **LKS94 (EPSG:3346)**, not Web Mercator → can't use a plain Google ImageMapType.
+- **Method:** custom `OverlayView` + **proj4** (CDN). Fetches native LKS94 cache tiles, positions each by projecting its corners LKS94→WGS84. LOD auto-picked per Google zoom (9–12; zoom 18 → finest 0.26 m/px). Empty tiles 404 → hidden.
+- **API limit:** `returnGeometry=true` is **401 (blocked)** — RC won't serve SŽNS polygons (GDPR/cache protection, same as owner names). So vector zones are impossible; raster tiles are the only way to show real boundaries. Attributes (which zones cross) DO work via `identify` with `returnGeometry=false`.
+- **Zones crossing plot 7910/0001:0431** (11 objects, 4 types): Magistralinių dujotiekių AZ (107, Ambergrid) ×6, dujotiekių vietovių klasės (171) ×3, Elektros tinklų AZ (106) ×1, **Kultūros paveldo objektų AZ (119) ×1 — new finding**.
+- Verified in-browser (Playwright): pixel-aligned at zoom 18 (pipeline corridor matches plot long axis).
 
 ## Files
 
@@ -92,6 +132,5 @@ Full log: `wiki/elektrenai/geoportal-lt-api-research.md`. Summary:
 
 ## Next Session Tasks (optional)
 
-1. Add SŽNS (special land-use conditions) overlay — geoportal has a public SŽNS mapproxy layer; show protection zones crossing the plot
-2. Optionally show plot 7910/0008:0037 too
-3. Update Obsidian wiki: mark data.gov.lt method as ✅ WORKS in geoportal-lt-api-research.md
+1. Optionally show plot 7910/0008:0037 too
+2. Update Obsidian wiki: mark data.gov.lt method as ✅ WORKS in geoportal-lt-api-research.md
