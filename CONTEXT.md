@@ -5,7 +5,10 @@ Research and document land plot Nr. 4400-1563-8352 (cadastral 7910/0001:0431) in
 
 ## Status
 
-✅ **DONE** — exact boundaries from RC open data, verified against official RC map (0.00% area diff). Interactive map deployed to GitHub Pages with our plot + 6 neighbors + a purpose-change plot.
+✅ **DONE** — exact boundaries from RC open data, verified against official RC map (0.00% area diff).
+Interactive dashboard on GitHub Pages: family strips 0428–0432 + neighbors + Rimi 0922 + precedent
+0094 + 0005; SŽNS raster overlay; reconstructed no-build AZ zones with usable-area math; Tyrimas tab
+(purpose changes, market prices, access analysis, AZ numbers); owner-name toggle.
 
 **Live:** https://gerimantas.github.io/elektrenai/
 
@@ -188,7 +191,26 @@ Full log: `wiki/elektrenai/geoportal-lt-api-research.md`. Summary:
 - registrucentras.lt/ntr is React SPA, no public JSON
 - Old bbox in docs (lon 24.840–24.917) pointed to Kazokiškės — wrong area
 
+## Session 2026-06-11 — Map/UI State
+
+- **Visual scheme:** family strips 0428–0431 bright yellow 2px (FAMILY style) with owner
+  first names (Virginija/Audra/Viktorija/Aušra ir Gr, "Vardai on/off" button); all other
+  parcels neon green (#39FF14); 0005 blue; merged 0429+0430+0431 block — DASHED red
+  outline (Polyline + dash icons, polygons can't dash) with 5.0250 ha label.
+  Boundary lines sit above AZ layers (parcels z10–11, merged z12, frontage z13; AZ z6–7).
+- **Parcels on map:** family 0428–0431, 0432 (fifth twin strip between 0428 and Rimi),
+  6 original neighbors, Rimi 0922 (teal→neon), precedent 0094 (pan button), 0005.
+- **Labels:** auto-fit via chord spans, anchored at chord midpoints (fitLabelPoint) —
+  raw centroids overflow on bent strips like 0431. Hide below 0.35 scale.
+- **Legend numbers fixed (was misleading):** single canonical figure — block 5.0250 ha,
+  free for building 3.39 ha (excl. road AZ); zone overlap 0.3453 ha stated in Tyrimas
+  (5.0250 − 1.2106 hard − 0.5351 heritage-beyond = 3.2793 fully free).
+- **Scheduled check:** cloud routine `trig_01Ftvqqm6k7iXRSicMjH53Pv` fires 2026-06-16
+  09:00 Vilnius — checks whether 0005 purpose change was approved (publicity ended
+  2026-06-15). Results: https://claude.ai/code/routines/trig_01Ftvqqm6k7iXRSicMjH53Pv
+
 ## Next Session Tasks (optional)
 
 1. Optionally show plot 7910/0008:0037 too
-2. Update Obsidian wiki: mark data.gov.lt method as ✅ WORKS in geoportal-lt-api-research.md
+2. Check 0005 purpose-change outcome after 2026-06-16 (cloud routine reports it)
+3. Possibly identify heritage object behind AZ 119 (KVR registry) — RC layer gives no name
