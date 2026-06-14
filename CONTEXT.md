@@ -498,12 +498,25 @@ Dokumentas: `Elektrėnų savivaldybės teritorijos bendrasis planas iki 2016 met
 
 ---
 
+## Sesija 2026-06-15
+
+**01.3-201 + 01.3-205 perskaityti (OCR):**
+- 01.3-201: V. Kietaviškių k. (4936/0002:732), agri → gyvenamoji — nereikšmingas
+- 01.3-205: Vievis, daugiabutis → dvibučiai (kita→kita) — nereikšmingas
+- Visi 16 dokumentų perskaityti ir sukatalogizuoti
+
+**dashboard-v1 plano klaidos pataisytos:**
+- `strokeDashArray` → `icons` pattern
+- `focusMarker` → `markerById{}` map
+- `toggleNames` komentaras
+- `zilviciu` koordinatės offset nuo `bauboniai`
+- "14 prašymų" → "16 prašymų"
+
 ## Next Session Tasks
 
-1. **Skelbimų markers žemėlapyje** — `sklypas-google.html`: 21 objektas iš master sąrašo → markers su popup (kaina, €/ha, paskirtis, web link). Naudoti `wiki/elektrenai/sklypai-master-sarasas.md` kaip šaltinį.
-2. **0005 paskirties keitimo rezultatas** — scheduled check 2026-06-16 09:00; po to atnaujinti master sąrašą
+1. **Skelbimų markers žemėlapyje** — implementuoti `dashboard-v1.html` pagal `docs/superpowers/plans/2026-06-14-dashboard-v1.md` (planas pataisytas, paruoštas vykdymui)
+2. **0005 paskirties keitimo rezultatas** — scheduled check 2026-06-16 09:00; po to atnaujinti master sąrašą ir dashboard
 3. **Aruodas retry** — Sabališkės + Vievis + radius 5km (rate-limited 2026-06-14)
-4. **Brainstorm** — remiantis master sąrašu + naujais radiniais: investicinis potencialas, pirkimo/pardavimo scenarijai
-5. **Geocode tikslumas** — Ausieniškių 1.1–1.6 tikslios koordinatės (aruodas skelbimų puslapiai)
-6. ~~**01.3-201, 01.3-205**~~ — perskaityti 2026-06-14. Abu gyvenamoji, ne Ausieniškių zona — nereikšmingi.
-7. **BPD 2025 žemėlapis** — Google Drive (elektrenai.lt): `1_Pagrindinis brėžinys.jpg` 130 MB — parsisiųsti ir patikrinti mūsų bloko zoną vizualiai (reikia žmogaus su naršykle)
+4. **Geocode tikslumas** — Ausieniškių 1.1–1.6 tikslios koordinatės (aruodas skelbimų puslapiai)
+5. ~~**01.3-201, 01.3-205**~~ — ✅ perskaityti 2026-06-15. Nereikšmingi.
+6. **BPD 2025 žemėlapis** — Google Drive (elektrenai.lt): `1_Pagrindinis brėžinys.jpg` 130 MB — parsisiųsti ir patikrinti mūsų bloko zoną vizualiai (reikia žmogaus su naršykle)
