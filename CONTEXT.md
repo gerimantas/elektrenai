@@ -72,6 +72,18 @@ Typical agri land in the municipality: **~8 000–18 000 €/ha**.
 
 Raw data: `.firecrawl/kampas-sklypai.md`, `.firecrawl/alio-sklypai.md`, `.firecrawl/rc-masvert-result.html`.
 
+**REAL transaction values (RC 2026 mass-valuation report, researched 2026-06-12):**
+our value zone is **8.16** ("between A1 and railway, intensively urbanizing").
+Real RC values: agri ~6 200 €/ha, residential 366 €/a, commercial 596 €/a,
+industrial ~350 €/a (modeled, few transactions). Municipality agri trend
+5 281→5 562 €/ha (+5.3 %/yr to 2025-07). Listing asks vs real: industrial ×3–4,
+residential ×2–2.4, Kakliniškės agri ×16 (speculation premium); the 74.4 a
+commercial ask = real value. Family block as agri at real prices ≈ 31 k€.
+Full table: vault `wiki/elektrenai/rinkos-skenas-4728-apylinke.md`. Raw docs:
+`.firecrawl/rc-aprasomoji_dalis_1191.pdf` (+models/maps), method packaged in
+lt-parcels `scripts/rc_valuation_docs.py`. Aruodas (headed Playwright pralaužta
+2026-06-12) found 4 extra Ausieniškės listings — see vault note.
+
 ## Geometry Verification (vs official RC map)
 
 Compared our polygon to RC PDF map (geoportal.lt, M 1:2000, 2026-06-03):
@@ -224,3 +236,271 @@ Full log: `wiki/elektrenai/geoportal-lt-api-research.md`. Summary:
 1. Optionally show plot 7910/0008:0037 too
 2. Check 0005 purpose-change outcome after 2026-06-16 (cloud routine reports it)
 3. Possibly identify heritage object behind AZ 119 (KVR registry) — RC layer gives no name
+4. **Continue market scan near road 4728** — vault `wiki/elektrenai/rinkos-skenas-4728-apylinke.md`
+   Sesija 2026-06-13 papildė 3 naujais faktais (6, 7 + 1 fakto lentelė):
+   - Nauji skelbimai: Gėlių g. 34A (alio ID68730617, 1.03ha sandėliavimo, 65k€), Sabališkių k. 16a agri 14k€
+   - Pakalniškių k. 92a agri 5.5k€ = referensinė reali kaina (~RC lygio)
+   - remax/ober-haus/capital — nieko apylinkėje (patvirtinta)
+   - Sabališkių 16a lokalizacija RC duomenyse nepavyko (nėra kaimo lauko, 49 kandidatai)
+   TODO: aruodas retry Sabališkės+Vievis+Kakliniškės (rate-limited); radius search 5km;
+   0005 check po 2026-06-16; brokerio skambutis dėl kadastro Nr.
+
+## Sesija 2026-06-14 — Scraping Pipeline + Geocoding
+
+**Sukurti skriptai (`lt-parcels/scripts/`):**
+- `radius_villages.py` — RC ZIP → seniunijos per X km nuo sklypo → aruodas slugai
+- `market_scan.py` — headed Playwright → struktūruotas JSON (price/area/purpose/url). Turi HTML debug dump kai blocked.
+- `geocode_listings.py` — Google Geocoding API (pirmas) + Nominatim fallback + RC paskirtis kodas + atstumas nuo ref. sklypo
+- `market_report.py` — grupavimas pagal paskirtį, markdown lentelė
+
+**Pipeline naudojimas (atnaujinta):**
+```bash
+# 1. Gauti kaimų slugus
+python radius_villages.py 7910/0001:0431 --sav 42 --radius 8 --aruodas-slugs
+
+# 2. Scan (headed Chrome su CDP cookie export — žr. žemiau)
+python scripts/geocode_listings.py market_raw.json 7910/0001:0431 --sav 42 \
+  --out market_geo.json --google-key $GEOCODING_API_KEY \
+  --cache .lt-parcels-cache
+
+# 3. Report
+python market_report.py market_geo.json --max-km 8 --out market_report.md
+```
+
+**aruodas.lt scraping — CDP cookie metodas (2026-06-14 išspręsta):**
+- DataDome blokuoja namų/hotspot IP automatiškai (`rt:'c'`)
+- Chrome v127+ naudoja App-Bound Encryption — cookies nedekoduojami be admin
+- **Sprendimas:** paleisti Chrome su `--remote-debugging-port=9222`, prisijungti rankiniu būdu prie aruodas.lt, tada:
+  ```
+  # Eksportuoti cookies per CDP
+  python .lt-parcels-cache/get_cookies_existing.py  → aruodas_cookies.json
+  # Scan su injected cookies
+  python .lt-parcels-cache/scan_with_cookies.py
+  ```
+- Parser'is: kiekvienas listing'as = `sav/k.` → `gatvė` → `kaina €` → `€/a` → `plotas` → `paskirtis` (po `\xa0` normalizacijos)
+- Sukurti pagalbiniai skriptai: `get_cookies_cdp.py`, `get_cookies_existing.py`, `scan_with_cookies.py`, `parse_aruodas.py`
+
+**Geocoding — Google API (2026-06-14):**
+- Nominatim nežino LT kaimų genityvais (`Kakliniškių k.` → no results)
+- Google Geocoding API su `.env` `GEOCODING_API_KEY` (be referrer restriction, atskiras key) → veikia
+- 134/134 geocoded via Google; metodas `google` arba `google_village`
+
+**Rinkos scan rezultatai (2026-06-14, 8 km spindulys):**
+- **6 seniunijos:** elektrenuose, giluciai, kietaviskese, vievyje, pastrevyje, kazokiskese
+- **134 skelbimai** iš viso; **20 per 8 km** nuo 0431
+- Raw: `.firecrawl/market_raw.json`, geocoded: `.firecrawl/market_geo.json`, report: `.firecrawl/market_report.md`
+
+**Rinkos suvestinė (8 km, 20 skelbimų):**
+| Paskirtis | Kiekis | Mediana €/ha |
+|---|---|---|
+| Agricultural | 5 | ~11 429 |
+| Industrial/Storage | 1 | 197 917 |
+| Residential | 10 | 345 070 |
+| Garden/Recreation | 2 | 456 237 |
+
+Artimiausias agri: 1.8 km (Žebertonių k., 2.1 ha, 24k€, 11 429 €/ha)
+
+**Kitas žingsnis:** skelbimų markers ant žemėlapio (`sklypas-google.html`) — paspaudus popup su info + link.
+5. **tpdris.planuojustatau.lt scanned (2026-06-13):** 65 docs Elektrėnų sav. Key findings:
+   S-VT-42-25-302 (7910/0001:889 Žebertoniai, kaimo plėtra, vykstantis);
+   K-VT-42-26-8 (A1 koridoriaus komercinė zona Elektrėnų m., baigiamasis etapas 2026-06-12);
+   K-RJ-42-20-416 (sav. bendrojo plano keitimas, pradėtas 2026-06-12). 0005 reg. 01.3-192
+   TPDRIS nerodo — bus TPDR sistemoje po patvirtinimo (tikrinti po 2026-06-16).
+
+## Sesija 2026-06-14 (II) — Duomenų analizė + Vault dokumentacija
+
+**Duomenų kokybės audit (market_geo.json):**
+- 134 įrašai = **45 unikalių** (×3 duplikacija iš aruodas paginacijos)
+- Iš 45 — **15 unikalių ≤8 km** (ne 20 kaip report.md rodė)
+- **30 įrašų >8 km** — kitos savivaldybės (Vilnius, Trakai, Kaunas, Klaipėda) — scraperio artefaktas
+- Ausieniškių koridoriaus 6 pramoniniai skelbimai pipeline **nepateko** — scrapeinti atskirai per playwright
+
+**Sukurti vault dokumentai:**
+- `wiki/elektrenai/rinkos-skenas-4728-apylinke.md` — papildyta 8 faktu (sintetinė analizė) + šaltinių nuorodos (web URL + lokalūs failai) prie kiekvieno fakto
+- `wiki/elektrenai/sklypai-master-sarasas.md` — **NAUJAS**: kanonininis 21 objekto sąrašas su geolokacija (WGS84+LKS94), šaltiniais, web linkais; pagrindas tolimesniam brainstorm
+
+**Master sąrašo struktūra (21 objektas):**
+- 6 Ausieniškių koridoriaus skelbimai (0–1 km, playwright scraped)
+- 2 RC objektai (Rimi 0922, paskirties keitimas 0005)
+- 1 Sabališkių 16a (elektrenuvaldos.lt)
+- 2 Kakliniškių skelbimai (kampas/aruodas)
+- 13 radius pipeline unikalūs ≤8 km (market_geo.json, Google geocoded)
+- RC realios sandorių kainos (zona 8.16 referensas)
+
+**Geocodavimo problemos:**
+- 5.10–5.12 grupė: shared geocode `54.765393, 24.774058` (Kakliniškės village centroid)
+- Ausieniškių 1.1–1.6: village-level tik (~54.793, 24.680)
+- Sabališkių 16a: koordinatės nežinomos (49 RC kandidatai, tikslus kad. Nr. tik per brokerį)
+
+## Sesija 2026-06-14 (III) — Paskirties keitimo prašymų skenavimas
+
+**Metodas:** `planuojustatau.lt/sites/default/files/01.3-NNN.jpg` — Elektrėnų sav. mero gaunamų
+prašymų katalogas. Nuskaityti nr. 100–280, rasta 16 dokumentų. Visi perskaityti OCR.
+Skriptas: `.firecrawl/scan_elektrenu_docs.py`, vaizdai: `.firecrawl/elektrenu-docs/`.
+
+**Visi 2026 paskirties keitimo prašymai Elektrėnų sav. (16 dok.):**
+
+| Nr. | Data | Kadastras | Vieta | Keitimas |
+|---|---|---|---|---|
+| 01.3-106 | 2026-04-13 | 7910/0004:230 | Vidugirių k., Vievio sen. | Agri → **Pramonė/sandėliavimas** |
+| 01.3-126 | 2026-04-20 | 4936/0001:427 | Kloninių Mijaugonių k. | Agri → Gyvenamoji |
+| 01.3-132 | 2026-04-21 | 7957/0004:35 | Katiliškių k., Pastrėvio sen. | Agri → Gyvenamoji |
+| 01.3-141 | 2026-04-24 | 7914/0005:72 | Balceriškių k., Vievio sen. | Agri → Rekreacija |
+| 01.3-150 | 2026-04-29 | 7957/0001:0510 | — | Agri → Gyvenamoji |
+| 01.3-151 | 2026-04-29 | **7910/0007:619+571** | **Ausieniškių k.** | Agri → **Gyvenamoji** |
+| 01.3-152 | 2026-04-29 | 4910/0002:242 | Gilučių k. | Agri → Gyvenamoji |
+| 01.3-170 | 2026-05-11 | **7910/0008:37** | **Ausieniškių k.** | Agri → **Gyvenamoji** |
+| 01.3-183 | 2026-05-21 | 7914/0001:162 | Lazūnų k. | Pram. → Komercinė |
+| 01.3-188 | 2026-05-25 | 7910/0006:667 | Pakalniškių k. | Agri → Gyvenamoji |
+| 01.3-189 | 2026-05-25 | 7910/0005:707 | Pakalniškių k. | Agri → Gyvenamoji |
+| **01.3-192** | **2026-05-27** | **7910/0001:5** | **Sabališkių k.** | Agri → **Pramonė/sandėliavimas** |
+| 01.3-194 | 2026-05-27 | 7914/0001:343 | Lazūnų k. | Agri → Kita |
+| 01.3-195 | 2026-05-27 | 7914/0001:342 | Lazūnų k. | Agri → Kita |
+
+**Svarbiausi radiniai:**
+- **01.3-151 + 01.3-170**: du gyvenamosios paskirties prašymai **Ausieniškių k.** (7910/0007 blokas) — tas pats kaimas kaip šeimos blokas
+- **01.3-192** (mūsų žinomas): pramonė 443 m nuo bloko
+- **01.3-106**: pramonė Vidugiriuose (Vievio sen.) — tas pats bangos modelis
+- Iš viso 2 pramoniniai + 1 rekreacinis + daugelis gyvenamųjų = aktyvus urbanizacijos frontas
+
+**Derybinė reikšmė:** pirkėjas siūlė 10k€/ha agri kaina — bet apylinkėje 2026 jau 14 paskirties keitimo prašymų vien per 2 mėn. Tai sisteminis, ne pavienio sklypo, reiškinys.
+
+## Sesija 2026-06-14 (IV) — Brainstorm: derybinė analizė
+
+**Kontekstas:** anoniminis pirkėjas siūlo 10k€/ha, skuba, nesiskleidžia.
+
+### Kainų kalibravimas
+
+| Referensas | €/ha | Šaltinis |
+|---|---|---|
+| RC fiskalinė vertė (mūsų blokas) | 3 510 | masvert.lt 2026-01-01 |
+| RC reali sandorių kaina (zona 8.16) | 6 200 | RC masinis vertinimas 2025-07 |
+| Bauboniai 3.4 ha agri (6.7 km) | 5 882 | artimiausias RC lygio asking |
+| **Pirkėjas siūlo** | **10 000** | — |
+| Žebertoniai 2.1 ha agri (1.8 km) | 11 429 | artimiausias agri asking |
+| Varžytynių startas (8 km SW) | 14 170 | be spekuliacijos |
+| Rekomenduojamas kontrsiūlymas | **16 000–18 000** | Rimi + 0005 + frontažas |
+| Jei 0005 patvirtintas | **22 000–25 000** | pirmas pramonės precedentas |
+
+### Pirkėjo profilis (anonimiškumas + skubėjimas)
+- Nesiskleidžia → žino daugiau nei rodo
+- Skuba → baiminasi kainų kilimo po 0005 rezultato (2026-06-16)
+- Profiliai: A) strateginis operatorius (logistika/pramonė), B) tarpininkas-fliperis
+- Abiem atvejais derybinė galia pardavėjo pusėje
+
+### Paskirties keitimo klasteris — statistika
+- Elektrėnų sav. iš viso: **24 123 sklypų**, **14 973 agri** (RC ZIP 2026)
+- 2026 (2 mėn.): **14 paskirties keitimo prašymų** = 0.058% visų / 0.080% agri
+- Metinis tempas ~84/m. = **0.56% agri per metus**
+- **Ausieniškių k.: 3 iš 14** prašymų (01.3-151, 01.3-170, 01.3-192) — ~1.5% sav. prašymų viename kaime
+- Tai klasteris, ne atsitiktinumas — derybinis argumentas
+
+### 0005 dokumento verifikacija
+- Dokumentas autentiškas (planuojustatau.lt oficialus katalogas)
+- Plotas: **0.3141 ha** (ne "~1+ ha" kaip CONTEXT.md rašė — pataisyta)
+- Pareiškėjo vardas neviešas (GDPR) — normalu
+- Viešinimas baigėsi 2026-06-15; scheduled check 2026-06-16
+
+### Derybinė strategija
+1. **Neatsakyti iki 2026-06-16 vakaro** — palaukti 0005 rezultato
+2. Pirkėjui: *"Konsultuojamės su notaru"*
+3. **Jei 0005 patvirtintas:** kontrsiūlyti 22k€/ha (~110k€ blokas)
+4. **Jei 0005 atidėtas/atmestas:** kontrsiūlyti 16–18k€/ha (~80–90k€)
+5. Argumentai: Rimi 0.5 km, 3 paskirties keitimo prašymai Ausieniškių k., 51.9 m kelio frontažas
+
+## Sesija 2026-06-14 (V) — Teritorijų Planavimo Dokumentų Analizė
+
+### TPDRIS aktyvūs dokumentai Elektrėnų sav. (65 viso)
+
+Svarbiausi mūsų blokui (7910/0001):
+
+| TPD Nr. | Tipas | Pavadinimas / Teritorija | Etapas | Data |
+|---|---|---|---|---|
+| **K-RJ-42-20-416** | Bendrasis plano keitimas | **Elektrėnų sav. BPD keitimas** | Parengiamasis | 2026-06-12 |
+| K-VT-42-26-8 | Detalusis planas | Teritorija tarp Šviesos g. ir A1 (komercija/pramogos) | **Baigiamasis** | 2026-06-12 |
+| K-VT-42-26-931 | DP korektūra | 7910/0007:288,286,203,233 Abromiškiai | Parengiamasis | 2026-06-02 |
+| K-VT-42-24-1165 | DP korektūra | 7910/0007:152,155 Alinkos k. | — | — |
+| K-VT-00-25-775 | DP korektūra | **7910/0001:288,289,42** Kakliniškiai | — | — |
+| S-VT-42-25-302 | Specialusis | **7910/0001:889** Žebertoniai (kaimo plėtra) | Vykstantis | — |
+
+**Migūčioniai DP (elektrenai.lt):** 7910/0001:74, 46, 79, 19, 77 — tas pats kadastro rajonas kaip šeimos blokas.
+
+### BPD keitimas K-RJ-42-20-416 — aktualumas
+
+- Pradėtas 2026-06-12 (parengiamasis etapas)
+- Jau **aktyviai cituojamas** esamuose DP dokumentuose: Sabališkių g. daugiabučių DP tekstas: *"įvertinant rengiamą BPD keitimą (TPD Nr. K-RJ-42-20-416)"* — de facto veikia prieš formalų patvirtinimą
+- Šaltinis: elektrenai.lt teritorijų planavimo dokumentų puslapis
+
+### Galiojantis BPD (SS-070-BPL, T00078590) — Radiniai Deryboms
+
+Dokumentas: `Elektrėnų savivaldybės teritorijos bendrasis planas iki 2016 metų`, patvirtintas 2009, ir šiuo metu keitimų rengimo metu tebegalioja kaip bazinis dokumentas.
+
+**Raktiniai radiniai mūsų bloko kontekste:**
+
+#### 1. Elektrėnai–Vievis koridorius = 1A metropolinės ašies dalis
+- BPD įvardija Elektrėnai–Vievis kaip **metropolinę ašį** (1A kategorija)
+- "Urbanistinė struktūra apims pramonės, verslo įmonių, gamybinių centrų teritorijas"
+- Vievio šiaurinė dalis = **pramonė ir logistika prioritetinė zona** (tiesiogiai apima Ausieniškių/Žebertonių apylinkę)
+
+#### 2. Kelias Nr. 4728 = planuojama C2 miesto jungties gatvė
+- BPD 4728 (kelias bordering mūsų 0428–0431 bloko vakarinę pusę) **išvardytas** kaip **C2 kategorijos** jungties gatvė tarp Elektrėnų ir Vievio
+- C2 = antrojo lygio miesto jungties gatvė → urbanistinis ašis, ne vien kaimo kelias
+- **Derybinis argumentas:** bloko frontažas (51.9 m) ant BPD kategorizuotos urbanistinės ašies = komercinio/logistikos sklypo prieiga
+
+#### 3. Ausieniškės = urbanizuojamos teritorijos
+- BPD autobusų maršrutas Nr. 3 (209): *"Gilučiai–Mijaugonys–Elektrėnai–Abromiškės–Žebertonys–**Ausieniškės**–Balceriškės–Pylimai–Vievis"*
+- Ausieniškės įtrauktos į **oficialų infrastruktūros tinklo planą** — ne kaimas kaip bet koks kitas
+- Urbanizuojamos teritorijos plėsis Elektrėnai↔Vievis kryptimi
+
+#### 4. U.7 zonos — verslo/pramonės/logistikos teritorijos
+- BPD nustato U.7 zoną = verslo, pramonės, logistikos (potenciali plėtros paskirtis)
+- Vievio šiaurinė dalis + Elektrėnų pramonės koridorius patenka į šią zoną
+- Mūsų blokas esantis tarp Elektrėnų ir Vievio yra šio koridoriaus dalis
+
+### BPD Radinių Derybinė Reikšmė
+
+| Argumentas | Šaltinis | Svoris |
+|---|---|---|
+| Kelias 4728 = C2 urbanistinė ašis | BPD SS-070-BPL, susisiekimo sk. | Stiprus — oficialus dok. |
+| Ausieniškės autobusų infrastruktūroje | BPD maršrutas Nr. 3 | Vidutinis — infrastruktūros planas |
+| Elektrėnai–Vievis = 1A metropolinė ašis | BPD urbanistinė struktūra | Stiprus — strateginis planas |
+| K-RJ-42-20-416 jau veikia praktiškai | Sabališkių DP dokumento tekstas | Stiprus — konkreti citata |
+| 3 paskirties keitimo prašymai Ausieniškiuose | 01.3-151, 01.3-170, 01.3-192 | Stiprus — statistinis klasteris |
+
+**Pagrindinė žinutė deryboms:** *"Pirkėjas siūlo agri kainą sklypui, kurį oficialus BPD jau 2009 m. įtraukė į metropolinės ašies urbanizacijos zoną, o ant kurio ribos einantis kelias planuotas kaip C2 miesto jungties gatvė."*
+
+### Failai ir web nuorodos
+
+**Lokalūs failai:**
+- `.firecrawl/bpd-tekstine-dalis.pdf` — BPD SS-070-BPL tekstinė dalis, 76 psl., 1 MB (parsisiųsta 2026-06-14)
+- `.firecrawl/elektrenai-bpd-page.md` — elektrenai.lt BPD puslapis (su visais linkais)
+- `.firecrawl/elektrenai-lt-tplan-page.md` — elektrenai.lt TP dokumentų sąrašas (BPD keitimo citata)
+- `.firecrawl/planuojustatau/tpdris-elektrenu-results.txt` — 65 TPDRIS dokumentai (Elektrėnų sav.)
+- `.firecrawl/planuojustatau/tpdris-26-931-detail.txt` — K-VT-42-26-931 detalės
+- `.firecrawl/planuojustatau/tpdris-26-8-detail.txt` — K-VT-42-26-8 detalės
+- `.firecrawl/planuojustatau/tpdris-1165-detail.txt` — K-VT-42-24-1165 detalės
+
+**Galiojantis BPD (SS-070-BPL, patvirtintas 2009-04-29, tarybos sprendimas Nr. TS-71):**
+- [Tekstinė dalis (elektrenai.lt)](https://elektrenai.lt/get_file.php?file=YTJPYW5wYWxsWjV1eVdaa2F0bHNtOGRpbW1wdWJaWmhhY2ZDcEdPZGFaV1VuY21rWjZuRFlKN0paS0dVeDJyUW5LYVdxWm1jWnFDWXhNYWVsbDVub0dhb3lXVm9wcHFtYmNabm9XWExhTWlZa1plZmJhdG1uMnZQbW1SaWxXS2dtSm5Nb1ptcWxLTnJrNU9pWjVGcDBzeVJ4cDF2b0dTZWFNaVZxR05mbGF1Vm1wcWZsNkxHbG0zWFpXU1h5SmpPbko3SG5HMXBhMmhybDVwclpWNllwR09ZeUp4cWNjSjJiYkNVZW1pdG1MbWVoSmw4bktXVVlKZWxrb1dXZkdtVGxGU1lpV3FHbW9OdXFXaURhYVpxcnAyQWxZQnZlR2Q3YkpHVnBXV1VaWnBqYjVoeFp3JTNEJTNE) ← jau parsisiųsta
+- [Žemės naudojimo ir apsaugos reglamentų brėžinys (6.2 MB)](https://elektrenai.lt/get_file.php?file=bVdQSG5tZWx4SjV1eVdSa2FkbHFtNTFpeTJwcWJXWmhhc2VZcEdTZFlwV1luWnVrYnFtVllKJTJGSllxRnN4NWJRbnFhWnFXJTJCY1pxQnN4SmFlWWw2WW9HdW9tV1dicHBTbWJzYVVvWmJMYXNpYmtaaWZiYXRrbjJ2UGxHU1dsV09nbEptZG9XV3FtS09lazJtaWE1Rm4wcDZSbnAyZW9KZWVhTWlUcUdWZmFhdG5tcGlmbDZMSGxwJTJGWFpHUmp5R2ZPbXA2WW5HOXBaR2hvbDVWcVoxNlhubVdrbXAxcWNaTjJiZENYbW1uTm10bk1wSnVjYXFXVXAyekN4Mk5sWG1oaVo2SEhwV2lWbVpOdzFtaWFsTnhuenNxZ3k3QnVxbVJnbHMyVHBaV1hZMjlrYjhnJTNE) ← **žemėlapis — pagrindinė zona mūsų blokui**
+- [Susisiekimo sistemos brėžinys (4.8 MB)](https://elektrenai.lt/get_file.php?file=YW1PWW5tcWxscDZmeVdSa1p0bG5tNWhpbUdwdGJaVmhtc2VUcEdtZFpaV1VuWmlrYXFtVVlHN0paNkZqeDVyUW02YVdxWjZjWTZDV3hKR2VhRjZYb0phb21XVm5wcHFtYThhV29XWExaY2lia2NhZmJhdVduNW5QbUdSbGxXZWdaWm1Zb1dhcXg2T2JrNU9pbFpGcDBwdVJtcDF2b0dTZWFjaVdxR05mbDZ0bm1wYWZtcUtUbG03WG1HUmx5R3ZPbUo2Wm5HcHNtR0pxbkpab1pWNWtucGVrbkoxb2NaYUVhdGxscUdQTG10aVptNWVjbTZLV20yZlF3Mk5sWG1kaVkxU2JtRzZvbHZWciUyQjJuNll5QnN6c3VneUxDYnFtWmdhczNHcFdPWGwyOW9iNXclM0Q) ← **kelias 4728 = C2 gatvė čia**
+- [Teritorijos vystymo erdvinės struktūros brėžinys (4.8 MB)](https://elektrenai.lt/get_file.php?file=YUdPYm5wYWxtSjV5eVdka2JObHFtOHRpbTJwcmJaWmhhTWVUcEdTZGxKVnFuWm1rbHFtVFlHbkpaS0ZqeDJyUXlhYWJxV3VjWTZDV3hKYWVhRjZZb0dpb21tV2JwcEttYThaa29aakxhOGlZa1oyZm5hdVhuNXJQd21Sb2xXU2dsNW5Lb1cycW1hTnVrMm1pWlpGbjBzdVJtNTF1b0dTZWw4aWFxR0pmWjZ0bG1weWZacUxIbG03WGxXUmx5R3JPeTU3Sm5KbHNsMkptbTVodVpWNWlucFNrbVoxdGNjZUZiOG1XcDJiTGx0bkxvWnVwYXFDWG5KdlNsbU5sWG1saWxGVEhtR3FvdyUyRlZyJTJCMlQ2YVNCdHpwYWduYkJ1cXBoZ2FjMldwV2VYWTI5bGI1ayUzRA)
+
+**BPD keitimas (K-RJ-42-20-416, pradėtas 2020, aktyvus 2026):**
+- [TPDRIS viešas peržiūros puslapis](https://tpdris.planuojustatau.lt/tpd.public.view?tpdNr=K-RJ-42-20-416)
+- [2025-07-14 patikslinti sprendiniai (rekreacijos aspektas) — elektrenai.lt](https://elektrenai.lt/get_file.php?file=bUdPWW5tZWxrNTV4eVdoa1pNZHIwWmlYbWFKcHEyaWtaY2labzJLUlpKMWxZOGVhbDZXVm5uTEZsNTVwMEdyWW0yR2FuRzJqWXBkbnpwYXBsS0pwbVplaW1KZG5uOFpmY3RCa3FXV1JhOVdjcDhxWm1hTm9tNXJHeEpSZ21KaW9tYUhJb201bGxaWnUwR2VhWk0yYTJaaWttR2FkcEdsaGF0REhsR1dXbFoyWW9NdWJaYW1XWUo3Ymw1dVl5MmZSbnBlYnFtcG1hWmhwekphaGs1VmtabU5rbUdhWmFwWmpiNUpqcFpYR2FjdktiWjJBYXFWa21HWFNrYWRsbldxVmFKZWRuMldrazVweDEyUlZhZEpxMTVpVG1LV1puR24zbWdTWG5tZWRhWlZrcDVsV1o1ZVdvV25OYVpwbmdwclZtcFBMcTU2Z1pwMWwxc2VobHBscW9teW94NnRtcWNKUmNOWm5tcFhOYmRlYmw1cVlhNXFZbTJyTndxU1dvMlJVWmFmTXBtcW9rNVpyMG1xWmFjdG4wNXVieTZ4cXFtUmdiZFBEbVdlV2wyOXFiOHclM0Q)
+- [2026-03-17 patikslinti sprendiniai (derinimo pastabos) — elektrenai.lt](https://elektrenai.lt/get_file.php?file=bUdPZW5tV2x3cDV3eVdSa2xjZVcwY3VYbUtKdnE1aWthY2lhbzJTUlpaMW5ZNTZhYXFXWG5tekZaNTVqMEpiWW0yR1huR3lqWkpkcXpwbXBZS0prbVpXaXpKZHFuNWxmYnRDVHFaU1JiZFdjcDh1WmJxT1ltNXZHd3BSaW1KYW9hcUdjb214bG1aWnUwR21hYXMyYTJaYWtsV1pwcEpoaGF0REhsR1dXbFoxcW9KbWJaNm1YWUd6Ylo1dHB5NWpSbkplZHFwbG1aNWhuekppaFpaVm5abVZrbTJ5V2FjVmxjSkpqbVpUUmFzakxxcFp5YUlCbm9HckprcVJnb3BlaFpaV1dtWnFmazUlMkJielpTb2FJSnMxY2lrbXBodHBXZVhtQ2pDMW1LWmFLR1lsY3FwWjFhUm9ackZaNm1XeTJyUW02WEhvMnFnYUtCcTE1T2VsVkNYcDJpa21xaHNtNWFmY3Nob25wZlFhczZkazV5Z2NWZG1vcGJFbEp4bWtaYWdhMVNiVm1lYXc1WnUxbVNlbWRCbHpwJTJCZm1xYWFWMm1pWjhTVXFKU2trNVZzbHN1WGFLbVlYM0xJWjZTWHhXcmRuVzJZY25BJTNE)
+- [2024 sprendiniai — Google Drive aplankas](https://drive.google.com/drive/folders/1IjtrjX9xEcA--692YbuvlQdy3Db4Yr1D)
+- [2025 sprendiniai — Google Drive aplankas (130 MB JPG)](https://drive.google.com/drive/folders/1ekD4mWL424xekTF6XNFwSnPUXjMxFbBd?usp=sharing) ← **naujausias žemėlapis, reikia žmogaus naršyklėje**
+
+---
+
+## Next Session Tasks
+
+1. **Skelbimų markers žemėlapyje** — `sklypas-google.html`: 21 objektas iš master sąrašo → markers su popup (kaina, €/ha, paskirtis, web link). Naudoti `wiki/elektrenai/sklypai-master-sarasas.md` kaip šaltinį.
+2. **0005 paskirties keitimo rezultatas** — scheduled check 2026-06-16 09:00; po to atnaujinti master sąrašą
+3. **Aruodas retry** — Sabališkės + Vievis + radius 5km (rate-limited 2026-06-14)
+4. **Brainstorm** — remiantis master sąrašu + naujais radiniais: investicinis potencialas, pirkimo/pardavimo scenarijai
+5. **Geocode tikslumas** — Ausieniškių 1.1–1.6 tikslios koordinatės (aruodas skelbimų puslapiai)
+6. **01.3-201, 01.3-205** — dar 2 neperskaityti dokumentai (atsisiuntė vėliau)
+7. **BPD 2025 žemėlapis** — Google Drive (elektrenai.lt): `1_Pagrindinis brėžinys.jpg` 130 MB — parsisiųsti ir patikrinti mūsų bloko zoną vizualiai (reikia žmogaus su naršykle)
