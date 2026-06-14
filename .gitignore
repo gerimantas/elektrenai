@@ -1,4 +1,6 @@
 .firecrawl/
+.claude/
+.lt-parcels-cache/
 
 # Secrets — never commit
 .env
