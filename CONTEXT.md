@@ -338,7 +338,7 @@ Artimiausias agri: 1.8 km (Žebertonių k., 2.1 ha, 24k€, 11 429 €/ha)
 prašymų katalogas. Nuskaityti nr. 100–280, rasta 16 dokumentų. Visi perskaityti OCR.
 Skriptas: `.firecrawl/scan_elektrenu_docs.py`, vaizdai: `.firecrawl/elektrenu-docs/`.
 
-**Visi 2026 paskirties keitimo prašymai Elektrėnų sav. (16 dok.):**
+**Visi 2026 paskirties keitimo prašymai Elektrėnų sav. (16 dok., perskaityti visi):**
 
 | Nr. | Data | Kadastras | Vieta | Keitimas |
 |---|---|---|---|---|
@@ -356,14 +356,17 @@ Skriptas: `.firecrawl/scan_elektrenu_docs.py`, vaizdai: `.firecrawl/elektrenu-do
 | **01.3-192** | **2026-05-27** | **7910/0001:5** | **Sabališkių k.** | Agri → **Pramonė/sandėliavimas** |
 | 01.3-194 | 2026-05-27 | 7914/0001:343 | Lazūnų k. | Agri → Kita |
 | 01.3-195 | 2026-05-27 | 7914/0001:342 | Lazūnų k. | Agri → Kita |
+| 01.3-201 | 2026-06-01 | 4936/0002:732 | V. Kietaviškių k. | Agri → Gyvenamoji |
+| 01.3-205 | 2026-04-07 | 7980/0002:865 | Trakų g., Vievis | Kita → Kita (daugiabutis → dvibučiai) |
 
 **Svarbiausi radiniai:**
 - **01.3-151 + 01.3-170**: du gyvenamosios paskirties prašymai **Ausieniškių k.** (7910/0007 blokas) — tas pats kaimas kaip šeimos blokas
 - **01.3-192** (mūsų žinomas): pramonė 443 m nuo bloko
 - **01.3-106**: pramonė Vidugiriuose (Vievio sen.) — tas pats bangos modelis
+- **01.3-201 + 01.3-205**: gyvenamieji, ne Ausieniškių zona, deryboms nereikšmingi
 - Iš viso 2 pramoniniai + 1 rekreacinis + daugelis gyvenamųjų = aktyvus urbanizacijos frontas
 
-**Derybinė reikšmė:** pirkėjas siūlė 10k€/ha agri kaina — bet apylinkėje 2026 jau 14 paskirties keitimo prašymų vien per 2 mėn. Tai sisteminis, ne pavienio sklypo, reiškinys.
+**Derybinė reikšmė:** pirkėjas siūlė 10k€/ha agri kaina — bet apylinkėje 2026 jau 16 paskirties keitimo prašymų vien per 2 mėn. Tai sisteminis, ne pavienio sklypo, reiškinys.
 
 ## Sesija 2026-06-14 (IV) — Brainstorm: derybinė analizė
 
@@ -502,5 +505,5 @@ Dokumentas: `Elektrėnų savivaldybės teritorijos bendrasis planas iki 2016 met
 3. **Aruodas retry** — Sabališkės + Vievis + radius 5km (rate-limited 2026-06-14)
 4. **Brainstorm** — remiantis master sąrašu + naujais radiniais: investicinis potencialas, pirkimo/pardavimo scenarijai
 5. **Geocode tikslumas** — Ausieniškių 1.1–1.6 tikslios koordinatės (aruodas skelbimų puslapiai)
-6. **01.3-201, 01.3-205** — dar 2 neperskaityti dokumentai (atsisiuntė vėliau)
+6. ~~**01.3-201, 01.3-205**~~ — perskaityti 2026-06-14. Abu gyvenamoji, ne Ausieniškių zona — nereikšmingi.
 7. **BPD 2025 žemėlapis** — Google Drive (elektrenai.lt): `1_Pagrindinis brėžinys.jpg` 130 MB — parsisiųsti ir patikrinti mūsų bloko zoną vizualiai (reikia žmogaus su naršykle)
