@@ -512,11 +512,45 @@ Dokumentas: `Elektrėnų savivaldybės teritorijos bendrasis planas iki 2016 met
 - `zilviciu` koordinatės offset nuo `bauboniai`
 - "14 prašymų" → "16 prašymų"
 
+## Sesija 2026-06-16 — Dashboard reorientacija + 0005 patikra
+
+**0005 paskirties keitimo rezultatas (patikrinta 2026-06-16 20:21):**
+- `planuojustatau.lt/sites/default/files/01.3-192.jpg` = tik **prašymas** (gautas 2026-05-27), ne sprendimas
+- RC open data ZIP (2026-06-01): `pask_kodas: None` — sklypas procedūroje
+- TPDRIS: reikia login, viešas search neueinamas
+- Savivaldybės skelbimai: nieko
+- **Išvada: sprendimas dar nepaskelbtas.** Viešinimo pabaiga = tik pirmo etapo pabaiga. Iki galutinio patvirtinimo — dar mėnesiai.
+- Nauji docs: 01.3-194 (7914/0004:343 Lazūnai, agri→kita), 01.3-195 (7914/0004:342 Lazūnai, agri→kita) — nereikšmingi
+
+**Dashboard brainstorm — sluoksnių modelis (susitarta):**
+
+Dashboard `dashboard-v1.html` reorientuojamas: ne techninis žemėlapis, o **šeimos sprendimo paramos įrankis** (3-4 savininkai, sprendimas: parduoti dabar / laukti / keisti paskirtį).
+
+**Nauja struktūra — 3 sluoksniai:**
+```
+Tab 1: IŠVADOS      — 3 scenarijai su skaičiais, rekomenduojamas veiksmas (30 sek.)
+Tab 2: AKCENTAI     — 5-7 faktai su šaltiniais (pirkėjui / notarui parodyti)
+Tab 3: TECHNIKA     — visa techninė info (Rinka, Planavimas, Zonos, žemėlapis)
+```
+
+**Kas išmetama iš plano:**
+- Precedentas 7910/0005:0094 (Vievis, 27 km) — iš žemėlapio, lieka tik Rinka tab tekste
+- BPD koridoriaus polyline — aproksimuotos koordinatės, pakeičiamas tekstu Tab 2
+- Atstumų žiedai (0.5/2/8 km) — nereikšminga šeimos sprendimui
+- TPDRIS korektūros (K-VT-42-26-931, K-VT-42-24-1165, K-VT-00-25-775) — kitų sklypų
+- Paskirties keitimų sąrašas — palikti tik 3 Ausieniškių + 01.3-106, išmesti likusius
+- Kaimynas 0428 AZ breakdown (Zonos tab) — ne mūsų sklypas
+- 110 kV linija (AZ nepatenka į bloką) — išmesti
+- Price bar ceiling 500k€ → 200k€ arba išmesti
+
+**Abejotina (neapsispręsta):**
+- SŽNS rasterinis overlay — palikti kaip default OFF "ekspertams"
+- Netiksli geolokacija markers (Ausieniškių koridorius, village centroid) — rodyti su "⚠" arba tik Rinka tab sąraše
+
 ## Next Session Tasks
 
-1. **Skelbimų markers žemėlapyje** — implementuoti `dashboard-v1.html` pagal `docs/superpowers/plans/2026-06-14-dashboard-v1.md` (planas pataisytas, paruoštas vykdymui)
-2. **0005 paskirties keitimo rezultatas** — scheduled check 2026-06-16 09:00; po to atnaujinti master sąrašą ir dashboard
-3. **Aruodas retry** — Sabališkės + Vievis + radius 5km (rate-limited 2026-06-14)
-4. **Geocode tikslumas** — Ausieniškių 1.1–1.6 tikslios koordinatės (aruodas skelbimų puslapiai)
-5. ~~**01.3-201, 01.3-205**~~ — ✅ perskaityti 2026-06-15. Nereikšmingi.
-6. **BPD 2025 žemėlapis** — Google Drive (elektrenai.lt): `1_Pagrindinis brėžinys.jpg` 130 MB — parsisiųsti ir patikrinti mūsų bloko zoną vizualiai (reikia žmogaus su naršykle)
+1. **Atnaujinti dashboard-v1.md planą** pagal naują 3-sluoksnių struktūrą (Tab 1 Išvados, Tab 2 Akcentai, Tab 3 Technika) su konkretaus turinio specifikacija
+2. **Implementuoti dashboard-v1.html** pagal atnaujintą planą
+3. **0005 sprendimas** — tikrinti kas 1-2 sav. RC open data ZIP (pask_kodas keisis iš None) arba TPDRIS
+4. **Aruodas retry** — Sabališkės + Vievis + radius 5km (rate-limited 2026-06-14)
+5. **BPD 2025 žemėlapis** — Google Drive 130 MB — reikia žmogaus su naršykle
