@@ -108,6 +108,16 @@
            border: 1px solid #333; margin-right: 4px; vertical-align: middle; }
     .badge { font-size: 10px; padding: 0 4px; border-radius: 3px; background: #eee; color: #555; }
     .badge.warn { background: #FFEBEE; color: #C62828; }
+    .updated {
+      display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;
+      background: #eef4fb; border-left: 3px solid #4da3ff; border-radius: 3px;
+      padding: 6px 9px; margin-bottom: 10px; font-size: 11.5px; color: #35485c;
+    }
+    .updated b { font-size: 12.5px; color: #1a3b5c; }
+    .chg { color: #C62828; font-weight: 600; }
+    .new { background: #E3F2FD; color: #0D47A1; font-size: 10px; padding: 0 4px;
+           border-radius: 3px; font-weight: 600; margin-left: 3px; }
+    .was { color: #888; text-decoration: line-through; }
     #tabTyrimas details { margin: 6px 0; }
     #tabTyrimas summary { cursor: pointer; font-weight: 600; font-size: 12.5px; }
     #tabTyrimas ul { margin: 4px 0; padding-left: 17px; }
@@ -147,7 +157,7 @@
 </head>
 <body>
   <div id="topbar">
-    <div class="brand">Elektrėnai <small>· 7910/0001 blokas</small></div>
+    <div class="brand">Elektrėnai <small>· 7910/0001 blokas · duomenys 2026-08-10</small></div>
     <nav>
       <button id="tabBtnLegenda" class="active" onclick="showTab('Legenda')">Legenda</button>
       <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
@@ -280,30 +290,125 @@
         </div>
       </div>
       <div id="tabTyrimas" class="tabPane">
+        <div class="updated">
+          <b>Duomenys atnaujinti: 2026-08-10</b>
+          <span>· ankstesnis skenas 2026-06-17 ·
+            <span class="chg">raudonai</span> pažymėta, kas pasikeitė</span>
+        </div>
+
         <details open>
+          <summary>Kas pasikeitė nuo birželio<span class="new">nauja</span></summary>
+          <ul>
+            <li><b>Rimi centras BAIGTAS.</b> Statybos užbaigtos 2026-04 (3 mėn.
+              anksčiau nei planuota), atidarymas 2026 vasarą. Plotas
+              <b class="chg">42 000 m²</b>, ne <span class="was">31 000 m²</span>.
+              <a href="https://www.15min.lt/verslas/naujiena/nt-ir-interjeras/darnu-group-baige-60-mln-euru-vertes-rimi-logistikos-centro-elektrenuose-statybas-971-2654516" target="_blank">15min</a></li>
+            <li><b>0005 sprendimo vis dar nėra.</b> RC duomenys 2026-08-10:
+              <code>pask_tipas=610</code> (žemės ūkio). Prašymas pateiktas
+              2026-05-27, viešinimas baigėsi 2026-06-15 —
+              <span class="chg">2.5 mėn. tyla</span>.</li>
+            <li><b class="chg">Klasteris neaugo.</b> 7 nauji paskirties keitimo
+              prašymai per 8 sav., artimiausias <b>4.62 km</b>, nė vienas ne į
+              pramonę — visi gyvenamoji/rekreacinė.</li>
+            <li><b>Rinka krito.</b> Agri 3–8 ha mediana
+              <span class="was">7 268</span> → <b class="chg">5 952 €/ha</b> (−18.1%).
+              Iš 84 sutampančių skelbimų 14 nuleido kainą (mediana −15.3%),
+              6 pakėlė. Pardavėjai diskontuoja, ne parduoda.</li>
+            <li><b>Bazinis dažnis:</b> per 8 sav. visoje savivaldybėje paskirtį
+              pakeitė <b>1 sklypas</b> (iš 24 144).</li>
+          </ul>
+          <span class="src">Šaltiniai: RC atviri duomenys, elektrenai.lt prašymų
+            registras, aruodas.lt skenas</span>
+        </details>
+
+        <details>
+          <summary>Realūs sandoriai — RC masinis vertinimas<span class="new">nauja</span></summary>
+          <ul>
+            <li><b>Zonoje 8.16 sandorių NEPAKANKA.</b> RC ataskaita (74 psl.):
+              komercinės, pramonės ir <b>žemės ūkio</b> grupių kainų per 5 metus
+              „nėra pakankamai įregistruota", todėl vertės
+              <b class="chg">apskaičiuotos modeliavimo būdu</b> (Kprikl 1.63 iš
+              gyvenamosios grupės). Zonos rinkos aktyvumas — <b>10%</b>.</li>
+            <li><b>Tikri sandoriai yra tik savivaldybės lygiu:</b> žemės ūkio
+              5 281 → <b>5 562 €/ha</b> (+5.32%, 2024-08→2025-07). Parduota:
+              2021 m. 799, 2022 m. 627, 2023 m. 591, 2024 m. 678 sklypai.</li>
+            <li><b>Stipriausias patikrinamas faktas:</b> zona 8.16 turi
+              <b>82 pramonės ir sandėliavimo sklypus — daugiausia iš visų 26 zonų</b>
+              savivaldybėje (8.2 turi 61, 8.1 — 60). RC aprašymas: „teritorija
+              intensyviai urbanizuojama: statomi verslo, paslaugų, komercinių
+              objektai".</li>
+            <li><b>Individualių sandorių kainos neviešinamos</b> (asmens duomenys) —
+              tik mokamas RC NTR išrašas konkrečiam sklypui.</li>
+          </ul>
+          <span class="src">Šaltinis: RC masinio vertinimo ataskaita v36
+            (galioja nuo 2026-01-01)</span>
+        </details>
+
+        <details>
+          <summary>Bloko vertė pagal RC formules<span class="new">nauja</span></summary>
+          <ul>
+            <li>Pritaikius oficialias 2026 m. RC formules blokui (5.025 ha):</li>
+            <li><b>Žemės ūkio (dabar):</b> 13 455 – 19 399 € (2 678 – 3 861 €/ha)</li>
+            <li><b>Pramonės/sandėliavimo:</b> 249 028 – 359 707 € (49 558 – 71 584 €/ha)</li>
+            <li><b>Komercinė:</b> 354 386 – 472 515 € (70 525 – 94 033 €/ha)</li>
+            <li>T.y. paskirties keitimas = <b class="chg">×13–19 fiskalinės vertės</b>
+              pagal pačios valstybės aritmetiką.</li>
+            <li><b>Patikra:</b> RC paskelbta 0431 vertė 5 880 € → blokui 17 640 €,
+              patenka į skaičiuotą žemės ūkio intervalą. Formulė atkurta teisingai.</li>
+            <li><b>Svarbu:</b> dujotiekio AZ nuolaida skiriasi pagal paskirtį —
+              <b>0.3 žemės ūkiui, 0.7 visoms kitoms</b>. Mūsų 1.0973 ha AZ
+              <b>labiau</b> baudžiama pakeitus paskirtį.</li>
+            <li><i>Zona_SKL koeficientai skelbiami tik grafikais — intervalai
+              atspindi tikrą neapibrėžtumą, ne netikslų skaičiavimą.</i></li>
+          </ul>
+          <span class="src">Skaičiavimas: .firecrawl/rc_model_calc.py</span>
+        </details>
+
+        <details>
           <summary>Paskirties keitimai apylinkėje</summary>
           <ul>
-            <li><b>7910/0001:0005</b> (mėlynas, 0.31 ha, ~440 m SW) — ž.ū. → <b>pramonės/sandėliavimo</b> (nepavojingų prekių sandėlis). Paraiška 2026-05-27, viešinimas iki <b>2026-06-15</b>. <a href="https://planuojustatau.lt/sites/default/files/01.3-192.jpg" target="_blank">Dokumentas</a></li>
-            <li><b>7910/0008:0037</b> (Kakliniškės, Vakario g., 0.067 ha) — mėgėjų sodas → gyvenamoji</li>
-            <li><b>RIMI LOGISTIKOS CENTRAS — 7910/0001:0922</b> (žalsvas, tiesiai už 0428): „Darnu Group" stato
-              centrinį „Rimi" logistikos centrą Baltijos šalims — 12.85 ha sklypas (suformuotas 2025-11-26, paskirtis
-              „kita"), 31 000 m² pastatas, 60 mln. €, ~800 darbo vietų.
-              <a href="https://www.delfi.lt/verslas/nekilnojamas-turtas/salia-elektrenu-pradedamos-60-mln-euru-vertes-statybos-sukurs-800-darbo-vietu-120066157" target="_blank">Delfi</a>.
-              Stipriausias signalas zonos industrializacijai — mūsų blokas per 0428 ribojasi su šia teritorija</li>
-            <li><b>Precedentas:</b> Ausieniškės, Gėlių g. 14 — <b>7910/0005:0094</b>, 3 ha jau pramonės/sandėliavimo
-              paskirties („kita"), parduodama už 130 000 €/ha. Prie pat A1, ~7 km nuo mūsų bloko, su detaliuoju planu ir
-              gamybos pastatų projektu. Žemėlapyje violetinis (mygtukas „rodyti" legendoje)</li>
+            <li><b>7910/0001:0005</b> (mėlynas, 0.31 ha, ~440 m SW) — ž.ū. →
+              <b>pramonės/sandėliavimo</b> (nepavojingų prekių sandėlis). Paraiška
+              2026-05-27, viešinimas baigėsi 2026-06-15.
+              <b class="chg">Sprendimo nėra (tikrinta 2026-08-10)</b>.
+              <a href="https://planuojustatau.lt/sites/default/files/01.3-192.jpg" target="_blank">Dokumentas</a></li>
+            <li><b>7910/0008:0037</b> (Kakliniškės, Vakario g., 0.067 ha) — mėgėjų
+              sodas → gyvenamoji</li>
+            <li><b>RIMI LOGISTIKOS CENTRAS — 7910/0001:0922</b> (žalsvas, tiesiai už
+              0428): „Darnu Group" pastatė centrinį „Rimi" logistikos centrą Baltijos
+              šalims — 12.85 ha sklypas (suformuotas 2025-11-26, paskirtis „kita"),
+              <b>42 000 m²</b> pastatas, 60 mln. €, ~800 darbo vietų.
+              <b class="chg">Statybos baigtos 2026-04</b>, atidarymas vasarą,
+              siekiamas BREEAM Excellent.
+              Stipriausias signalas zonos industrializacijai — nebe planas, o
+              pravažiuojant patikrinamas faktas</li>
+            <li><b>Precedentas:</b> Ausieniškės, Gėlių g. 14 — <b>7910/0005:0094</b>,
+              3 ha jau pramonės/sandėliavimo paskirties („kita"), parduodama už
+              130 000 €/ha. Prie pat A1, ~7 km nuo mūsų bloko, su detaliuoju planu ir
+              gamybos pastatų projektu.</li>
           </ul>
         </details>
+
         <details>
-          <summary>Rinkos kainos (2026-06)</summary>
+          <summary>Rinkos kainos (2026-08-10)</summary>
           <ul>
-            <li><b>RC vidutinė rinkos vertė (0431): 5 880 €</b> (2026-01-01; mokestinė, paprastai 2–4× žemiau rinkos)</li>
-            <li>Tipinė ž.ū. žemė Elektrėnų sav.: <b>8 000–18 000 €/ha</b> (skelbimai: Karkučiai 8.1k, Stančikai 9.3k, Kurkliškės 18.1k €/ha)</li>
-            <li>Anomalijos šalia: Kakliniškės prie A1 — 98 000 €/ha; Ausieniškės pramonės — 130 000 €/ha</li>
-            <li><b>0431 įvertis: ~13 000–30 000 €</b> (siaura juosta + dujotiekio AZ spaudžia į apatinę ribą)</li>
+            <li><b>RC vidutinė rinkos vertė (0431): 5 880 €</b> (vertinimo data
+              2026-01-01; mokestinė, agri žemei rinka paprastai 2–4× aukščiau).
+              Nacionalinis +8% perkainojimas mūsų zonos nepalietė.</li>
+            <li><b>Agri 3–8 ha (mūsų analogų klasė): mediana
+              <span class="chg">5 952 €/ha</span></b> (buvo 7 268 birželį).
+              Pilnas sąrašas su filtrais — meniu „Rinka".</li>
+            <li>Agri ≥1 ha: 13 684 €/ha (−9.0%) · visa žemė: 48 846 €/ha (−17.4%)</li>
+            <li>Anomalija šalia: <b>Kakliniškių k. 3.1 ha — 96 452 €/ha</b>
+              (<b>7910/0001:0050</b>, tiesioginis kaimynas, 0.40 km). Kaina nekito
+              nuo birželio. Skaityti atsargiai: arba lubų signalas, arba
+              neparduodamas askingas — sandorio už jo nėra.</li>
+            <li><b>Pirkėjo pasiūlymas 10 000 €/ha</b> = 50 250 € už bloką.
+              Rinkai krentant jo santykinė padėtis <b>pagerėjo</b>: nuo 1.38× iki
+              <b class="chg">1.68×</b> virš analogų medianos.</li>
           </ul>
-          <span class="src">Šaltiniai: registrucentras.lt/masvert, kampas.lt, alio.lt</span>
+          <span class="src">Šaltiniai: registrucentras.lt/masvert, aruodas.lt
+            (124 skelbimai, 2026-08-10)</span>
         </details>
         <details>
           <summary>Įvaža iš kelio 4728 (apjungtas blokas)</summary>
