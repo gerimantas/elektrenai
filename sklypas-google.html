@@ -6,33 +6,69 @@
   <title>Sklypas 7910/0001:0431 + kaimynai — Elektrėnų sav.</title>
   <style>
     html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; }
-    #map { height: 100%; width: 100%; }
-    #info {
-      position: absolute; top: 12px; left: 12px; z-index: 5;
-      background: rgba(255,255,255,0.93); padding: 12px 16px; border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.3); max-width: 300px; font-size: 12.5px; line-height: 1.5;
+
+    /* App chrome: a fixed top bar, and a side panel that slides in under it.
+       The map fills everything below the bar and is never covered by a
+       floating card. */
+    :root { --bar-h: 46px; --panel-w: 380px; --panel-w-wide: 700px; }
+
+    #map { position: absolute; top: var(--bar-h); left: 0; right: 0; bottom: 0; }
+
+    #topbar {
+      position: absolute; top: 0; left: 0; right: 0; height: var(--bar-h);
+      z-index: 20; display: flex; align-items: stretch;
+      background: #1f2b38; color: #e8edf2;
+      box-shadow: 0 1px 6px rgba(0,0,0,.35);
     }
-    #info h3 {
-      margin: 0; font-size: 14px; cursor: pointer; user-select: none;
-      display: flex; align-items: center; gap: 6px;
+    #topbar .brand {
+      display: flex; align-items: center; gap: 8px; padding: 0 16px;
+      font-size: 13.5px; font-weight: 600; letter-spacing: .2px;
+      border-right: 1px solid rgba(255,255,255,.12); white-space: nowrap;
     }
-    #info h3 .chev { transition: transform .2s; font-size: 11px; }
-    #info.collapsed h3 .chev { transform: rotate(-90deg); }
-    #info.collapsed #infoBody { display: none; }
-    #infoBody { margin-top: 8px; }
-    .tabs { display: flex; gap: 4px; margin-bottom: 8px; border-bottom: 1px solid #ddd; }
-    .tabs button {
-      font-size: 12px; padding: 4px 10px; cursor: pointer; border: none;
-      background: none; border-bottom: 2px solid transparent; color: #555;
+    #topbar .brand small { font-weight: 400; opacity: .65; font-size: 11.5px; }
+    #topbar nav { display: flex; align-items: stretch; }
+    #topbar nav button {
+      background: none; border: none; color: #cfd8e2; cursor: pointer;
+      font-size: 13px; padding: 0 16px; border-bottom: 3px solid transparent;
+      font-family: inherit;
     }
-    .tabs button.active { border-bottom-color: #1a73e8; color: #1a73e8; font-weight: 600; }
+    #topbar nav button:hover { background: rgba(255,255,255,.07); color: #fff; }
+    #topbar nav button.active {
+      color: #fff; border-bottom-color: #4da3ff; background: rgba(77,163,255,.12);
+      font-weight: 600;
+    }
+    #topbar .spacer { flex: 1; }
+    #topbar .tools { display: flex; align-items: center; gap: 4px; padding: 0 10px; }
+    #topbar .tools button {
+      background: rgba(255,255,255,.09); border: none; color: #dfe7ee; cursor: pointer;
+      font-size: 11.5px; padding: 5px 9px; border-radius: 4px; font-family: inherit;
+    }
+    #topbar .tools button:hover { background: rgba(255,255,255,.19); color: #fff; }
+    #topbar .tools button.on { background: #4da3ff; color: #08243d; font-weight: 600; }
+
+    #panel {
+      position: absolute; top: var(--bar-h); left: 0; bottom: 0; z-index: 15;
+      width: var(--panel-w); background: #fff; overflow: hidden;
+      display: flex; flex-direction: column;
+      box-shadow: 2px 0 10px rgba(0,0,0,.25);
+      transition: transform .18s ease, width .18s ease;
+    }
+    #panel.wide { width: var(--panel-w-wide); }
+    #panel.hidden { transform: translateX(-100%); }
+    #panelHead {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; border-bottom: 1px solid #e3e8ec; background: #f7f9fb;
+      font-size: 13px; font-weight: 600; color: #23303c;
+    }
+    #panelHead button {
+      background: none; border: none; cursor: pointer; font-size: 17px;
+      line-height: 1; color: #7c8894; padding: 2px 6px; border-radius: 4px;
+    }
+    #panelHead button:hover { background: #e6ebf0; color: #23303c; }
+    #panelBody { flex: 1; overflow-y: auto; padding: 12px 14px; font-size: 12.5px;
+                 line-height: 1.5; }
     .tabPane { display: none; }
     .tabPane.active { display: block; }
-    #tabTyrimas { max-height: 62vh; overflow-y: auto; padding-right: 4px; }
-    /* The market table needs more width than the 300px legend panel. */
-    #info.wide { max-width: 660px; }
-    /* collapsed wins over wide, otherwise the header bar stays 660px wide */
-    #info.wide.collapsed { max-width: 300px; }
     #tabRinka { font-size: 12px; }
     #rinkaFilters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
                     margin-bottom: 6px; }
@@ -40,7 +76,7 @@
       font-size: 11.5px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px;
     }
     #rinkaCount { color: #666; font-size: 11px; }
-    .rtWrap { max-height: 56vh; overflow-y: auto; overflow-x: auto; }
+    .rtWrap { overflow-x: auto; }   /* #panelBody owns vertical scroll */
     table.rt { border-collapse: collapse; width: 100%; font-size: 11.5px; }
     table.rt th {
       position: sticky; top: 0; background: #f4f6f8; z-index: 1; text-align: left;
@@ -80,7 +116,13 @@
     .plabel .pname { color: #FFE082; font-size: 12px; letter-spacing: .3px; }
     body.names-off .pname { display: none; }
     .szns { margin-top: 9px; padding-top: 8px; border-top: 1px solid #ddd; }
-    .sznsToggle { font-size: 12.5px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 5px; }
+    /* align-items:flex-start keeps the checkbox on the first line; the label text
+       must stay inline flow, otherwise each <b> becomes its own flex item and the
+       sentence breaks into fragments */
+    .sznsToggle { font-size: 12.5px; cursor: pointer; user-select: none;
+                  display: flex; align-items: flex-start; gap: 6px; }
+    .sznsToggle > input { margin-top: 2px; flex: none; }
+    .sznsToggle > span, .sznsToggle > b { display: inline; }
     .sznsLegend { display: none; margin-top: 6px; font-size: 11.5px; color: #333; }
     .sznsLegend.show { display: block; }
     .sznsLegend ul { margin: 4px 0 4px 0; padding-left: 18px; }
@@ -95,16 +137,31 @@
   <script src="config.js"></script>
 </head>
 <body>
-  <div id="info">
-    <h3 onclick="document.getElementById('info').classList.toggle('collapsed')">
-      <span class="chev">▼</span> Elektrėnų sen. — sklypai
-    </h3>
-    <div id="infoBody">
-      <div class="tabs">
-        <button id="tabBtnLegenda" class="active" onclick="showTab('Legenda')">Legenda</button>
-        <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
-        <button id="tabBtnTyrimas" onclick="showTab('Tyrimas')">Tyrimas</button>
-      </div>
+  <div id="topbar">
+    <div class="brand">Elektrėnai <small>· 7910/0001 blokas</small></div>
+    <nav>
+      <button id="tabBtnLegenda" class="active" onclick="showTab('Legenda')">Legenda</button>
+      <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
+      <button id="tabBtnTyrimas" onclick="showTab('Tyrimas')">Tyrimas</button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="tools">
+      <button onclick="setType('hybrid')">Hybrid</button>
+      <button onclick="setType('satellite')">Satellite</button>
+      <button onclick="setType('roadmap')">Žemėlapis</button>
+      <button onclick="fitAll()">Centruoti</button>
+      <button id="btnListings" onclick="toggleListingsBtn()">Parduodami</button>
+      <button onclick="toggleLabels()">Label</button>
+      <button onclick="toggleNames()">Vardai</button>
+    </div>
+  </div>
+
+  <div id="panel">
+    <div id="panelHead">
+      <span id="panelTitle">Legenda</span>
+      <button onclick="hidePanel()" title="Slėpti skydą">×</button>
+    </div>
+    <div id="panelBody">
       <div id="tabLegenda" class="tabPane active">
       <span class="sw" style="background:#FFFF00;border:2px dashed #FF0000"></span><b>Apjungtas blokas 0429+0430+0431</b> — 5.0250 ha, iš jų laisva statybai <b>3.39 ha</b> (atmetus dujotiekių AZ ir paveldo zoną; kelio AZ neskaičiuojama — per ją tik įvaža)<br>
       <span class="sw" style="background:#FFF176;border:2px solid #FFFF00"></span>šeimos sklypai <b>0428–0431</b> — ryški geltona, su vardu/Nr./plotu<br>
@@ -114,13 +171,13 @@
       <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span><b>7910/0001:0922</b> — Rimi logistikos centras (12.85 ha, statoma)<br>
       <label class="sznsToggle" style="margin-top:4px">
         <input type="checkbox" checked onchange="toggleAz(this.checked)">
-        <span><span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span><b>Statybų draudimo AZ</b> (dujotiekiai 25 m + kelias 20 m) · <span class="sw" style="background:#FFB300;border:2px solid #FF8F00"></span><b>paveldo AZ 119</b> (KPD derinimas). Zonos persidengia; bloko ir 0428 skaičiai — Tyrimas tab'e</span>
+        <span><span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span><b>Statybų draudimo AZ</b> (dujotiekiai 25 m + kelias 20 m) · <span class="sw" style="background:#FFB300;border:2px solid #FF8F00"></span><b>paveldo AZ 119</b> (KPD derinimas). Zonos persidengia; bloko ir 0428 skaičiai — meniu „Tyrimas“</span>
       </label><br>
       <small>Label ant kiekvieno: pilnas kadastro Nr. + plotas</small>
       <div class="szns" style="margin-top:8px;padding-top:8px">
         <label class="sznsToggle">
           <input type="checkbox" id="listChk" onchange="toggleListings(this.checked)">
-          <b>Parduodami sklypai</b> — 124 skelbimai: <b>53 su tiksliomis ribomis</b>, 72 taškais
+          <span><b>Parduodami sklypai</b> — 124 skelbimai: <b>53 su tiksliomis ribomis</b>, 72 taškais</span>
         </label>
         <div id="listLegend" class="sznsLegend">
           Spustelėk tašką — kainos, plotai, paskirtis.
@@ -146,15 +203,6 @@
           Visos kainos — <b>skelbimų</b>, ne įvykusių sandorių. aruodas.lt, 2026-08-10.
           </small>
         </div>
-      </div>
-      <div class="btns">
-        <button onclick="setType('satellite')">Satellite</button>
-        <button onclick="setType('hybrid')">Hybrid</button>
-        <button onclick="setType('roadmap')">Roadmap</button>
-        <button onclick="fitAll()">Centruoti</button>
-        <button onclick="fitListings()">Rodyti skelbimus</button>
-        <button onclick="toggleLabels()">Label on/off</button>
-        <button onclick="toggleNames()">Vardai on/off</button>
       </div>
       <div class="szns">
         <label class="sznsToggle">
@@ -223,9 +271,6 @@
           sklypą. <span class="badge">≈</span> = tik kaimo centras.
           <span class="badge warn">plotas ≠</span> = skelbimo plotas nesutampa su RC sklypu.
           Visos kainos — <b>skelbimų</b>, ne įvykusių sandorių. aruodas.lt, 2026-08-10.
-          <button style="font-size:11px;padding:1px 6px;cursor:pointer;margin-left:4px"
-                  onclick="document.getElementById('info').classList.add('collapsed')">
-            suskleisti ▲</button>
         </div>
       </div>
       <div id="tabTyrimas" class="tabPane">
@@ -874,6 +919,8 @@
 
     function toggleListings(on) {
       listingsOn = on;
+      const btn = document.getElementById('btnListings');
+      if (btn) btn.classList.toggle('on', on);
       listingMarkers.forEach(m => m.setMap(on ? map : null));
       listingShapes.forEach(s => s.setMap(on ? map : null));
       listingLabels.forEach(l => l.setMap(on ? map : null));
@@ -899,7 +946,10 @@
       (typeof LISTING_PARCELS !== 'undefined' ? LISTING_PARCELS : []).forEach(e => {
         if (e.dist_km <= lim) { e.paths.forEach(r => r.forEach(p => b.extend(p))); n++; }
       });
-      map.fitBounds(b, {top: 40, right: 40, bottom: 40, left: 370});
+      const pnl = document.getElementById('panel');
+      const padL = pnl.classList.contains('hidden')
+        ? 40 : pnl.getBoundingClientRect().width + 40;
+      map.fitBounds(b, {top: 40, right: 40, bottom: 40, left: padL});
       const far = LISTINGS.filter(g => g.dist_km == null || g.dist_km > lim).length;
       document.getElementById('listCount').textContent =
         `rodoma ${n} vietų ≤${lim} km` + (far ? ` · ${far} toliau (nerodoma kadre)` : '');
@@ -908,20 +958,47 @@
     function toggleAz(on) {
       azShapes.forEach(s => s.setMap(on ? map : null));
     }
+    const PANEL_TITLES = {Legenda: 'Legenda', Rinka: 'Parduodami sklypai',
+                          Tyrimas: 'Tyrimo išvados'};
+    let activeTab = 'Legenda';
+
     function showTab(name) {
+      const panel = document.getElementById('panel');
+      // Clicking the active tab toggles the panel shut, like a real menu.
+      if (name === activeTab && !panel.classList.contains('hidden')) {
+        hidePanel();
+        return;
+      }
+      activeTab = name;
       for (const t of ['Legenda', 'Rinka', 'Tyrimas']) {
         document.getElementById('tab' + t).classList.toggle('active', t === name);
         document.getElementById('tabBtn' + t).classList.toggle('active', t === name);
       }
-      // the table needs a wider panel than the legend
-      document.getElementById('info').classList.toggle('wide', name === 'Rinka');
+      document.getElementById('panelTitle').textContent = PANEL_TITLES[name] || name;
+      panel.classList.remove('hidden');
+      panel.classList.toggle('wide', name === 'Rinka');   // table needs the width
       if (name === 'Rinka') {
         if (!listingsOn) {          // a table row is useless if the layer is hidden
-          document.getElementById('listChk').checked = true;
+          const chk = document.getElementById('listChk');
+          if (chk) chk.checked = true;
           toggleListings(true);
         }
         renderRinka();
       }
+    }
+
+    function hidePanel() {
+      document.getElementById('panel').classList.add('hidden');
+      document.querySelectorAll('#topbar nav button')
+        .forEach(b => b.classList.remove('active'));
+    }
+
+    // Layer toggle lives in the top bar now; the legend checkbox stays in sync.
+    function toggleListingsBtn() {
+      const on = !listingsOn;
+      const chk = document.getElementById('listChk');
+      if (chk) chk.checked = on;
+      toggleListings(on);
     }
 
     // ---- Market table ----
@@ -1025,10 +1102,11 @@
 
     function gotoRinka(r) {
       if (!r) return;
-      // The panel covers the left edge while the table is open, so keep the
-      // target clear of it rather than centring it underneath.
-      const padLeft = document.getElementById('info').classList.contains('wide')
-        ? 700 : 60;
+      // Keep the target clear of the side panel rather than centring it
+      // underneath: pad by the panel's real width when it is open.
+      const panel = document.getElementById('panel');
+      const padLeft = panel.classList.contains('hidden')
+        ? 60 : panel.getBoundingClientRect().width + 40;
       if (r.exact) {
         const e = LISTING_PARCELS[r.idx];
         const b = new google.maps.LatLngBounds();
