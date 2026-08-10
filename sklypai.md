@@ -6,13 +6,13 @@
 |--------|----------|
 | **Unikalus Nr. (NTR)** | 4400-1563-8352 |
 | **Kadastrinis Nr.** | 7910/0001:0431 |
-| **Adresas** | Elektrėnų sav., Elektrėnų sen., **Ausieniškių k.** |
+| **Adresas** | Elektrėnų sav., Elektrėnų sen., **Kakliniškių k.** |
 | **Plotas** | **1.6750 ha** |
 | **Paskirties tipas** | 610 (žemės ūkio) |
 | **Suformuotas** | 2008-05-07 |
 | **Apsaugos zona** | Magistralinių dujotiekių apsaugos zona (Ambergrid) |
 
-> ⚠️ Ankstesni dokai vadino kaimą "Kakliniškės" — KLAIDINGA. RC atvirų duomenų ir geoportal žemėlapio patvirtinta: sklypas **Ausieniškių k.**, kadastro bloke 7910/0001.
+> ⚠️ Adresas: **Kakliniškių k.** (patvirtinta Google reverse geocode). Ausieniškių k. yra atskiras kaimas Elektrėnų sen., ~3.5 km nuo mūsų (X546345 Y6071242). RC ZIP nenurodo kaimo pavadinimo — tik seniuniją.
 
 ### Tikslios koordinatės (LKS94 / EPSG:3346)
 

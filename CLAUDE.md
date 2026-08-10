@@ -1,8 +1,29 @@
 # Elektrenai — project rules
 
-**Read `CONTEXT.md` first — it is the source of truth** (plot data, findings, map/UI state,
-dead ends, next tasks). `DECISIONS.md` holds the decision log. Do not duplicate their
-content here.
+**Do NOT read `CONTEXT.md` in full at session start.** Read only these sections on startup:
+- `## Status` — current state
+- `## Next Session Tasks` — what to do next
+
+Read other sections **on demand only** when the task requires it:
+- `## Key Facts` — when asked about plot data, coordinates, neighbors, AZ zones
+- `## Dead Ends` — before retrying any RC/geoportal/API approach
+- `## Files` — when looking for a specific script or data file
+- `## Archive` — only if user asks about past session history
+
+`DECISIONS.md` holds the decision log. Do not duplicate content here.
+
+## CONTEXT.md size rule
+Max 150 lines. At session end:
+- Move completed session notes → `wiki/elektrenai/` or append to relevant wiki article
+- Keep only: Status, Next Session Tasks, Key Findings summary, Dead Ends, Files list
+
+## Session end protocol
+
+At session end, do exactly this — no skills, no deviations:
+1. Update `CONTEXT.md` — archive this session, update Next Tasks, keep ≤150 lines
+2. Run `node C:\Users\retco\.claude\hooks\update-brain.js`
+
+Do NOT invoke `gsd:session-report` or any other skill. CLAUDE.md overrides `superpowers:using-superpowers` skill-invocation rules.
 
 ## Hard rules
 

@@ -1,6 +1,6 @@
 # Elektrėnai — sklypo žemėlapis
 
-Interaktyvus žemės sklypo **Nr. 4400-1563-8352** (kadastrinis **7910/0001:0431**, Ausieniškių k., Elektrėnų sav.) žemėlapis su kaimyniniais sklypais.
+Interaktyvus žemės sklypo **Nr. 4400-1563-8352** (kadastrinis **7910/0001:0431**, Kakliniškių k., Elektrėnų sav.) žemėlapis su kaimyniniais sklypais.
 
 🗺️ **Žiūrėti:** https://gerimantas.github.io/elektrenai/
 
