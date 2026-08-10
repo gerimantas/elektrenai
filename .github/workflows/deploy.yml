@@ -30,15 +30,20 @@ jobs:
           if [ -z "$MAPS_API_KEY" ]; then
             echo "::error::MAPS_API_KEY secret is not set"; exit 1
           fi
+          mkdir -p _site
           # index.html is the Pages entry point, built from the source map page
-          cp sklypas-google.html index.html
-          # replace the placeholder with the secret (no plain-text key in repo)
+          cp sklypas-google.html _site/index.html
           python3 - "$MAPS_API_KEY" <<'PY'
           import sys, pathlib
           key = sys.argv[1]
-          p = pathlib.Path("index.html")
-          p.write_text(p.read_text(encoding="utf-8").replace("__MAPS_API_KEY__", key), encoding="utf-8")
-          print("Injected key into index.html")
+          p = pathlib.Path("_site/index.html")
+          html = p.read_text(encoding="utf-8")
+          # the key goes in via the placeholder, so config.js (local dev only,
+          # git-ignored and therefore never deployed) would just 404 in the browser
+          html = html.replace('  <script src="config.js"></script>\n', "")
+          html = html.replace("__MAPS_API_KEY__", key)
+          p.write_text(html, encoding="utf-8")
+          print("Built _site/index.html: key injected, config.js tag dropped")
           PY
 
       - uses: actions/configure-pages@v5
@@ -46,7 +51,9 @@ jobs:
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          # publish only the built page, not the whole repo (research notes,
+          # planning docs and CONTEXT.md are not meant to be served)
+          path: _site
 
       - id: deployment
         uses: actions/deploy-pages@v4
