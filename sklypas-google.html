@@ -70,6 +70,15 @@
     .tabPane { display: none; }
     .tabPane.active { display: block; }
     #tabRinka { font-size: 12px; }
+    #rinkaTop { border-bottom: 1px solid #e3e8ec; padding-bottom: 8px; margin-bottom: 8px; }
+    .rlegend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11.5px; color: #444; }
+    .rlegend > span { display: inline-flex; align-items: center; white-space: nowrap; }
+    .dot-sw { border: 1px solid #333; border-radius: 50%; }
+    .minibtn { font-size: 11px; padding: 2px 7px; cursor: pointer; border: 1px solid #ccc;
+               background: #f4f6f8; border-radius: 3px; font-family: inherit; }
+    .minibtn:hover { background: #e8ecf0; }
+    .rnote { margin-top: 6px; font-size: 11px; color: #666; line-height: 1.45; }
+    .rnote summary { cursor: pointer; color: #1a73e8; font-size: 11.5px; }
     #rinkaFilters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
                     margin-bottom: 6px; }
     #rinkaFilters select, #rinkaFilters input {
@@ -174,36 +183,6 @@
         <span><span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span><b>Statybų draudimo AZ</b> (dujotiekiai 25 m + kelias 20 m) · <span class="sw" style="background:#FFB300;border:2px solid #FF8F00"></span><b>paveldo AZ 119</b> (KPD derinimas). Zonos persidengia; bloko ir 0428 skaičiai — meniu „Tyrimas“</span>
       </label><br>
       <small>Label ant kiekvieno: pilnas kadastro Nr. + plotas</small>
-      <div class="szns" style="margin-top:8px;padding-top:8px">
-        <label class="sznsToggle">
-          <input type="checkbox" id="listChk" onchange="toggleListings(this.checked)">
-          <span><b>Parduodami sklypai</b> — 124 skelbimai: <b>53 su tiksliomis ribomis</b>, 72 taškais</span>
-        </label>
-        <div id="listLegend" class="sznsLegend">
-          Spustelėk tašką — kainos, plotai, paskirtis.
-          <ul class="sznsTypes">
-            <li><span class="sw" style="background:#E040FB;border:1px solid #000;border-radius:50%"></span>Pramonė / sandėliavimas</li>
-            <li><span class="sw" style="background:#FF6E40;border:1px solid #000;border-radius:50%"></span>Komercinė</li>
-            <li><span class="sw" style="background:#FFEB3B;border:1px solid #000;border-radius:50%"></span>Žemės ūkio</li>
-            <li><span class="sw" style="background:#40C4FF;border:1px solid #000;border-radius:50%"></span>Gyvenamoji</li>
-            <li><span class="sw" style="background:#BDBDBD;border:1px solid #000;border-radius:50%"></span>Kita / nenurodyta</li>
-          </ul>
-          <div style="margin:4px 0">
-            <button style="font-size:11px;padding:2px 7px;cursor:pointer" onclick="fitListings(3)">≤3 km</button>
-            <button style="font-size:11px;padding:2px 7px;cursor:pointer" onclick="fitListings(8)">≤8 km</button>
-            <button style="font-size:11px;padding:2px 7px;cursor:pointer" onclick="fitListings(99)">visi</button>
-            <span id="listCount" style="color:#666;font-size:11px;margin-left:4px"></span>
-          </div>
-          <small>
-          <b>Du tikslumo lygiai:</b><br>
-          — <b>Užpildytas plotas su ribomis</b> = skelbimo žemėlapio taškas atpažintas
-            RC sklype. Tikra sklypo vieta ir forma.<br>
-          — <b>Taškas</b> = skelbimas be žemėlapio taško arba už tirtos zonos.
-            Rodo <b>kaimo centrą</b>, ne sklypą. Skaičius = kiek skelbimų tame kaime.<br>
-          Visos kainos — <b>skelbimų</b>, ne įvykusių sandorių. aruodas.lt, 2026-08-10.
-          </small>
-        </div>
-      </div>
       <div class="szns">
         <label class="sznsToggle">
           <input type="checkbox" id="sznsChk" onchange="toggleSzns(this.checked)">
@@ -222,6 +201,36 @@
       </div>
       </div>
       <div id="tabRinka" class="tabPane">
+        <div id="rinkaTop">
+          <label class="sznsToggle" style="margin-bottom:6px">
+            <input type="checkbox" id="listChk" onchange="toggleListings(this.checked)">
+            <span>Rodyti žemėlapyje — <b>124 skelbimai</b>:
+              <b>53 su tiksliomis ribomis</b>, 72 taškais</span>
+          </label>
+          <div class="rlegend">
+            <span><span class="sw dot-sw" style="background:#E040FB"></span>Pramonė / sandėl.</span>
+            <span><span class="sw dot-sw" style="background:#FF6E40"></span>Komercinė</span>
+            <span><span class="sw dot-sw" style="background:#FFEB3B"></span>Žemės ūkio</span>
+            <span><span class="sw dot-sw" style="background:#40C4FF"></span>Gyvenamoji</span>
+            <span><span class="sw dot-sw" style="background:#BDBDBD"></span>Kita</span>
+          </div>
+          <div style="margin:6px 0 2px">
+            <button class="minibtn" onclick="fitListings(3)">≤3 km</button>
+            <button class="minibtn" onclick="fitListings(8)">≤8 km</button>
+            <button class="minibtn" onclick="fitListings(99)">visi</button>
+            <span id="listCount" style="color:#666;font-size:11px;margin-left:4px"></span>
+          </div>
+          <details class="rnote">
+            <summary>Du tikslumo lygiai — ką reiškia ženklai</summary>
+            — <b>Užpildytas plotas su ribomis</b> = skelbimo žemėlapio taškas
+              atpažintas RC sklype. Tikra sklypo vieta ir forma.<br>
+            — <b>Taškas</b> <span class="badge">≈</span> = skelbimas be žemėlapio
+              taško arba už tirtos zonos. Rodo <b>kaimo centrą</b>, ne sklypą.<br>
+            — <span class="badge warn">plotas ≠</span> = skelbimo plotas nesutampa
+              su RC sklypu; greičiausiai parduodami keli sklypai.<br>
+            Visos kainos — <b>skelbimų</b>, ne įvykusių sandorių. aruodas.lt, 2026-08-10.
+          </details>
+        </div>
         <div id="rinkaFilters">
           <select id="fDist" onchange="renderRinka()">
             <option value="3">≤3 km</option>
@@ -267,10 +276,8 @@
           </table>
         </div>
         <div style="margin-top:6px;color:#888;font-size:11px">
-          Mėlyna juosta kairėje = tikslios ribos žemėlapyje. <b>„→ rodyti"</b> priartina
-          sklypą. <span class="badge">≈</span> = tik kaimo centras.
-          <span class="badge warn">plotas ≠</span> = skelbimo plotas nesutampa su RC sklypu.
-          Visos kainos — <b>skelbimų</b>, ne įvykusių sandorių. aruodas.lt, 2026-08-10.
+          Mėlyna juosta kairėje = tikslios ribos žemėlapyje.
+          <b>„→ rodyti"</b> priartina sklypą.
         </div>
       </div>
       <div id="tabTyrimas" class="tabPane">
@@ -925,7 +932,8 @@
       listingShapes.forEach(s => s.setMap(on ? map : null));
       listingLabels.forEach(l => l.setMap(on ? map : null));
       if (!on && listingInfo) listingInfo.close();
-      document.getElementById('listLegend').classList.toggle('show', on);
+      // The colour key now lives in the Rinka section and is always visible
+      // there, so there is no separate legend block to reveal.
     }
 
     // Fit to the listings that are actually comparable, not the whole
