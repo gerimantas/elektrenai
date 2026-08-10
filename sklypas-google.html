@@ -192,9 +192,6 @@
     </nav>
     <div class="spacer"></div>
     <div class="tools">
-      <button onclick="setType('hybrid')">Hybrid</button>
-      <button onclick="setType('satellite')">Satellite</button>
-      <button onclick="setType('roadmap')">Žemėlapis</button>
       <button onclick="fitAll()">Centruoti</button>
       <button id="btnLegend" class="on" onclick="toggleLegend()">Legenda</button>
       <button id="btnListings" onclick="toggleListingsBtn()">Parduodami</button>
@@ -783,7 +780,9 @@
     function initMap() {
       defineTextLabel();
       map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 54.7929, lng: 24.6829}, zoom: 16, mapTypeId: 'hybrid', tilt: 0
+        center: {lat: 54.7929, lng: 24.6829}, zoom: 16, mapTypeId: 'satellite', tilt: 0,
+        // single fixed map type: the Map/Satellite switcher duplicated the topbar
+        mapTypeControl: false, streetViewControl: false
       });
       for (const [kn, d] of Object.entries(DATA)) {
         const st = STYLE[kn] || NEIGHBOR;
@@ -1292,7 +1291,6 @@
         google.maps.event.trigger(listingMarkers[r.gidx], 'click');
       }
     }
-    function setType(t) { map.setMapTypeId(t); }
     function fitAll() {
       const b = new google.maps.LatLngBounds();
       for (const d of Object.values(DATA)) d.path.forEach(p => b.extend(p));
