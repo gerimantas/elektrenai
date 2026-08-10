@@ -2,7 +2,7 @@
 
 **Tyrimo data:** 2026-06-14  
 **Tyrėjas:** Gerimantas V.  
-**Objektas:** Šeimos žemių blokas 7910/0001:0429+0430+0431 (5.0250 ha), Ausieniškių k., Elektrėnų sav.  
+**Objektas:** Šeimos žemių blokas 7910/0001:0429+0430+0431 (5.0250 ha), **Kakliniškių k.**, Elektrėnų sav.  
 **Kontekstas:** Anoniminis pirkėjas siūlo 10 000 €/ha. Šis dokumentas pagrindžia kontrpoziciją.
 
 ---
@@ -42,7 +42,7 @@
 
 ### 2.2 Aktyvių skelbimų apžvalga (asking kainos)
 
-**Ausieniškių koridorius (0–1 km nuo bloko):**
+**Kakliniškių k. / Ausieniškių k. koridorius (0–3.5 km nuo bloko):**
 
 | Skelbimas | Paskirtis | €/ha | Premija vs RC reali |
 |---|---|---|---|
@@ -102,7 +102,7 @@
 
 - Elektrėnų sav. iš viso: **24 123 sklypų**, **14 973 agri** (RC ZIP 2026)
 - 2026 per ~2 mėn.: **14 paskirties keitimo prašymų** = 0.08% visų agri
-- **Ausieniškių k.: 3 iš 14** (01.3-151, 01.3-170, 01.3-192) — 21% visų prašymų **viename kaime**
+- **Kakliniškių k./apylinkė: 3 iš 14** (01.3-151 Ausieniškių k. ~3.5 km, 01.3-170 ~1.2 km, 01.3-192 Sabališkių k. ~350 m) — 21% visų prašymų **artimoje apylinkėje**
 - Tai klasteris, ne atsitiktinumas
 
 ---
@@ -197,7 +197,7 @@ Abiem atvejais **derybinė galia pardavėjo pusėje** — pirkėjas bijo prarast
 3. **Argumentų hierarchija kontrsiūlyme:**
    - 1° Rimi logistikos centras (12.85 ha, 60 MEUR) — 500 m, suformuotas 2025-11-26
    - 2° BPD SS-070-BPL: kelias 4728 = C2 urbanistinė ašis (oficialus dokumentas)
-   - 3° 3 paskirties keitimo prašymai Ausieniškiuose per 2 mėnesius (0.08% agri per metus → klasteris)
+   - 3° 3 paskirties keitimo prašymai Elektrėnų sen. apylinkėje per 2 mėnesius (01.3-192 Sabališkių k. ~350m, 01.3-170 ~1.2km, 01.3-151 Ausieniškių k. ~3.5km — klasteris)
    - 4° 51.9 m kelio frontažas = pramoninio sklypo prieiga be papildomų mokesčių
    - 5° 0005 sprendimas (jei patvirtintas): pirmas pramoninis precedentas 443 m atstumu
 
@@ -234,7 +234,7 @@ Pirkėjas siūlo 10 000 €/ha — tai **1.6× virš RC realios** agri kainos, b
 
 ### Kontekstas
 
-- Industrializacijos procesas Ausieniškėse **vyksta dabar** — ne spekuliacija: Rimi jau stato, 0005 keitimas šalia, 3 kaimynų prašymai per 2 mėn.
+- Industrializacijos procesas Kakliniškių k./Sabališkių k. apylinkėje **vyksta dabar** — ne spekuliacija: Rimi jau stato, 0005 keitimas šalia, 3 Elektrėnų sen. prašymai per 2 mėn.
 - BPD **nuo 2009 m.** priskiria šį koridorių metropolinei ašiai — pirkėjas tai žino
 - AZ apribojimai (35%) yra žinomi ir įkainoti — lieka 65% laisvo ploto, pakankamo sandėliui/logistikai
 - Rinkos kainų realybė: **pramonės sandorių zonoje dar nėra** — asking ×10–20 virš RC realios, bet realus sandoris gali būti vidury
@@ -245,4 +245,83 @@ Pirkėjas siūlo 10 000 €/ha — tai **1.6× virš RC realios** agri kainos, b
 
 ---
 
-*Šaltiniai: CONTEXT.md, wiki/elektrenai/rinkos-skenas-4728-apylinke.md, wiki/elektrenai/sklypai-master-sarasas.md, wiki/elektrenai/bpd-planavimo-analize.md, wiki/elektrenai/sklypas-4400-1563-8352.md*
+# ATNAUJINIMAS 2026-08-10 (praėjus 8 savaitėms)
+
+Derybos pauzėje. Duomenys perskaičiuoti. **Dalis aukščiau esančių išvadų nebegalioja** —
+jos paliktos kaip 2026-06-14 momentinis įrašas, o pataisos surašytos čia.
+
+## A. Kas pasikeitė faktuose
+
+| Faktas | 2026-06-14 įrašas | 2026-08-10 patikrinta |
+|---|---|---|
+| **Rimi statusas** | „jau stato", 31 000 m² | **BAIGTA 2026-04** (3 mėn. anksčiau), **42 000 m²**, atidarymas vasarą |
+| **0005 (01.3-192)** | sprendimas lauktas 2026-06-16 | **vis dar nespręsta** (2.5 mėn.), `pask_tipas=610` |
+| **Elektrėnų sen. klasteris** | 3 prašymai per 2 mėn., „auga" | **+0 naujų per 8 sav.** — 7 nauji prašymai visi ≥4.6 km, nė vienas ne į pramonę |
+| **Agri 3–8 ha asking mediana** | 7 268 €/ha | **5 952 €/ha (−18.1%)** |
+| **Apylinkės zonos mediana** | 34 046 €/ha | **18 652 €/ha (−45.2%)** |
+| **RC fiskalinė vertė** | 5 880 € | 5 880 € (nepakito; vertinimo data jau 2026-01-01) |
+| **BPD K-RJ-42-20-416** | aktyvus | be pokyčių nuo 2026-03-17 (6-i metai derinime) |
+
+## B. Rinkos kryptis: pardavėjai nuleidžia kainas, sandorių nėra
+
+Pilnas aruodas skenas (134 skelbimai, 124 unikalūs). Sulyginus tuos pačius skelbimus
+pagal gatvę+plotą:
+
+- **84 skelbimai abiejuose skenuose**
+- **14 nuleido kainą**, mediana **−15.3%**, giliausias −33.3%
+- 6 pakėlė, 64 nepakeitė
+- Dingę skelbimai daugiausia = **perkainoti ir iš naujo iškelti**, ne parduoti
+
+Giliausi nuleidimai: Geibonių 10.3 ha (120k→80k, −33%), Peliūnų 1.1 ha (100k→70k, −30%),
+Sodo g. 5.4 ha (85k→63k, −26%).
+
+## C. Kainų kalibravimo perskaičiavimas
+
+| Referensas | €/ha (06-14) | €/ha (08-10) | Pastaba |
+|---|---|---|---|
+| RC fiskalinė | 3 510 | 3 510 | nepakito |
+| RC reali agri (zona 8.16) | 6 200 | 6 200 | nepakito |
+| Agri 3–8 ha asking mediana | 7 268 | **5 952** | −18.1% |
+| **Pirkėjo pasiūlymas** | **10 000** | **10 000** | dabar **1.68× virš** analogų medianos (buvo 1.38×) |
+| Kontrsiūlymas be 0005 | 16 000–18 000 | **peržiūrėtinas** | rėmėsi birželio kainų lygiu |
+| Kontrsiūlymas su 0005 | 22 000–25 000 | **sąlyga neįvyko** | 0005 nepatvirtintas |
+
+**Svarbiausia:** rinkai krentant, 10 000 €/ha pasiūlymo **santykinė padėtis pagerėjo** —
+nuo 1.38× iki 1.68× virš tiesioginių analogų medianos. Birželio kontrsiūlymo intervalas
+(16–18k) buvo išvestas iš birželio kainų; ta išvestis dabar remiasi nukritusia rinka ir
+neįvykusiu 0005 sprendimu. **Jį reikia perskaičiuoti, ne perkelti nepakeistą.**
+
+## D. Argumentų hierarchijos korekcija
+
+**Sustiprėjo:**
+- Rimi — nebe „stato", o **pastatytas ir atidaromas**, 42 000 m², 800 d.v., 500 m.
+  Tai vienintelis argumentas, kurį galima patikrinti pravažiuojant pro šalį.
+
+**Susilpnėjo (nenaudoti nepatikslinus):**
+- „Klasteris auga" — per 8 sav. neaugo. 7 nauji prašymai, visi ≥4.6 km, visi į
+  gyvenamąją/rekreacinę, nė vieno į pramonę.
+- „0005 netrukus bus patvirtintas" — 2.5 mėn. tyla.
+- Bazinis dažnis prieš mus: **per 8 sav. visoje savivaldybėje paskirtį pakeitė 1 sklypas.**
+  Pirkėjas gali šį skaičių rasti taip pat lengvai kaip ir mes.
+
+## E. Metodinis pokytis monitoringui
+
+Nuo 2026-08-06 prašymai registruojami formatu **`PZNPB-K####`**, ne `01.3-NNN`
+(seka baigėsi ties 343). Senasis `.jpg` zondavimo skriptas naujų prašymų **neberanda**
+(diapazonas 350–520 → 0 rezultatų). Būtina skreipinti registro puslapį:
+https://elektrenai.lt/go.php/Prasymai962959
+
+## F. Rekomendacija (peržiūrėta)
+
+Derybos pauzėje, todėl **sprendimo skubos nėra**. Prieš atnaujinant derybas:
+1. Perskaičiuoti kontrsiūlymo intervalą nuo rugpjūčio kainų lygio, ne birželio.
+2. Argumentuoti Rimi **užbaigimu** (patikrinamas faktas), ne klasterio dinamika.
+3. Nelaukti 0005 kaip artimiausio įvykio — 2.5 mėn. tyla rodo, kad tai ne savaičių klausimas.
+4. Turėti atsakymą į pirkėjo tikėtiną kontrargumentą: rinka krito 9–45%, 14 pardavėjų
+   nuleido kainas, per 8 sav. įvyko 1 paskirties keitimas visoje savivaldybėje.
+
+Pilna analizė → `wiki/elektrenai/rinkos-atnaujinimas-2026-08.md`
+
+---
+
+*Šaltiniai: CONTEXT.md, wiki/elektrenai/rinkos-skenas-4728-apylinke.md, wiki/elektrenai/sklypai-master-sarasas.md, wiki/elektrenai/bpd-planavimo-analize.md, wiki/elektrenai/sklypas-4400-1563-8352.md, wiki/elektrenai/rinkos-atnaujinimas-2026-08.md*
