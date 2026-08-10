@@ -780,7 +780,8 @@
     function initMap() {
       defineTextLabel();
       map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 54.7929, lng: 24.6829}, zoom: 16, mapTypeId: 'satellite', tilt: 0,
+        // hybrid = satellite imagery plus Google's road and place labels
+        center: {lat: 54.7929, lng: 24.6829}, zoom: 16, mapTypeId: 'hybrid', tilt: 0,
         // single fixed map type: the Map/Satellite switcher duplicated the topbar
         mapTypeControl: false, streetViewControl: false
       });
