@@ -29,6 +29,40 @@
     .tabPane { display: none; }
     .tabPane.active { display: block; }
     #tabTyrimas { max-height: 62vh; overflow-y: auto; padding-right: 4px; }
+    /* The market table needs more width than the 300px legend panel. */
+    #info.wide { max-width: 660px; }
+    /* collapsed wins over wide, otherwise the header bar stays 660px wide */
+    #info.wide.collapsed { max-width: 300px; }
+    #tabRinka { font-size: 12px; }
+    #rinkaFilters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+                    margin-bottom: 6px; }
+    #rinkaFilters select, #rinkaFilters input {
+      font-size: 11.5px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px;
+    }
+    #rinkaCount { color: #666; font-size: 11px; }
+    .rtWrap { max-height: 56vh; overflow-y: auto; overflow-x: auto; }
+    table.rt { border-collapse: collapse; width: 100%; font-size: 11.5px; }
+    table.rt th {
+      position: sticky; top: 0; background: #f4f6f8; z-index: 1; text-align: left;
+      padding: 4px 6px; border-bottom: 1px solid #d0d5da; cursor: pointer;
+      white-space: nowrap; user-select: none;
+    }
+    table.rt th:hover { background: #e8ecf0; }
+    table.rt th.sorted::after { content: ' ▾'; color: #1a73e8; }
+    table.rt th.sorted.asc::after { content: ' ▴'; }
+    table.rt td { padding: 3px 6px; border-bottom: 1px solid #eef1f3; vertical-align: top; }
+    table.rt tr:hover td { background: #f7fbff; }
+    table.rt tr.exact td:first-child { border-left: 3px solid #1a73e8; }
+    table.rt .num { text-align: right; white-space: nowrap; }
+    table.rt .go {
+      cursor: pointer; color: #1a73e8; font-weight: 600; white-space: nowrap;
+      background: none; border: none; font-size: 11.5px; padding: 0;
+    }
+    table.rt .go:hover { text-decoration: underline; }
+    .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+           border: 1px solid #333; margin-right: 4px; vertical-align: middle; }
+    .badge { font-size: 10px; padding: 0 4px; border-radius: 3px; background: #eee; color: #555; }
+    .badge.warn { background: #FFEBEE; color: #C62828; }
     #tabTyrimas details { margin: 6px 0; }
     #tabTyrimas summary { cursor: pointer; font-weight: 600; font-size: 12.5px; }
     #tabTyrimas ul { margin: 4px 0; padding-left: 17px; }
@@ -68,6 +102,7 @@
     <div id="infoBody">
       <div class="tabs">
         <button id="tabBtnLegenda" class="active" onclick="showTab('Legenda')">Legenda</button>
+        <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
         <button id="tabBtnTyrimas" onclick="showTab('Tyrimas')">Tyrimas</button>
       </div>
       <div id="tabLegenda" class="tabPane active">
@@ -137,6 +172,61 @@
           <small>Spalvos – RC default. 107 ir 171 abu turkio (RC neskiria). Kitos žemėlapio linijos – gretimų sklypų zonos (ne mūsų).</small>
         </div>
       </div>
+      </div>
+      <div id="tabRinka" class="tabPane">
+        <div id="rinkaFilters">
+          <select id="fDist" onchange="renderRinka()">
+            <option value="3">≤3 km</option>
+            <option value="5">≤5 km</option>
+            <option value="8" selected>≤8 km</option>
+            <option value="999">visi</option>
+          </select>
+          <select id="fCat" onchange="renderRinka()">
+            <option value="">visos paskirtys</option>
+            <option value="agri">žemės ūkio</option>
+            <option value="industrial">pramonė / sandėl.</option>
+            <option value="commercial">komercinė</option>
+            <option value="residential">gyvenamoji</option>
+            <option value="other">kita</option>
+          </select>
+          <select id="fArea" onchange="renderRinka()">
+            <option value="">visi plotai</option>
+            <option value="0-1">&lt;1 ha</option>
+            <option value="1-3">1–3 ha</option>
+            <option value="3-8">3–8 ha (mūsų klasė)</option>
+            <option value="8-9999">&gt;8 ha</option>
+          </select>
+          <label style="font-size:11.5px;cursor:pointer">
+            <input type="checkbox" id="fExact" onchange="renderRinka()">
+            tik su ribomis
+          </label>
+          <input id="fText" type="search" placeholder="kaimas / gatvė…"
+                 oninput="renderRinka()" style="width:110px">
+          <span id="rinkaCount"></span>
+        </div>
+        <div class="rtWrap">
+          <table class="rt" id="rinkaTable">
+            <thead><tr>
+              <th data-k="dist">km</th>
+              <th data-k="loc">Vieta</th>
+              <th data-k="area" class="num">ha</th>
+              <th data-k="price" class="num">Kaina</th>
+              <th data-k="pph" class="num">€/ha</th>
+              <th data-k="purpose">Paskirtis</th>
+              <th></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div style="margin-top:6px;color:#888;font-size:11px">
+          Mėlyna juosta kairėje = tikslios ribos žemėlapyje. <b>„→ rodyti"</b> priartina
+          sklypą. <span class="badge">≈</span> = tik kaimo centras.
+          <span class="badge warn">plotas ≠</span> = skelbimo plotas nesutampa su RC sklypu.
+          Visos kainos — <b>skelbimų</b>, ne įvykusių sandorių. aruodas.lt, 2026-08-10.
+          <button style="font-size:11px;padding:1px 6px;cursor:pointer;margin-left:4px"
+                  onclick="document.getElementById('info').classList.add('collapsed')">
+            suskleisti ▲</button>
+        </div>
       </div>
       <div id="tabTyrimas" class="tabPane">
         <details open>
@@ -777,9 +867,139 @@
       azShapes.forEach(s => s.setMap(on ? map : null));
     }
     function showTab(name) {
-      for (const t of ['Legenda', 'Tyrimas']) {
+      for (const t of ['Legenda', 'Rinka', 'Tyrimas']) {
         document.getElementById('tab' + t).classList.toggle('active', t === name);
         document.getElementById('tabBtn' + t).classList.toggle('active', t === name);
+      }
+      // the table needs a wider panel than the legend
+      document.getElementById('info').classList.toggle('wide', name === 'Rinka');
+      if (name === 'Rinka') {
+        if (!listingsOn) {          // a table row is useless if the layer is hidden
+          document.getElementById('listChk').checked = true;
+          toggleListings(true);
+        }
+        renderRinka();
+      }
+    }
+
+    // ---- Market table ----
+    // One flat row list over both tiers: parcels with real boundaries and
+    // village-point listings. `exact` drives the map-zoom behaviour.
+    let rinkaRows = null, rinkaSort = {k: 'dist', asc: true};
+
+    function buildRinkaRows() {
+      const rows = [];
+      (typeof LISTING_PARCELS !== 'undefined' ? LISTING_PARCELS : []).forEach((e, i) => {
+        rows.push({
+          exact: true, idx: i,
+          dist: e.dist_km, loc: (e.village || e.kadastro_nr || '').trim(),
+          area: e.area_ha, price: e.price_eur, pph: e.price_per_ha,
+          purpose: e.purpose, cat: e.cat, mismatch: e.mismatch,
+          kad: e.kadastro_nr, center: e.center
+        });
+      });
+      LISTINGS.forEach((g, gi) => {
+        g.items.forEach(it => {
+          rows.push({
+            exact: false, gidx: gi,
+            dist: g.dist_km,
+            loc: [g.village, it.street].filter(Boolean).join(' ').trim(),
+            area: it.area_ha, price: it.price_eur, pph: it.price_per_ha,
+            purpose: it.purpose, cat: it.cat, mismatch: false,
+            center: {lat: g.lat, lng: g.lng}
+          });
+        });
+      });
+      return rows;
+    }
+
+    function renderRinka() {
+      if (!rinkaRows) rinkaRows = buildRinkaRows();
+      const maxD = parseFloat(document.getElementById('fDist').value);
+      const cat = document.getElementById('fCat').value;
+      const areaSel = document.getElementById('fArea').value;
+      const onlyExact = document.getElementById('fExact').checked;
+      const q = document.getElementById('fText').value.trim().toLowerCase();
+
+      let rows = rinkaRows.filter(r => {
+        if (r.dist == null || r.dist > maxD) return false;
+        if (cat && r.cat !== cat) return false;
+        if (onlyExact && !r.exact) return false;
+        if (areaSel) {
+          const [lo, hi] = areaSel.split('-').map(Number);
+          if (r.area == null || r.area < lo || r.area > hi) return false;
+        }
+        if (q && !(r.loc + ' ' + (r.purpose || '')).toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      const k = rinkaSort.k, sgn = rinkaSort.asc ? 1 : -1;
+      rows.sort((a, b) => {
+        let x = a[k], y = b[k];
+        if (typeof x === 'string' || typeof y === 'string')
+          return sgn * String(x ?? '').localeCompare(String(y ?? ''), 'lt');
+        if (x == null) return 1;
+        if (y == null) return -1;
+        return sgn * (x - y);
+      });
+
+      // median EUR/ha of what is currently filtered -- the number that matters
+      const pph = rows.map(r => r.pph).filter(v => v != null).sort((a, b) => a - b);
+      const med = pph.length
+        ? (pph.length % 2 ? pph[(pph.length - 1) / 2]
+                          : Math.round((pph[pph.length / 2 - 1] + pph[pph.length / 2]) / 2))
+        : null;
+      document.getElementById('rinkaCount').textContent =
+        `${rows.length} sklyp.` + (med != null ? ` · mediana ${eur(med)} €/ha` : '');
+
+      const tb = document.querySelector('#rinkaTable tbody');
+      tb.innerHTML = rows.map((r, i) => `
+        <tr class="${r.exact ? 'exact' : ''}">
+          <td class="num">${r.dist != null ? r.dist.toFixed(2) : '?'}</td>
+          <td><span class="dot" style="background:${LCOLOR[r.cat] || LCOLOR.other}"></span>${r.loc || '—'}
+              ${r.mismatch ? '<span class="badge warn" title="Skelbimo plotas nesutampa su RC sklypu">plotas ≠</span>' : ''}
+              ${r.exact ? '' : '<span class="badge" title="Tik kaimo centras, ne sklypo vieta">≈</span>'}</td>
+          <td class="num">${r.area != null ? r.area : '?'}</td>
+          <td class="num">${eur(r.price)} €</td>
+          <td class="num">${r.pph != null ? eur(r.pph) : '?'}</td>
+          <td style="color:#666">${r.purpose || '?'}</td>
+          <td><button class="go" data-i="${i}">→ rodyti</button></td>
+        </tr>`).join('');
+
+      tb.querySelectorAll('.go').forEach(btn => {
+        btn.onclick = () => gotoRinka(rows[+btn.dataset.i]);
+      });
+
+      document.querySelectorAll('#rinkaTable th[data-k]').forEach(th => {
+        th.classList.toggle('sorted', th.dataset.k === k);
+        th.classList.toggle('asc', th.dataset.k === k && rinkaSort.asc);
+        th.onclick = () => {
+          if (rinkaSort.k === th.dataset.k) rinkaSort.asc = !rinkaSort.asc;
+          else { rinkaSort.k = th.dataset.k; rinkaSort.asc = true; }
+          renderRinka();
+        };
+      });
+    }
+
+    function gotoRinka(r) {
+      if (!r) return;
+      // The panel covers the left edge while the table is open, so keep the
+      // target clear of it rather than centring it underneath.
+      const padLeft = document.getElementById('info').classList.contains('wide')
+        ? 700 : 60;
+      if (r.exact) {
+        const e = LISTING_PARCELS[r.idx];
+        const b = new google.maps.LatLngBounds();
+        e.paths.forEach(ring => ring.forEach(p => b.extend(p)));
+        map.fitBounds(b, {top: 80, right: 80, bottom: 80, left: padLeft});
+        google.maps.event.trigger(listingShapes[r.idx], 'click');
+      } else {
+        const b = new google.maps.LatLngBounds();
+        const d = 0.004;
+        b.extend({lat: r.center.lat - d, lng: r.center.lng - d});
+        b.extend({lat: r.center.lat + d, lng: r.center.lng + d});
+        map.fitBounds(b, {top: 80, right: 80, bottom: 80, left: padLeft});
+        google.maps.event.trigger(listingMarkers[r.gidx], 'click');
       }
     }
     function setType(t) { map.setMapTypeId(t); }
