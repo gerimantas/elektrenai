@@ -7,10 +7,13 @@
   <style>
     html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; }
 
-    /* App chrome: a fixed top bar, and a side panel that slides in under it.
-       The map fills everything below the bar and is never covered by a
-       floating card. */
-    :root { --bar-h: 46px; --panel-w: 380px; --panel-w-wide: 700px; }
+    /* Two view modes under a fixed bar:
+         - "Žemėlapis" fills the window; Legenda rides as a slim side panel
+           because it only makes sense next to what it labels
+         - "Rinka" and "Tyrimas" are full-window documents with a comfortable
+           reading measure. They do not need the map beside them, and squeezing
+           prose into a 380px column was the reason this UI was unreadable. */
+    :root { --bar-h: 46px; --legend-w: 380px; }
 
     #map { position: absolute; top: var(--bar-h); left: 0; right: 0; bottom: 0; }
 
@@ -45,15 +48,17 @@
     }
     #topbar .tools button:hover { background: rgba(255,255,255,.19); color: #fff; }
     #topbar .tools button.on { background: #4da3ff; color: #08243d; font-weight: 600; }
+    /* map-only controls are pointless while reading a document */
+    body.doc #topbar .tools { display: none; }
 
+    /* --- Legend: side panel over the map --- */
     #panel {
       position: absolute; top: var(--bar-h); left: 0; bottom: 0; z-index: 15;
-      width: var(--panel-w); background: #fff; overflow: hidden;
+      width: var(--legend-w); background: #fff; overflow: hidden;
       display: flex; flex-direction: column;
       box-shadow: 2px 0 10px rgba(0,0,0,.25);
-      transition: transform .18s ease, width .18s ease;
+      transition: transform .18s ease;
     }
-    #panel.wide { width: var(--panel-w-wide); }
     #panel.hidden { transform: translateX(-100%); }
     #panelHead {
       display: flex; align-items: center; justify-content: space-between;
@@ -65,8 +70,30 @@
       line-height: 1; color: #7c8894; padding: 2px 6px; border-radius: 4px;
     }
     #panelHead button:hover { background: #e6ebf0; color: #23303c; }
-    #panelBody { flex: 1; overflow-y: auto; padding: 12px 14px; font-size: 12.5px;
-                 line-height: 1.5; }
+    #panelBody { flex: 1; overflow-y: auto; padding: 12px 16px 20px;
+                 font-size: 12.5px; line-height: 1.5; color: #22303c; }
+
+    /* --- Document views: Rinka and Tyrimas --- */
+    #doc {
+      position: absolute; top: var(--bar-h); left: 0; right: 0; bottom: 0;
+      z-index: 18; background: #fbfcfd; overflow-y: auto; display: none;
+    }
+    body.doc #doc { display: block; }
+    .docInner { max-width: 78ch; margin: 0 auto; padding: 26px 28px 60px;
+                font-size: 14px; line-height: 1.7; color: #1f2b38; }
+    /* the table wants width; prose does not */
+    .docInner.table { max-width: 1180px; }
+    .docInner h2 { font-size: 19px; margin: 0 0 4px; color: #16222e; }
+    .docInner .lead { color: #64727f; font-size: 12.5px; margin-bottom: 18px; }
+    #tabTyrimas li { margin-bottom: 6px; }
+    #tabTyrimas summary { padding: 4px 0; font-size: 14px; }
+    #tabTyrimas details { margin: 10px 0; border-bottom: 1px solid #e8edf1;
+                          padding-bottom: 6px; }
+    #tabTyrimas .src { display: block; margin-top: 8px; }
+    #tabTyrimas li { margin-bottom: 5px; }
+    #tabTyrimas summary { padding: 3px 0; }
+    #tabTyrimas details[open] > summary { margin-bottom: 3px; }
+    #tabTyrimas .src { display: block; margin-top: 6px; }
     .tabPane { display: none; }
     .tabPane.active { display: block; }
     #tabRinka { font-size: 12px; }
@@ -159,7 +186,7 @@
   <div id="topbar">
     <div class="brand">Elektrėnai <small>· 7910/0001 blokas · duomenys 2026-08-10</small></div>
     <nav>
-      <button id="tabBtnLegenda" class="active" onclick="showTab('Legenda')">Legenda</button>
+      <button id="tabBtnZemelapis" class="active" onclick="showTab('Zemelapis')">Žemėlapis</button>
       <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
       <button id="tabBtnTyrimas" onclick="showTab('Tyrimas')">Tyrimas</button>
     </nav>
@@ -169,6 +196,7 @@
       <button onclick="setType('satellite')">Satellite</button>
       <button onclick="setType('roadmap')">Žemėlapis</button>
       <button onclick="fitAll()">Centruoti</button>
+      <button id="btnLegend" class="on" onclick="toggleLegend()">Legenda</button>
       <button id="btnListings" onclick="toggleListingsBtn()">Parduodami</button>
       <button onclick="toggleLabels()">Label</button>
       <button onclick="toggleNames()">Vardai</button>
@@ -177,8 +205,8 @@
 
   <div id="panel">
     <div id="panelHead">
-      <span id="panelTitle">Legenda</span>
-      <button onclick="hidePanel()" title="Slėpti skydą">×</button>
+      <span>Legenda</span>
+      <button onclick="hidePanel()" title="Slėpti legendą">×</button>
     </div>
     <div id="panelBody">
       <div id="tabLegenda" class="tabPane active">
@@ -209,7 +237,15 @@
         </div>
       </div>
       </div>
-      <div id="tabRinka" class="tabPane">
+    </div>
+  </div>
+  <div id="doc">
+    <div id="tabRinka" class="tabPane">
+      <div class="docInner table">
+        <h2>Parduodami sklypai</h2>
+        <div class="lead">124 skelbimai Elektrėnų sav. · aruodas.lt, 2026-08-10 ·
+          spustelėk „→ rodyti“ ir sklypas atsidarys žemėlapyje</div>
+
         <div id="rinkaTop">
           <label class="sznsToggle" style="margin-bottom:6px">
             <input type="checkbox" id="listChk" onchange="toggleListings(this.checked)">
@@ -289,7 +325,11 @@
           <b>„→ rodyti"</b> priartina sklypą.
         </div>
       </div>
-      <div id="tabTyrimas" class="tabPane">
+    </div>
+    <div id="tabTyrimas" class="tabPane">
+      <div class="docInner">
+        <h2>Tyrimo išvados</h2>
+
         <div class="updated">
           <b>Duomenys atnaujinti: 2026-08-10</b>
           <span>· ankstesnis skenas 2026-06-17 ·
@@ -1070,39 +1110,49 @@
     function toggleAz(on) {
       azShapes.forEach(s => s.setMap(on ? map : null));
     }
-    const PANEL_TITLES = {Legenda: 'Legenda', Rinka: 'Parduodami sklypai',
-                          Tyrimas: 'Tyrimo išvados'};
-    let activeTab = 'Legenda';
+    let activeTab = 'Zemelapis';
 
+    // Three views. "Zemelapis" is the map with its legend panel; the other two
+    // are full-window documents -- prose and a wide table do not need the map
+    // beside them, and a narrow column was what made them hard to read.
     function showTab(name) {
-      const panel = document.getElementById('panel');
-      // Clicking the active tab toggles the panel shut, like a real menu.
-      if (name === activeTab && !panel.classList.contains('hidden')) {
-        hidePanel();
-        return;
-      }
       activeTab = name;
-      for (const t of ['Legenda', 'Rinka', 'Tyrimas']) {
+      const isDoc = (name === 'Rinka' || name === 'Tyrimas');
+      document.body.classList.toggle('doc', isDoc);
+
+      for (const t of ['Rinka', 'Tyrimas']) {
         document.getElementById('tab' + t).classList.toggle('active', t === name);
+      }
+      for (const t of ['Zemelapis', 'Rinka', 'Tyrimas']) {
         document.getElementById('tabBtn' + t).classList.toggle('active', t === name);
       }
-      document.getElementById('panelTitle').textContent = PANEL_TITLES[name] || name;
-      panel.classList.remove('hidden');
-      panel.classList.toggle('wide', name === 'Rinka');   // table needs the width
+      document.getElementById('panel').classList.toggle('hidden', isDoc || !legendOn);
+
       if (name === 'Rinka') {
-        if (!listingsOn) {          // a table row is useless if the layer is hidden
+        if (!listingsOn) {          // rows are useless if the layer is off
           const chk = document.getElementById('listChk');
           if (chk) chk.checked = true;
           toggleListings(true);
         }
         renderRinka();
       }
+      // Google Maps must be told the viewport changed, otherwise it keeps the
+      // stale size it measured while hidden and renders a grey strip.
+      if (!isDoc && map) {
+        google.maps.event.trigger(map, 'resize');
+      }
     }
 
+    let legendOn = true;
+    function toggleLegend() {
+      legendOn = !legendOn;
+      document.getElementById('panel').classList.toggle('hidden', !legendOn);
+      document.getElementById('btnLegend').classList.toggle('on', legendOn);
+    }
     function hidePanel() {
+      legendOn = false;
       document.getElementById('panel').classList.add('hidden');
-      document.querySelectorAll('#topbar nav button')
-        .forEach(b => b.classList.remove('active'));
+      document.getElementById('btnLegend').classList.remove('on');
     }
 
     // Layer toggle lives in the top bar now; the legend checkbox stays in sync.
@@ -1214,6 +1264,14 @@
 
     function gotoRinka(r) {
       if (!r) return;
+      // The table lives in a full-window document, so switch to the map first.
+      // fitBounds on a just-revealed map uses the size it had while hidden, so
+      // defer one frame to let layout and the resize event settle.
+      if (document.body.classList.contains('doc')) {
+        showTab('Zemelapis');
+        requestAnimationFrame(() => gotoRinka(r));
+        return;
+      }
       // Keep the target clear of the side panel rather than centring it
       // underneath: pad by the panel's real width when it is open.
       const panel = document.getElementById('panel');
