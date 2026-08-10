@@ -727,10 +727,42 @@
       return (n == null) ? '?' : n.toLocaleString('lt-LT');
     }
 
+    // The portal serves purposes in English as comma-joined components
+    // ("Factory, storage, commercial"), so translate per component rather than
+    // per full string -- 30 combinations arise from 9 terms.
+    const PURPOSE_LT = {
+      'agricultural': 'žemės ūkio',
+      'residential land': 'gyvenamoji',
+      'commercial': 'komercinė',
+      'factory': 'gamybos',
+      'storage': 'sandėliavimo',
+      'forestrial': 'miškų ūkio',
+      'recreational': 'rekreacinė',
+      'collective garden': 'mėgėjų sodo',
+      'other': 'kita'
+    };
+
+    function purposeLt(s) {
+      if (!s || s === '?') return '—';
+      const parts = s.split(',').map(p => p.trim()).filter(Boolean);
+      const out = parts.map(p => PURPOSE_LT[p.toLowerCase()] || p);
+      if (!out.length) return '—';
+      // capitalise the first component only, like a Lithuanian sentence
+      out[0] = out[0].charAt(0).toUpperCase() + out[0].slice(1);
+      return out.join(', ');
+    }
+
     function buildListings() {
-      // Listings whose cadastral number was found on the listing page get their
-      // real RC boundary. The rest stay as village-centre points -- drawing a
-      // made-up boundary on a map about land value would be worse than a dot.
+      // Built first: both the polygon and marker handlers below reference it.
+      // Narrow, anchored above the marker, so it stays clear of the left panel.
+      listingInfo = new google.maps.InfoWindow({
+        maxWidth: 340,
+        pixelOffset: new google.maps.Size(0, -6)
+      });
+
+      // Listings resolved to a real RC parcel get their true boundary; the rest
+      // stay as village-centre points -- a made-up boundary on a map about land
+      // value would be worse than a dot.
       for (const e of (typeof LISTING_PARCELS !== 'undefined' ? LISTING_PARCELS : [])) {
         const color = LCOLOR[e.cat] || LCOLOR.other;
         // Area-mismatch parcels are drawn hollow: the boundary is real, but it
@@ -745,6 +777,10 @@
         poly.addListener('click', () => {
           listingInfo.setContent(`
             <div style="font:12.5px system-ui;max-width:340px">
+              <button onclick="closeListingInfo()" title="Uždaryti"
+                style="float:right;border:none;background:#eee;border-radius:3px;
+                       cursor:pointer;font-size:14px;line-height:1;padding:2px 7px;
+                       margin:-2px -2px 2px 6px;color:#444">×</button>
               <div style="font-size:13px;font-weight:600">${e.village || e.kadastro_nr}</div>
               <div style="color:#666;margin-bottom:6px">${e.dist_km} km nuo bloko ·
                 ${e.kadastro_nr || ''} · tikslios ribos</div>
@@ -763,7 +799,7 @@
                 <tr><td style="padding:2px 8px 2px 0">Vieneto kaina</td>
                     <td style="text-align:right">${eur(e.price_per_ha)} €/ha</td></tr>
               </table>
-              <div style="color:#777;font-size:11px;margin-top:4px">${e.purpose}</div>
+              <div style="color:#777;font-size:11px;margin-top:4px">${purposeLt(e.purpose)}</div>
               <div style="margin-top:6px;color:#999;font-size:11px">
                 Ribos iš RC atvirų duomenų: skelbimo žemėlapio taškas → sklypas.<br>
                 Skelbimo kaina, ne sandoris. aruodas.lt, 2026-08-10.
@@ -784,12 +820,6 @@
         listingLabels.push(lbl);
       }
 
-      // Anchor the window above the marker and keep it narrow, so it stays
-      // clear of the legend panel on the left.
-      listingInfo = new google.maps.InfoWindow({
-        maxWidth: 340,
-        pixelOffset: new google.maps.Size(0, -6)
-      });
       for (const g of LISTINGS) {
         const color = LCOLOR[g.cat] || LCOLOR.other;
         const m = new google.maps.Marker({
@@ -812,10 +842,14 @@
             <td style="padding:2px 6px;text-align:right"><b>${eur(it.price_eur)} €</b></td>
             <td style="padding:2px 0 2px 6px;text-align:right;color:#555">${eur(it.price_per_ha)} €/ha</td>
           </tr>
-          <tr><td colspan="4" style="padding:0 0 6px 0;color:#777;font-size:11px">${it.purpose}</td></tr>`).join('');
+          <tr><td colspan="4" style="padding:0 0 6px 0;color:#777;font-size:11px">${purposeLt(it.purpose)}</td></tr>`).join('');
         m.addListener('click', () => {
           listingInfo.setContent(`
             <div style="font:12.5px system-ui;max-width:340px">
+              <button onclick="closeListingInfo()" title="Uždaryti"
+                style="float:right;border:none;background:#eee;border-radius:3px;
+                       cursor:pointer;font-size:14px;line-height:1;padding:2px 7px;
+                       margin:-2px -2px 2px 6px;color:#444">×</button>
               <div style="font-size:13px;font-weight:600;margin-bottom:2px">${g.village}</div>
               <div style="color:#666;margin-bottom:6px">${g.dist_km} km nuo bloko · ${g.n} skelbimas(-ai)</div>
               <table style="border-collapse:collapse">${rows}</table>
@@ -829,6 +863,9 @@
         listingMarkers.push(m);
       }
     }
+
+    // Called from the inline onclick in both info windows, so it must be global.
+    function closeListingInfo() { if (listingInfo) listingInfo.close(); }
 
     function toggleListings(on) {
       listingsOn = on;
@@ -929,7 +966,7 @@
           const [lo, hi] = areaSel.split('-').map(Number);
           if (r.area == null || r.area < lo || r.area > hi) return false;
         }
-        if (q && !(r.loc + ' ' + (r.purpose || '')).toLowerCase().includes(q)) return false;
+        if (q && !(r.loc + ' ' + purposeLt(r.purpose)).toLowerCase().includes(q)) return false;
         return true;
       });
 
@@ -962,7 +999,7 @@
           <td class="num">${r.area != null ? r.area : '?'}</td>
           <td class="num">${eur(r.price)} €</td>
           <td class="num">${r.pph != null ? eur(r.pph) : '?'}</td>
-          <td style="color:#666">${r.purpose || '?'}</td>
+          <td style="color:#666">${purposeLt(r.purpose)}</td>
           <td><button class="go" data-i="${i}">→ rodyti</button></td>
         </tr>`).join('');
 
