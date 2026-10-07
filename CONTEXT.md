@@ -14,8 +14,6 @@ boundaries. Committed locally, NOT pushed to Pages.
 - Check 0005 outcome every 2–4 weeks: `python C:/Users/retco/.ai-skills/elektrenai/scripts/check_0005.py`
 - Monitor new purpose-change requests via the register page (the `.jpg` probe is
   dead — numbering changed to PZNPB-K####): `scripts/check_requests.py`
-- Decide whether dashboard-v1.html is still wanted now the map carries the same
-  content — spec: `.planning/dashboard-analysis-content.md`
 
 ## Key Facts
 - Plot + neighbors + AZ zones → [[wiki/elektrenai/sklypas-4400-1563-8352]]
@@ -50,8 +48,6 @@ boundaries. Committed locally, NOT pushed to Pages.
 
 ## Files
 - `sklypas-google.html` — main interactive map
-- `dashboard-v1.html` — family decision dashboard (uncommitted; may be redundant
-  now the map carries the same content)
 - `parcels_42/plot_7910_0001_0431.json` — plot GeoJSON
 - `.env` / `gen_config.py` / `config.js` — Maps API key (git-ignored)
 - `.github/workflows/deploy.yml` — Pages deploy
