@@ -16,10 +16,10 @@ listings, 22 exact boundaries). Committed locally, NOT pushed to Pages.
   rested on premises that are both gone; inputs: `wiki/elektrenai/rinkos-atnaujinimas-2026-10.md` § 5, 8
 - More exact map boundaries need the user to clear aruodas's press-and-hold wall in
   Chrome, then `python .lt-parcels-cache/fetch_coords.py` (resumes, stops on the wall)
-- Check 0005 outcome every 2–4 weeks: `python .claude/skills/elektrenai/scripts/check_0005.py`
+- Check 0005 outcome every 2–4 weeks: `python C:/Users/retco/.ai-skills/elektrenai/scripts/check_0005.py`
 - Find out what is planned on the re-parcelled 7930/0002:0730–0733 (0.2–0.3 km S)
 - Monitor new purpose-change requests via the register page (the `.jpg` probe is
-  dead — numbering changed to PZNPB-K####): `.claude/skills/elektrenai/scripts/check_requests.py`
+  dead — numbering changed to PZNPB-K####): `C:/Users/retco/.ai-skills/elektrenai/scripts/check_requests.py`
 
 ## Key Facts
 - Plot + neighbors + AZ zones → [[wiki/elektrenai/sklypas-4400-1563-8352]]
@@ -33,7 +33,7 @@ listings, 22 exact boundaries). Committed locally, NOT pushed to Pages.
 - Rugpjūčio atnaujinimas → [[wiki/elektrenai/rinkos-atnaujinimas-2026-08]]
 - **Realūs sandoriai + RC formulės blokui** → [[wiki/elektrenai/rc-sandoriu-duomenys-2026]]
 - Projekto darbo eiga, monitoringas, klaidų istorija → `elektrenai` skill
-  (`.claude/skills/elektrenai/` in this repo)
+  (`C:/Users/retco/.ai-skills/elektrenai/`, private ai-skills repo; scripts in `scripts/`, data stays here)
 
 ## Dead Ends
 - All RC/geoportal WFS/query/geocoding APIs: 401 — do not retry
@@ -53,7 +53,7 @@ listings, 22 exact boundaries). Committed locally, NOT pushed to Pages.
   silently, every plot gets the same point. Check `Counter(geocode_method)`.
 - `pask_tipas=995` is "other purpose", NOT road. Roads are cadastral block /7001.
 - Google geocode with a key still fails silently on genitive village names: returns
-  the municipality (6.69 km) as `google`. Run `.firecrawl/regeocode_villages.py`.
+  the municipality (6.69 km) as `google`. Run the skill's `scripts/regeocode_villages.py`.
 - aruodas listing pages: press-and-hold bot wall since 2026-10 — needs the user,
   not the agent. List pages still scan fine via CDP.
 
@@ -64,7 +64,7 @@ listings, 22 exact boundaries). Committed locally, NOT pushed to Pages.
 - `.github/workflows/deploy.yml` — Pages deploy
 - `.firecrawl/market_geo_2026-10-09.json` — 127 listings, geocoded + village fix
 - `.firecrawl/listing_by_point.json` — 27 live listings resolved via August pins
-- `.firecrawl/regeocode_villages.py` — fixes Google municipality fallback
+- Pipeline scripts (scan, compare, map layer, zones) — in the skill's `scripts/`
 - `.lt-parcels-cache/gis_pub_parcels_42_<date>.zip` — dated RC snapshots (diff baselines)
 - `.firecrawl/rc_model_calc.py` — RC 2026 formulas applied to the block
 - `.lt-parcels-cache/masvert/` — RC valuation report v36 (10 files)
