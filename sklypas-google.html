@@ -186,7 +186,7 @@
 </head>
 <body>
   <div id="topbar">
-    <div class="brand">Elektrėnai <small>· 7910/0001 blokas · duomenys 2026-10-09</small></div>
+    <div class="brand">Elektrėnai <small>· 7910/0001 blokas · duomenys 2026-10-09 · versija <span id="buildVer">dev</span></small></div>
     <nav>
       <button id="tabBtnZemelapis" class="active" onclick="showTab('Zemelapis')">Žemėlapis</button>
       <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
@@ -585,6 +585,13 @@
       path: [{lat: 54.794575, lng: 24.681621}, {lat: 54.794499, lng: 24.681966}, {lat: 54.79431, lng: 24.682815}, {lat: 54.794212, lng: 24.682759}, {lat: 54.794194, lng: 24.682749}, {lat: 54.793984, lng: 24.682629}, {lat: 54.793762, lng: 24.682503}, {lat: 54.792245, lng: 24.68164}, {lat: 54.791381, lng: 24.680315}, {lat: 54.790982, lng: 24.679702}, {lat: 54.790991, lng: 24.679441}, {lat: 54.791009, lng: 24.678914}, {lat: 54.794758, lng: 24.680682}, {lat: 54.794628, lng: 24.68135}, {lat: 54.794575, lng: 24.681621}],
       center: {lat: 54.792967, lng: 24.680847}, plotas: '5.0250'
     };
+
+    // Build version: local dev reads it from config.js (gen_config.py); the deploy
+    // workflow replaces the placeholder with the deployed commit.
+    document.addEventListener('DOMContentLoaded', () => {
+      const v = window.BUILD_VERSION || '__BUILD_VERSION__';
+      document.getElementById('buildVer').textContent = v.startsWith('__') ? 'dev' : v;
+    });
 
     // owner first names per parcel, toggled with the "Vardai" button
     const NAMES = {
