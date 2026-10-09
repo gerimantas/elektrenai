@@ -56,3 +56,20 @@
 - RC ZIP formavimo_data = ZIP gen. data — aklagatvis paskirties istorija
 - **Halucinacijos taisymas (5+ sesijos):** mūsų blokas = Kakliniškių k., ne Ausieniškių k. Pataisyta: sklypai.md, TYRIMO-ISVADOS.md, README.md, CONTEXT.md, sklypai-master-sarasas.md, paskirties-keitimo-precedentai.md, sklypas-4400-1563-8352.md, bpd-planavimo-analize.md, rinkos-skenas-4728-apylinke.md, DECISIONS.md, dashboard-analysis-content.md
 - Facts → [[wiki/elektrenai/paskirties-keitimo-precedentai]]
+
+### Session 2026-08-10
+- **Full data refresh after 8 weeks.** Rimi centre BUILT (April 2026, 42 000 m²
+  not 31 000); 0005 undecided 2.5 months; cluster gained 0 new members (7 new
+  requests, nearest 4.62 km, none industrial); market down 9–45 %, 14 of 84
+  listings cut price. Base rate: 1 purpose change municipality-wide in 8 weeks.
+- **RC mass-valuation report mined** — zone 8.16 has too few transactions, its
+  figures are MODELLED (Kprikl 1.63), not transaction-based; earlier documents
+  mislabelled them. Zone 8.16 holds 82 industrial plots, most of all 26 zones.
+  RC formulas applied to the block: purpose change = ×13–19 fiscal value.
+- **Map rebuilt** as a 3-view app: 53 listings resolved to real RC boundaries via
+  their embedded map pin (address cannot do this), sortable/filterable Rinka
+  table, Tyrimas as a full-window dated document.
+- `elektrenai` skill created; `lt-parcels` extended with the pin method, the
+  silent-failure list and the RC report corrections.
+- Facts → [[wiki/elektrenai/rinkos-atnaujinimas-2026-08]],
+  [[wiki/elektrenai/rc-sandoriu-duomenys-2026]]

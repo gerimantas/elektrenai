@@ -1,25 +1,27 @@
 # Elektrenai — CONTEXT
 
 ## Status
-Full data refresh 2026-10-09. Nothing decisive moved: Rimi is OPERATING but with
-~300 staff (800 = long-term); 0005 still undecided (~4 months); 15 new requests,
-none industrial within 11 km; same analogue listings flat — the 3–8 ha median
-jump (5 952 → 10 484 €/ha) is listing turnover. Five silent failures found and
-fixed (town plots dropped, Google municipality fallback, aruodas bot wall,
-self-overwriting diff, baseline rotation). Map listings layer rebuilt (126
-listings, 22 exact boundaries). Committed locally, NOT pushed to Pages.
+2026-10-09: data refreshed (Rimi OPERATING with ~300 staff; 0005 still undecided
+~4 months; no industrial request within 11 km; analogue asks flat — the 3–8 ha
+median jump is listing turnover). Map live with dark theme, water zones (163/164
++ 50 m band), 0432 ("J. J. paveldėtojai") zones. A private negotiation track is
+open — details live only in the private skill (`references/lease.md`) and the
+git-ignored `contracts/`; this repo is public, so none of it is written here.
+Skill + pipeline scripts moved to the private ai-skills repo. All pushed.
 
 ## Next Tasks
-- Push the 2026-10-09 refresh to Pages after the user reviews it on localhost
-  (`python gen_config.py && python -m http.server 8123`)
-- Re-derive the counter-offer from October inputs — the June range (16–18 k€/ha)
-  rested on premises that are both gone; inputs: `wiki/elektrenai/rinkos-atnaujinimas-2026-10.md` § 5, 8
-- More exact map boundaries need the user to clear aruodas's press-and-hold wall in
-  Chrome, then `python .lt-parcels-cache/fetch_coords.py` (resumes, stops on the wall)
-- Check 0005 outcome every 2–4 weeks: `python C:/Users/retco/.ai-skills/elektrenai/scripts/check_0005.py`
-- Find out what is planned on the re-parcelled 7930/0002:0730–0733 (0.2–0.3 km S)
-- Monitor new purpose-change requests via the register page (the `.jpg` probe is
-  dead — numbering changed to PZNPB-K####): `C:/Users/retco/.ai-skills/elektrenai/scripts/check_requests.py`
+- Private negotiation track — next step and open questions in the skill's
+  `references/lease.md` and `contracts/` (not in this public repo)
+- Re-derive the sale counter-offer from October inputs — the June range rested on
+  premises that are both gone; inputs: `wiki/elektrenai/rinkos-atnaujinimas-2026-10.md` § 5, 8
+- Check 0005 every 2–4 weeks: `python C:/Users/retco/.ai-skills/elektrenai/scripts/check_0005.py`
+- Monitor purpose-change requests: `C:/Users/retco/.ai-skills/elektrenai/scripts/check_requests.py`
+- Find out what is planned on re-parcelled 7930/0002:0730–0733 (0.2–0.3 km S)
+- Skill hardening (analysis 2026-10-09): one `rebuild_map_layer.py`; checks in
+  `refresh_all.py` (parsed = Found N, no 6.69 km point, bot wall); move
+  `restricted_parcel.py` / `water_zones.py` to the lt-parcels skill
+- More exact map boundaries: user clears aruodas's hold-button wall, then the
+  skill's `scripts/fetch_coords.py` (resumes, stops on the wall)
 
 ## Key Facts
 - Plot + neighbors + AZ zones → [[wiki/elektrenai/sklypas-4400-1563-8352]]
@@ -32,6 +34,7 @@ listings, 22 exact boundaries). Committed locally, NOT pushed to Pages.
 - **Spalio atnaujinimas (naujausi skaičiai)** → [[wiki/elektrenai/rinkos-atnaujinimas-2026-10]]
 - Rugpjūčio atnaujinimas → [[wiki/elektrenai/rinkos-atnaujinimas-2026-08]]
 - **Realūs sandoriai + RC formulės blokui** → [[wiki/elektrenai/rc-sandoriu-duomenys-2026]]
+- Private negotiation material → skill `references/lease.md` + `contracts/` (git-ignored)
 - Projekto darbo eiga, monitoringas, klaidų istorija → `elektrenai` skill
   (`C:/Users/retco/.ai-skills/elektrenai/`, private ai-skills repo; scripts in `scripts/`, data stays here)
 
@@ -56,39 +59,45 @@ listings, 22 exact boundaries). Committed locally, NOT pushed to Pages.
   the municipality (6.69 km) as `google`. Run the skill's `scripts/regeocode_villages.py`.
 - aruodas listing pages: press-and-hold bot wall since 2026-10 — needs the user,
   not the agent. List pages still scan fine via CDP.
+- e-seimas PDF links return 403 to curl — download through the browser.
+- BrowserOS neo `request_human_help` returned "resolved" twice with nothing done —
+  re-check the page after it returns.
 
 ## Files
 - `sklypas-google.html` — main interactive map
 - `parcels_42/plot_7910_0001_0431.json` — plot GeoJSON
 - `.env` / `gen_config.py` / `config.js` — Maps API key (git-ignored)
-- `.github/workflows/deploy.yml` — Pages deploy
+- `.github/workflows/deploy.yml` — Pages deploy (injects key + build version)
+- `serve.py` — local no-cache server, port 8123; top bar shows the commit
+- `legal/` — official law PDFs (IX-1314, XIII-2166, Civil Code) + README of articles used
+- `contracts/` — private working documents (git-ignored, never committed)
 - `.firecrawl/market_geo_2026-10-09.json` — 127 listings, geocoded + village fix
 - `.firecrawl/listing_by_point.json` — 27 live listings resolved via August pins
 - Pipeline scripts (scan, compare, map layer, zones) — in the skill's `scripts/`
 - `.lt-parcels-cache/gis_pub_parcels_42_<date>.zip` — dated RC snapshots (diff baselines)
-- `.firecrawl/rc_model_calc.py` — RC 2026 formulas applied to the block
 - `.lt-parcels-cache/masvert/` — RC valuation report v36 (10 files)
 - `.firecrawl/bpd-tekstine-dalis.pdf` — BPD SS-070-BPL (76 pp)
 - `lt-parcels/scripts/` — generic LT parcel tooling (see the skill)
 
 ## Archive
 
-### Session 2026-08-10 (this)
-- **Full data refresh after 8 weeks.** Rimi centre BUILT (April 2026, 42 000 m²
-  not 31 000); 0005 undecided 2.5 months; cluster gained 0 new members (7 new
-  requests, nearest 4.62 km, none industrial); market down 9–45 %, 14 of 84
-  listings cut price. Base rate: 1 purpose change municipality-wide in 8 weeks.
-- **RC mass-valuation report mined** — zone 8.16 has too few transactions, its
-  figures are MODELLED (Kprikl 1.63), not transaction-based; earlier documents
-  mislabelled them. Zone 8.16 holds 82 industrial plots, most of all 26 zones.
-  RC formulas applied to the block: purpose change = ×13–19 fiscal value.
-- **Map rebuilt** as a 3-view app: 53 listings resolved to real RC boundaries via
-  their embedded map pin (address cannot do this), sortable/filterable Rinka
-  table, Tyrimas as a full-window dated document.
-- `elektrenai` skill created; `lt-parcels` extended with the pin method, the
-  silent-failure list and the RC report corrections.
-- Facts → [[wiki/elektrenai/rinkos-atnaujinimas-2026-08]],
-  [[wiki/elektrenai/rc-sandoriu-duomenys-2026]]
+### Session 2026-10-09 (this)
+- **Full data refresh** (RC ZIP, register, aruodas, news) — see Status; written up
+  in [[wiki/elektrenai/rinkos-atnaujinimas-2026-10]]. Five silent failures found and
+  fixed; August map village points were up to ~6 km off.
+- **Map**: listings layer rebuilt (126 listings, 22 exact boundaries), 0432 owner +
+  zones, water zones (SŽNSĮ art. 99 p. 8 / 100 checked — family block not reduced;
+  0428 free area 1.23 → 0.54 ha, 0432 → 0.03 ha), uniform owner labels, build
+  version, dark theme default. A full owner name was scrubbed from unpushed history
+  before the first push.
+- **Private negotiation track opened** — see the skill; official law texts saved
+  in `legal/`.
+- **Skill** moved from git-ignored `.claude/` to private ai-skills repo with the
+  pipeline scripts; a private task added to the skill.
+
+### Session 2026-08-10
+Data refresh, RC mass-valuation report mined (zone 8.16 values are modelled), map
+rebuilt as a 3-view app, `elektrenai` skill created. Detail: `CONTEXT-ARCHIVE.md`.
 
 ### Sessions 2026-06-11 → 2026-06-17
 Boundaries confirmed, SŽNS overlay, Rimi identified, lt-parcels skill created,
