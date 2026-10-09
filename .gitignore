@@ -22,3 +22,7 @@ _*.txt
 index.html
 _site/
 _site_test.html
+
+# Personal documents (contracts, extracts) -- contain personal codes, addresses
+*.docx
+*.doc
