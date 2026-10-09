@@ -178,7 +178,86 @@
     .sznsTypes { list-style: none; padding-left: 2px; }
     .sznsTypes li { margin: 2px 0; }
     .sznsLegend small { color: #666; }
+
+    /* Theme switch: dark is the default, light keeps the original look. Light
+       rules above stay untouched; dark only overrides them. */
+    #btnTheme {
+      align-self: center; margin-right: 10px; background: rgba(255,255,255,.09);
+      border: none; color: #dfe7ee; cursor: pointer; font-size: 11.5px;
+      padding: 5px 9px; border-radius: 4px; font-family: inherit; white-space: nowrap;
+    }
+    #btnTheme:hover { background: rgba(255,255,255,.19); color: #fff; }
+    html[data-theme="dark"] { color-scheme: dark; }
+    html[data-theme="dark"] #panel { background: #1b2530; }
+    html[data-theme="dark"] #panelHead { background: #222e3a; border-bottom-color: #33414e; color: #dbe3ea; }
+    html[data-theme="dark"] #panelHead button { color: #9aa7b3; }
+    html[data-theme="dark"] #panelHead button:hover { background: #2e3c4a; color: #fff; }
+    html[data-theme="dark"] #panelBody { color: #d3dce4; }
+    html[data-theme="dark"] #doc { background: #151d26; }
+    html[data-theme="dark"] .docInner { color: #d3dce4; }
+    html[data-theme="dark"] .docInner h2 { color: #eef3f7; }
+    html[data-theme="dark"] .docInner .lead,
+    html[data-theme="dark"] .rnote,
+    html[data-theme="dark"] #rinkaCount,
+    html[data-theme="dark"] #listCount,
+    html[data-theme="dark"] #tabTyrimas .src,
+    html[data-theme="dark"] .sznsLegend small { color: #9aa7b3 !important; }
+    html[data-theme="dark"] #tabRinka .docInner > div[style] { color: #8a97a3 !important; }
+    html[data-theme="dark"] a,
+    html[data-theme="dark"] .rnote summary,
+    html[data-theme="dark"] table.rt .go,
+    html[data-theme="dark"] table.rt th.sorted::after { color: #6db3ff; }
+    html[data-theme="dark"] #tabTyrimas details { border-bottom-color: #2a3642; }
+    html[data-theme="dark"] #rinkaTop { border-bottom-color: #33414e; }
+    html[data-theme="dark"] .rlegend,
+    html[data-theme="dark"] .sznsLegend { color: #c5d0da; }
+    html[data-theme="dark"] .dot-sw,
+    html[data-theme="dark"] .dot { border-color: #c5d0da; }
+    html[data-theme="dark"] .minibtn,
+    html[data-theme="dark"] #rinkaFilters select,
+    html[data-theme="dark"] #rinkaFilters input {
+      background: #222e3a; color: #dbe3ea; border-color: #3a4855;
+    }
+    html[data-theme="dark"] .minibtn:hover { background: #2e3c4a; }
+    html[data-theme="dark"] table.rt th { background: #222e3a; border-bottom-color: #3a4855; }
+    html[data-theme="dark"] table.rt th:hover { background: #2a3744; }
+    html[data-theme="dark"] table.rt td { border-bottom-color: #26313c; }
+    html[data-theme="dark"] table.rt tr:hover td { background: #1f2c39; }
+    html[data-theme="dark"] .badge { background: #2a3642; color: #b0bcc7; }
+    html[data-theme="dark"] .badge.warn { background: #4a1f24; color: #ff9b9b; }
+    html[data-theme="dark"] .updated { background: #1b2a3a; color: #b8c7d6; }
+    html[data-theme="dark"] .updated b { color: #dbe8f5; }
+    html[data-theme="dark"] .chg { color: #ff7b7b; }
+    html[data-theme="dark"] .new { background: #16324f; color: #9cc9ff; }
+    html[data-theme="dark"] .was { color: #8a96a2; }
+    html[data-theme="dark"] .szns { border-top-color: #33414e; }
+    html[data-theme="dark"] code { color: #e6edf3; }
+    /* inline greys written by the page script (table cells, map popups) are tuned for
+       a white background; lift them so they stay readable on dark */
+    html[data-theme="dark"] [style*="color:#444"],
+    html[data-theme="dark"] [style*="color:#555"] { color: #c5d0da !important; }
+    html[data-theme="dark"] [style*="color:#666"],
+    html[data-theme="dark"] [style*="color:#777"] { color: #aab6c1 !important; }
+    html[data-theme="dark"] [style*="color:#888"],
+    html[data-theme="dark"] [style*="color:#999"] { color: #93a0ac !important; }
+    /* Google Maps popups */
+    html[data-theme="dark"] .gm-style .gm-style-iw-c { background: #1e2833; color: #dbe3ea; }
+    html[data-theme="dark"] .gm-style .gm-style-iw-d { color: #dbe3ea; }
+    html[data-theme="dark"] .gm-style .gm-style-iw-tc::after { background: #1e2833; }
+    html[data-theme="dark"] .gm-style .gm-ui-hover-effect > span { background-color: #dbe3ea; }
+    html[data-theme="dark"] .gm-style-iw-d button { background: #2a3744 !important; border-color: #3a4855 !important; }
+    html[data-theme="dark"] .gm-style-iw-d [style*="color:#C62828"],
+    html[data-theme="dark"] .gm-style-iw-d [style*="color:#c62828"] { color: #ff8a80 !important; }
   </style>
+  <script>
+    // Apply the theme before first paint so the page never flashes light.
+    // Stored choice wins; with none, dark is the default.
+    (function () {
+      var t = 'dark';
+      try { t = localStorage.getItem('theme') || 'dark'; } catch (e) {}
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <!-- proj4 for LKS94 (EPSG:3346) <-> WGS84, needed for the SŽNS raster overlay -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js"></script>
   <!-- local key, git-ignored; run: python gen_config.py -->
@@ -200,6 +279,7 @@
       <button onclick="toggleLabels()">Label</button>
       <button onclick="toggleNames()">Vardai</button>
     </div>
+    <button id="btnTheme" onclick="toggleTheme()" title="Perjungti šviesią / tamsią temą">Tema: tamsi</button>
   </div>
 
   <div id="panel">
@@ -611,6 +691,18 @@
       const v = window.BUILD_VERSION || '__BUILD_VERSION__';
       document.getElementById('buildVer').textContent = v.startsWith('__') ? 'dev' : v;
     });
+
+    function themeLabel() {
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.getElementById('btnTheme').textContent = dark ? 'Tema: tamsi' : 'Tema: šviesi';
+    }
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      themeLabel();
+    }
+    document.addEventListener('DOMContentLoaded', themeLabel);
 
     // owner first names per parcel, toggled with the "Vardai" button
     const NAMES = {
