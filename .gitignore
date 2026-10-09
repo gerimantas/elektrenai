@@ -26,3 +26,6 @@ _site_test.html
 # Personal documents (contracts, extracts) -- contain personal codes, addresses
 *.docx
 *.doc
+
+# Contract drafts -- private family business, repo is public
+contracts/
