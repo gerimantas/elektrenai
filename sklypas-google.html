@@ -265,7 +265,7 @@
 </head>
 <body>
   <div id="topbar">
-    <div class="brand">Elektrėnai <small>· 7910/0001 blokas · duomenys 2026-10-09 · versija <span id="buildVer">dev</span></small></div>
+    <div class="brand" title="7910/0001 blokas (0429+0430+0431), Kakliniškių k.">Elektrėnai <small>· duomenys 2026-10-09 · <span id="buildVer">dev</span></small></div>
     <nav>
       <button id="tabBtnZemelapis" class="active" onclick="showTab('Zemelapis')">Žemėlapis</button>
       <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
@@ -689,7 +689,11 @@
     // workflow replaces the placeholder with the deployed commit.
     document.addEventListener('DOMContentLoaded', () => {
       const v = window.BUILD_VERSION || '__BUILD_VERSION__';
-      document.getElementById('buildVer').textContent = v.startsWith('__') ? 'dev' : v;
+      const el = document.getElementById('buildVer');
+      if (v.startsWith('__')) { el.textContent = 'dev'; return; }
+      // short form in the bar; commit date and local-change note on hover
+      el.textContent = 'v' + v.split(' ')[0];
+      el.title = 'Versija ' + v;
     });
 
     function themeLabel() {
