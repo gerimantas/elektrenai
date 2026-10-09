@@ -1,19 +1,25 @@
 # Elektrenai — CONTEXT
 
 ## Status
-Data refreshed after 8 weeks (2026-08-10). Market fell 9–45 %; Rimi centre is
-BUILT (42 000 m², not 31 000); parcel 0005 still undecided after 2.5 months; the
-purpose-change cluster gained zero new members. `sklypas-google.html` rebuilt as
-a 3-view app (Žemėlapis / Rinka / Tyrimas) with 53 listings resolved to real RC
-boundaries. Committed locally, NOT pushed to Pages.
+Full data refresh 2026-10-09. Nothing decisive moved: Rimi is OPERATING but with
+~300 staff (800 = long-term); 0005 still undecided (~4 months); 15 new requests,
+none industrial within 11 km; same analogue listings flat — the 3–8 ha median
+jump (5 952 → 10 484 €/ha) is listing turnover. Five silent failures found and
+fixed (town plots dropped, Google municipality fallback, aruodas bot wall,
+self-overwriting diff, baseline rotation). Map listings layer rebuilt (126
+listings, 22 exact boundaries). Committed locally, NOT pushed to Pages.
 
 ## Next Tasks
-- Deploy the rebuilt map: `git push origin main` + `gh run watch` (6 commits pending)
-- Re-derive the counter-offer from August prices — the June range (16–18 k€/ha)
-  rested on premises that are both gone; plan: `wiki/elektrenai/rinkos-atnaujinimas-2026-08.md` § 8
-- Check 0005 outcome every 2–4 weeks: `python C:/Users/retco/.ai-skills/elektrenai/scripts/check_0005.py`
+- Push the 2026-10-09 refresh to Pages after the user reviews it on localhost
+  (`python gen_config.py && python -m http.server 8123`)
+- Re-derive the counter-offer from October inputs — the June range (16–18 k€/ha)
+  rested on premises that are both gone; inputs: `wiki/elektrenai/rinkos-atnaujinimas-2026-10.md` § 5, 8
+- More exact map boundaries need the user to clear aruodas's press-and-hold wall in
+  Chrome, then `python .lt-parcels-cache/fetch_coords.py` (resumes, stops on the wall)
+- Check 0005 outcome every 2–4 weeks: `python .claude/skills/elektrenai/scripts/check_0005.py`
+- Find out what is planned on the re-parcelled 7930/0002:0730–0733 (0.2–0.3 km S)
 - Monitor new purpose-change requests via the register page (the `.jpg` probe is
-  dead — numbering changed to PZNPB-K####): `scripts/check_requests.py`
+  dead — numbering changed to PZNPB-K####): `.claude/skills/elektrenai/scripts/check_requests.py`
 
 ## Key Facts
 - Plot + neighbors + AZ zones → [[wiki/elektrenai/sklypas-4400-1563-8352]]
@@ -23,10 +29,11 @@ boundaries. Committed locally, NOT pushed to Pages.
 - Dashboard v1 concept → [[wiki/elektrenai/dashboard-v1-koncepcija]]
 - RC/geoportal API research → [[wiki/elektrenai/geoportal-lt-api-research]]
 - Paskirties keitimo precedentai (16 prašymų; klasteris NEAUGO per 2026-06→08) → [[wiki/elektrenai/paskirties-keitimo-precedentai]]
-- **Rugpjūčio atnaujinimas (naujausi skaičiai)** → [[wiki/elektrenai/rinkos-atnaujinimas-2026-08]]
+- **Spalio atnaujinimas (naujausi skaičiai)** → [[wiki/elektrenai/rinkos-atnaujinimas-2026-10]]
+- Rugpjūčio atnaujinimas → [[wiki/elektrenai/rinkos-atnaujinimas-2026-08]]
 - **Realūs sandoriai + RC formulės blokui** → [[wiki/elektrenai/rc-sandoriu-duomenys-2026]]
 - Projekto darbo eiga, monitoringas, klaidų istorija → `elektrenai` skill
-  (`C:/Users/retco/.ai-skills/elektrenai/`)
+  (`.claude/skills/elektrenai/` in this repo)
 
 ## Dead Ends
 - All RC/geoportal WFS/query/geocoding APIs: 401 — do not retry
@@ -45,14 +52,20 @@ boundaries. Committed locally, NOT pushed to Pages.
 - `geocode_listings.py` without `--google-key`: falls back to seniūnija centroid
   silently, every plot gets the same point. Check `Counter(geocode_method)`.
 - `pask_tipas=995` is "other purpose", NOT road. Roads are cadastral block /7001.
+- Google geocode with a key still fails silently on genitive village names: returns
+  the municipality (6.69 km) as `google`. Run `.firecrawl/regeocode_villages.py`.
+- aruodas listing pages: press-and-hold bot wall since 2026-10 — needs the user,
+  not the agent. List pages still scan fine via CDP.
 
 ## Files
 - `sklypas-google.html` — main interactive map
 - `parcels_42/plot_7910_0001_0431.json` — plot GeoJSON
 - `.env` / `gen_config.py` / `config.js` — Maps API key (git-ignored)
 - `.github/workflows/deploy.yml` — Pages deploy
-- `.firecrawl/market_geo_2026-08-10.json` — 124 listings, Google geocoded
-- `.firecrawl/listing_by_point.json` — 63 listings resolved to parcels via map pin
+- `.firecrawl/market_geo_2026-10-09.json` — 127 listings, geocoded + village fix
+- `.firecrawl/listing_by_point.json` — 27 live listings resolved via August pins
+- `.firecrawl/regeocode_villages.py` — fixes Google municipality fallback
+- `.lt-parcels-cache/gis_pub_parcels_42_<date>.zip` — dated RC snapshots (diff baselines)
 - `.firecrawl/rc_model_calc.py` — RC 2026 formulas applied to the block
 - `.lt-parcels-cache/masvert/` — RC valuation report v36 (10 files)
 - `.firecrawl/bpd-tekstine-dalis.pdf` — BPD SS-070-BPL (76 pp)

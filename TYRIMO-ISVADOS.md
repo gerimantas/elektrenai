@@ -258,7 +258,7 @@ jos paliktos kaip 2026-06-14 momentinis įrašas, o pataisos surašytos čia.
 | **0005 (01.3-192)** | sprendimas lauktas 2026-06-16 | **vis dar nespręsta** (2.5 mėn.), `pask_tipas=610` |
 | **Elektrėnų sen. klasteris** | 3 prašymai per 2 mėn., „auga" | **+0 naujų per 8 sav.** — 7 nauji prašymai visi ≥4.6 km, nė vienas ne į pramonę |
 | **Agri 3–8 ha asking mediana** | 7 268 €/ha | **5 952 €/ha (−18.1%)** |
-| **Apylinkės zonos mediana** | 34 046 €/ha | **18 652 €/ha (−45.2%)** |
+| **Apylinkės zonos mediana** | 34 046 €/ha | **18 652 €/ha (−45.2%)** — ⚠️ 2026-10-09: skaičiaus atkurti nepavyko, necituoti |
 | **RC fiskalinė vertė** | 5 880 € | 5 880 € (nepakito; vertinimo data jau 2026-01-01) |
 | **BPD K-RJ-42-20-416** | aktyvus | be pokyčių nuo 2026-03-17 (6-i metai derinime) |
 
@@ -295,6 +295,7 @@ neįvykusiu 0005 sprendimu. **Jį reikia perskaičiuoti, ne perkelti nepakeistą
 
 **Sustiprėjo:**
 - Rimi — nebe „stato", o **pastatytas ir atidaromas**, 42 000 m², 800 d.v., 500 m.
+  *(2026-10-09: atidarytas su ~300 darbuotojų; 800 — ilgalaikis planas.)*
   Tai vienintelis argumentas, kurį galima patikrinti pravažiuojant pro šalį.
 
 **Susilpnėjo (nenaudoti nepatikslinus):**
@@ -325,3 +326,37 @@ Pilna analizė → `wiki/elektrenai/rinkos-atnaujinimas-2026-08.md`
 ---
 
 *Šaltiniai: CONTEXT.md, wiki/elektrenai/rinkos-skenas-4728-apylinke.md, wiki/elektrenai/sklypai-master-sarasas.md, wiki/elektrenai/bpd-planavimo-analize.md, wiki/elektrenai/sklypas-4400-1563-8352.md, wiki/elektrenai/rinkos-atnaujinimas-2026-08.md*
+
+---
+
+# ATNAUJINIMAS 2026-10-09 (praėjus 8.5 savaitės)
+
+Derybos vis dar pauzėje. Lemiamų pokyčių nėra. Rugpjūčio išvados galioja, išskyrus
+dvi pataisas (Rimi darbuotojai, apylinkės zonos mediana — pažymėta aukščiau).
+
+| Faktas | 2026-08-10 | 2026-10-09 |
+|---|---|---|
+| **Rimi** | baigtas, atidarymas vasarą, ~800 d.v. | **veikia** nuo vasaros; pradžioje **~300 d.v.**, dalis perkelta iš Vievio |
+| **0005 (01.3-192)** | nespręsta 2.5 mėn. | **vis dar nespręsta** (~4 mėn.), `pask_tipas=610` |
+| **Nauji prašymai** | 7, visi ≥4.6 km | +15; 4 per 2.6–3.3 km, **visi į gyvenamąją**; 2 į pramonę — 11 ir 18 km |
+| **Paskirties keitimai savivaldybėje** | 1 per 8 sav. | 1 per 8.5 sav. (14 km) |
+| **Agri 3–8 ha mediana** | 5 952 €/ha | 10 484 €/ha — **skelbimų sudėtis, ne kainų kilimas** |
+| **Pasiūlymas / mediana** | 1.68× | 0.95× (dėl tos pačios sudėties) |
+
+**Kaip skaityti medianos šuolį.** Iš 9 rugpjūčio analogų 5 vis dar parduodami, ir tik
+vienas pakeitė kainą (−2%). Išėjo 4 pigesni, atėjo 8 brangesni. Tie patys sklypai
+nepabrango — pasikeitė, kurie sklypai skelbiami.
+
+**Nauji faktai šalia bloko:**
+- Migūčionių k. 6.2 ha ž.ū. (prie Rimi) prašo **10 484 €/ha** — beveik lygiai pirkėjo
+  pasiūlymas.
+- Žilvičių g. (~0.5 km) du pramonės/sandėliavimo skelbimai po **150 000 €/ha** —
+  prašomos kainos, sandorių nėra.
+- ~0.2–0.3 km į pietus trys „kitos" paskirties sklypai perdalinti į keturis
+  (2026-08-18). Paskirtis nekito; ketinimai nežinomi.
+- Pardavėjai toliau nuleidžia: 29 iš 73 sutampančių skelbimų (mediana −8.3%).
+
+**Kontrsiūlymas** vis dar laukia perskaičiavimo (F skyrius, 1 punktas) — šis
+atnaujinimas pateikia spalio duomenis tam.
+
+Pilna analizė → `wiki/elektrenai/rinkos-atnaujinimas-2026-10.md`
