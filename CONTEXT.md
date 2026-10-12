@@ -1,13 +1,12 @@
 # Elektrenai — CONTEXT
 
 ## Status
-2026-10-09: data refreshed (Rimi OPERATING with ~300 staff; 0005 still undecided
-~4 months; no industrial request within 11 km; analogue asks flat — the 3–8 ha
-median jump is listing turnover). Map live with dark theme, water zones (163/164
-+ 50 m band), 0432 ("J. J. paveldėtojai") zones. A private negotiation track is
-open — details live only in the private skill (`references/lease.md`) and the
-git-ignored `contracts/`; this repo is public, so none of it is written here.
-Skill + pipeline scripts moved to the private ai-skills repo. All pushed.
+2026-10-12: private negotiation track advanced — the counter-proposal document is
+drafted and waits for the user's review; details only in the private skill
+(`references/lease.md`) and the git-ignored `contracts/` (this repo is public).
+Market state unchanged since the 2026-10-09 refresh (Rimi OPERATING ~300 staff;
+0005 undecided ~4 months; no industrial request within 11 km; analogue asks flat).
+Map live with dark theme, water zones and 0432 zones. All pushed.
 
 ## Next Tasks
 - Private negotiation track — next step and open questions in the skill's
@@ -81,19 +80,15 @@ Skill + pipeline scripts moved to the private ai-skills repo. All pushed.
 
 ## Archive
 
-### Session 2026-10-09 (this)
-- **Full data refresh** (RC ZIP, register, aruodas, news) — see Status; written up
-  in [[wiki/elektrenai/rinkos-atnaujinimas-2026-10]]. Five silent failures found and
-  fixed; August map village points were up to ~6 km off.
-- **Map**: listings layer rebuilt (126 listings, 22 exact boundaries), 0432 owner +
-  zones, water zones (SŽNSĮ art. 99 p. 8 / 100 checked — family block not reduced;
-  0428 free area 1.23 → 0.54 ha, 0432 → 0.03 ha), uniform owner labels, build
-  version, dark theme default. A full owner name was scrubbed from unpushed history
-  before the first push.
-- **Private negotiation track opened** — see the skill; official law texts saved
-  in `legal/`.
-- **Skill** moved from git-ignored `.claude/` to private ai-skills repo with the
-  pipeline scripts; a private task added to the skill.
+### Session 2026-10-12 (this)
+- **Private negotiation track** — original documents audited and a counter-proposal
+  drafted; all of it in the git-ignored `contracts/` and the skill's
+  `references/lease.md` (generator: skill `scripts/build_lease_proposal.py`).
+  Nothing about it belongs in this public repo.
+
+### Session 2026-10-09
+Full data refresh, map zones and dark theme, private track opened, skill moved to
+the private ai-skills repo. Detail: `CONTEXT-ARCHIVE.md`.
 
 ### Session 2026-08-10
 Data refresh, RC mass-valuation report mined (zone 8.16 values are modelled), map

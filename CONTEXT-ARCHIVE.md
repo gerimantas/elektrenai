@@ -73,3 +73,17 @@
   silent-failure list and the RC report corrections.
 - Facts → [[wiki/elektrenai/rinkos-atnaujinimas-2026-08]],
   [[wiki/elektrenai/rc-sandoriu-duomenys-2026]]
+
+### Session 2026-10-09
+- **Full data refresh** (RC ZIP, register, aruodas, news) — see Status; written up
+  in [[wiki/elektrenai/rinkos-atnaujinimas-2026-10]]. Five silent failures found and
+  fixed; August map village points were up to ~6 km off.
+- **Map**: listings layer rebuilt (126 listings, 22 exact boundaries), 0432 owner +
+  zones, water zones (SŽNSĮ art. 99 p. 8 / 100 checked — family block not reduced;
+  0428 free area 1.23 → 0.54 ha, 0432 → 0.03 ha), uniform owner labels, build
+  version, dark theme default. A full owner name was scrubbed from unpushed history
+  before the first push.
+- **Private negotiation track opened** — see the skill; official law texts saved
+  in `legal/`.
+- **Skill** moved from git-ignored `.claude/` to private ai-skills repo with the
+  pipeline scripts; a private task added to the skill.
