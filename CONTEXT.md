@@ -10,13 +10,14 @@ new-version notice; installed on the user's tablet via the top-bar "Įdiegti" bu
 The buyer's offer is out of every public file; negotiation docs are git-ignored.
 Municipal plans checked: near the block only housing/commercial (189–539 m), no
 industrial plan in 2026, general plan stalled since 2026-03-17.
-Private negotiation track unchanged: counter-proposal audited, waits for the user's
-details and the co-owner's copy (skill `references/lease.md`).
+2026-10-13 (3rd session): private lease track ready to send — agreement draft + a
+clause-by-clause synthesis of the 2015 contract (PDFs in `contracts/current/`); the
+user sends both to the tenant for review. Landlord details still blank.
 
 ## Next Tasks
-- Private negotiation track — fill in details, co-owner's copy, optional lawyer read,
-  send; steps and open legal points in the skill's `references/lease.md` ("Status and
-  next step"), documents in `contracts/current/` (not in this public repo)
+- Private lease track — tenant has (or gets) the agreement + synthesis PDFs; record the
+  reply, revise via `build_lease_proposal.py`, then fill in details + co-owner's copy;
+  steps in the skill's `references/lease.md` ("Status and next step")
 - Re-derive the sale counter-offer from October inputs — the June range rested on
   premises that are both gone; inputs: `wiki/elektrenai/rinkos-atnaujinimas-2026-10.md` § 5, 8
 - Check 0005 every 2–4 weeks: `python C:/Users/retco/.ai-skills/elektrenai/scripts/check_0005.py`
@@ -90,7 +91,21 @@ details and the co-owner's copy (skill `references/lease.md`).
 
 ## Archive
 
-### Session 2026-10-13 (2nd, this)
+### Session 2026-10-13 (3rd) — lease synthesis document, transcription verified
+
+- **Done:** new `-sinteze` document replaces `-argumentai`: the 2015 contract clause by
+  clause (original text, status, new text struck red / green, argument, tenant's 2025
+  position); agreement stays the bare list of changes. All 10 agreement clauses mapped
+  (unchanged → clause 9; 2.2 "clarified", not struck). 2015 text verified against a
+  Tesseract (lit) OCR word diff + zoomed read: 9 transcription errors fixed.
+- **Decided / overturned:** user: synthesis is sent to the tenant with the agreement (PDF
+  only); 5.1 date = 2015.09.02 per the paper original (scan looks like 03).
+- **Code:** skill `scripts/build_lease_proposal.py`, `references/lease.md` (ai-skills
+  commits cdbd34c..5743a57); outputs in `contracts/current/` (git-ignored).
+- **Entry point:** `python C:/Users/retco/.ai-skills/elektrenai/scripts/build_lease_proposal.py contracts/current/0431-susitarimas-musu-redakcija-2026-10.docx`
+- **Not measured:** tenant's reply; Tesseract-OCR left installed (`C:\Program Files\Tesseract-OCR`).
+
+### Session 2026-10-13 (2nd)
 - **Map usability**: layers panel with a row per layer + visible descriptions, groups
   reordered (restrictions second), per-purpose for-sale toggles, "Planuojama plėtra"
   layer with plan + asking price, "Kaip naudotis" tab, source links on every tab and
