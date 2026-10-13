@@ -1,0 +1,16 @@
+{
+  "name": "Elektrėnai — šeimos sklypai",
+  "short_name": "Elektrėnai",
+  "description": "Šeimos sklypai 7910/0001:0428–0431: žemėlapis, apribojimai, rinka ir tyrimas.",
+  "lang": "lt",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#142433",
+  "theme_color": "#1f2b38",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

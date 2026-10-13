@@ -1,0 +1,38 @@
+// Service worker: makes the page installable as an app and keeps the last
+// version for offline opening. The page is fetched network-first, so a normal
+// open always shows the newest deploy; the cache is only the fallback.
+// The deploy workflow replaces the placeholder, so each deploy is a new worker.
+const VERSION = '__BUILD_VERSION__';
+const CACHE = 'elektrenai-' + VERSION;
+const SHELL = ['./', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png'];
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).catch(() => {}));
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys()
+    .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    .then(() => self.clients.claim()));
+});
+
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  const url = new URL(req.url);
+  // Google Maps, tiles and every other site: straight to the network
+  if (req.method !== 'GET' || url.origin !== self.location.origin) return;
+  // the version check must never be answered from a cache
+  if (url.pathname.endsWith('version.json')) return;
+  e.respondWith(
+    fetch(req)
+      .then(res => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy));
+        }
+        return res;
+      })
+      .catch(() => caches.match(req).then(hit => hit || caches.match('./')))
+  );
+});

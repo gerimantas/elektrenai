@@ -51,6 +51,19 @@ jobs:
           html = html.replace("__BUILD_VERSION__", f"{sha} · {when}")
           p.write_text(html, encoding="utf-8")
           print("Built _site/index.html: key injected, config.js tag dropped")
+
+          # installable app: manifest, icons, service worker. The worker carries
+          # the version, so every deploy installs a new one; version.json is what
+          # an open page polls to show its "new version" notice.
+          import json, shutil
+          shutil.copy("manifest.json", "_site/manifest.json")
+          shutil.copytree("icons", "_site/icons")
+          sw = pathlib.Path("sw.js").read_text(encoding="utf-8")
+          pathlib.Path("_site/sw.js").write_text(
+              sw.replace("__BUILD_VERSION__", f"{sha} {when}"), encoding="utf-8")
+          pathlib.Path("_site/version.json").write_text(
+              json.dumps({"sha": sha, "when": when}), encoding="utf-8")
+          print("App files copied; version.json =", sha, when)
           PY
 
       - uses: actions/configure-pages@v5

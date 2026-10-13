@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sklypas 7910/0001:0431 + kaimynai — Elektrėnų sav.</title>
   <!-- inline icon: without one the browser requests /favicon.ico and gets a 404 -->
+  <!-- installable app: manifest + icons; sw.js keeps the last version offline -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1f2b38">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Elektrėnai">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23142433'/%3E%3Crect x='4' y='2.5' width='8' height='11' fill='%23FFEB3B' stroke='%23F9A825'/%3E%3C/svg%3E">
   <style>
     html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif;
@@ -44,7 +52,10 @@
       color: #fff; border-bottom-color: #4da3ff; background: rgba(77,163,255,.12);
       font-weight: 600;
     }
-    #topbar .spacer { flex: 1; }
+    #topbar .meta {
+      margin-left: auto; align-self: center; padding: 0 14px; white-space: nowrap;
+      font-size: 11.5px; color: #e8edf2; opacity: .65;
+    }
     #topbar .tools { display: flex; align-items: center; gap: 4px; padding: 0 12px;
                      border-left: 1px solid rgba(255,255,255,.12); }
     #topbar .tools button {
@@ -213,6 +224,25 @@
     .lsub .rlegend { font-size: 11px; }
     .lnote { margin: 4px 0 0 22px; font-size: 11px; color: #7c8894; }
 
+    /* --- Update notice: a new version was deployed while the page was open --- */
+    #updateBar {
+      position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 40;
+      display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
+      max-width: calc(100vw - 32px); padding: 10px 14px; border-radius: 8px;
+      background: #1f2b38; color: #fff; font-size: 13px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.45); border: 1px solid #4da3ff;
+    }
+    #updateBar.show { display: flex; }
+    #updateBar button {
+      font: inherit; font-size: 12.5px; padding: 5px 12px; border-radius: 4px; cursor: pointer;
+      border: none; background: #4da3ff; color: #08243d; font-weight: 600;
+    }
+    #updateBar button.later { background: rgba(255,255,255,.12); color: #dfe7ee; font-weight: 400; }
+    .installBtn {
+      font: inherit; font-size: 13px; padding: 7px 14px; border-radius: 5px; cursor: pointer;
+      border: none; background: #4da3ff; color: #08243d; font-weight: 600; margin: 4px 0 8px;
+    }
+
     /* --- Narrow screens (phones, small tablets) ---
        The bar wraps: row 1 = name + tabs (tabs scroll sideways if they still do not
        fit), row 2 = map buttons. syncBarHeight() feeds the real height to --bar-h so
@@ -224,8 +254,11 @@
       #topbar nav { flex: 1; overflow-x: auto; scrollbar-width: none; min-height: 40px; }
       #topbar nav::-webkit-scrollbar { display: none; }
       #topbar nav button { padding: 0 10px; font-size: 12.5px; }
-      #topbar .tools { flex-basis: 100%; padding: 5px 10px; gap: 6px;
+      #topbar .tools { flex-basis: auto; padding: 5px 10px; gap: 6px;
                        border-left: none; border-top: 1px solid rgba(255,255,255,.12); }
+      #topbar .meta { border-top: 1px solid rgba(255,255,255,.12); align-self: stretch;
+                      display: flex; align-items: center; padding: 0 10px; font-size: 11px; }
+      #topbar nav { flex-basis: calc(100% - 110px); }
       #topbar .tools button { font-size: 12px; padding: 6px 10px; }
       .docInner { padding: 16px 16px 48px; font-size: 13.5px; }
       .docInner.table { padding: 16px 10px 48px; }
@@ -239,8 +272,11 @@
     @media (max-width: 520px) {
       #topbar nav { order: 0; flex-basis: 100%; }
       #topbar .tools { order: 1; flex-basis: auto; }
-      #topbar .brand { order: 2; margin-left: auto; min-height: 0; font-size: 12px;
-                       border-top: 1px solid rgba(255,255,255,.12); }
+      #topbar .brand { display: none; }
+      #topbar .meta { order: 2; padding: 0 8px; font-size: 10.5px; }
+      #topbar .metaLbl { display: none; }
+      #topbar .tools { padding: 5px 8px; gap: 4px; }
+      #topbar .tools button { padding: 6px 8px; }
       #topbar nav button { padding: 0 9px; }
     }
     .lsrc div { margin: 0 0 4px; font-size: 11px; line-height: 1.4; color: #6b7a88; }
@@ -343,7 +379,7 @@
 </head>
 <body>
   <div id="topbar">
-    <div class="brand" title="7910/0001 blokas (0429+0430+0431), Kakliniškių k.">Elektrėnai <small>· duomenys 2026-10-09 · <span id="buildVer">dev</span></small></div>
+    <div class="brand" title="7910/0001 blokas (0429+0430+0431), Kakliniškių k.">Elektrėnai</div>
     <nav>
       <button id="tabBtnZemelapis" class="active" onclick="showTab('Zemelapis')">Žemėlapis</button>
       <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
@@ -357,6 +393,7 @@
       <button id="btnLegend" class="on" onclick="toggleLegend()" title="Rodyti / slėpti sluoksnių skydelį">Sluoksniai</button>
       <button id="btnTheme" onclick="toggleTheme()" title="Perjungti šviesią / tamsią temą">Tema: tamsi</button>
     </div>
+    <div class="meta" title="Duomenų data ir puslapio versija"><span class="metaLbl">duomenys </span>2026-10-09 · <span id="buildVer">dev</span></div>
   </div>
 
   <!-- One row per map layer: checkbox + colour + short name; the longer
@@ -846,6 +883,7 @@
           <li><b>Centruoti</b> — grąžina žemėlapį į šeimos sklypus.</li>
           <li><b>Sluoksniai</b> — atidaro arba paslepia kairėje esantį skydelį.</li>
           <li><b>Tema</b> — perjungia tamsų arba šviesų vaizdą.</li>
+          <li><b>Dešinėje</b> — duomenų data ir puslapio versija (pvz. v293d513).</li>
         </ul>
 
         <h3>Žemėlapis</h3>
@@ -886,6 +924,28 @@
           <li>Spustelėk skyriaus pavadinimą, ir jis išsiskleis. Spustelėk dar kartą, ir jis susiskleis.</li>
         </ul>
 
+        <h3>Įdiegti kaip programėlę</h3>
+        <p>Puslapį galima įsidiegti telefone ar kompiuteryje. Jis atsidarys kaip atskira
+          programėlė su savo piktograma, be naršyklės adreso juostos.</p>
+        <p id="installState" style="margin:4px 0"></p>
+        <button class="installBtn" id="installBtn" hidden onclick="installApp()">Įdiegti dabar</button>
+        <ul>
+          <li><b>Android telefonas (Chrome):</b> atidaryk puslapį → meniu <b>⋮</b> viršuje dešinėje →
+            <b>„Įdiegti programą“</b> arba <b>„Pridėti prie pagrindinio ekrano“</b> → <b>„Įdiegti“</b>.</li>
+          <li><b>iPhone / iPad (Safari):</b> atidaryk puslapį Safari naršyklėje → apačioje
+            <b>Bendrinti</b> (kvadratas su rodykle aukštyn) → <b>„Pridėti prie pradžios ekrano“</b>
+            (Add to Home Screen) → <b>„Pridėti“</b>. Kitose iPhone naršyklėse to padaryti negalima.</li>
+          <li><b>Kompiuteris (Chrome arba Edge):</b> adreso juostos dešinėje spustelėk piktogramą
+            <b>„Įdiegti“</b> (ekranas su rodykle) arba meniu <b>⋮</b> → <b>„Įdiegti Elektrėnai“</b>.</li>
+          <li><b>Atnaujinimai:</b> kai paskelbiama nauja versija, apačioje atsiras pranešimas
+            <b>„Yra nauja puslapio versija“</b>. Paspausk <b>„Atnaujinti“</b>. Programėlės iš naujo
+            diegti nereikia.</li>
+          <li><b>Be interneto:</b> atsidaro paskutinė matyta versija, bet žemėlapio vaizdui
+            internetas reikalingas.</li>
+          <li><b>Pašalinti:</b> kaip bet kurią kitą programėlę — palaikyk piktogramą ir pasirink
+            „Pašalinti“.</li>
+        </ul>
+
         <h3>Duomenų šaltiniai</h3>
         <ul>
           <li><b>Sklypai</b> (ribos, plotai, paskirtis) — <a href="https://data.gov.lt/datasets/2831/" target="_blank" rel="noopener">RC atviri sklypų duomenys</a>.</li>
@@ -897,12 +957,17 @@
         </ul>
         <p>Kiekviename skirtuko „Tyrimas“ skyriuje apačioje yra jo šaltinių nuorodos.</p>
 
-        <div class="lead" style="margin-top:18px">Duomenys surinkti 2026-10-09. Data rodoma
-          viršutinėje juostoje šalia pavadinimo.</div>
+        <div class="lead" style="margin-top:18px">Duomenys surinkti 2026-10-09. Data ir puslapio
+          versija rodomos viršutinės juostos dešinėje.</div>
       </div>
     </div>
   </div>
   <div id="map"></div>
+  <div id="updateBar" role="status">
+    <span id="updateText">Yra nauja puslapio versija.</span>
+    <button onclick="applyUpdate()">Atnaujinti</button>
+    <button class="later" onclick="hideUpdate()">Vėliau</button>
+  </div>
 
   <script>
     const DATA = {"7910/0001:0005": {"path": [{"lat": 54.790413, "lng": 24.678248}, {"lat": 54.790854, "lng": 24.678366}, {"lat": 54.79087, "lng": 24.677889}, {"lat": 54.790862, "lng": 24.677886}, {"lat": 54.790033, "lng": 24.677597}, {"lat": 54.789992, "lng": 24.678135}, {"lat": 54.790413, "lng": 24.678248}], "center": {"lat": 54.790491, "lng": 24.678053}, "plotas": "0.3141", "pask": 610}, "7910/0001:1014": {"path": [{"lat": 54.796081, "lng": 24.685332}, {"lat": 54.79431, "lng": 24.682815}, {"lat": 54.794092, "lng": 24.684384}, {"lat": 54.795481, "lng": 24.686286}, {"lat": 54.796081, "lng": 24.685332}], "center": {"lat": 54.795209, "lng": 24.68483}, "plotas": "2.0734", "pask": 610}, "7910/0001:0949": {"path": [{"lat": 54.794194, "lng": 24.682749}, {"lat": 54.793984, "lng": 24.682629}, {"lat": 54.793762, "lng": 24.682503}, {"lat": 54.792245, "lng": 24.68164}, {"lat": 54.792638, "lng": 24.682394}, {"lat": 54.793608, "lng": 24.683722}, {"lat": 54.79381, "lng": 24.683999}, {"lat": 54.793987, "lng": 24.68424}, {"lat": 54.794194, "lng": 24.682749}], "center": {"lat": 54.793602, "lng": 24.682958}, "plotas": "1.2266", "pask": 610}, "7910/0001:0048": {"path": [{"lat": 54.792245, "lng": 24.68164}, {"lat": 54.791606, "lng": 24.684752}, {"lat": 54.791511, "lng": 24.685175}, {"lat": 54.79138, "lng": 24.685765}, {"lat": 54.791228, "lng": 24.686444}, {"lat": 54.791158, "lng": 24.686759}, {"lat": 54.790725, "lng": 24.687036}, {"lat": 54.79076, "lng": 24.687774}, {"lat": 54.790848, "lng": 24.688522}, {"lat": 54.790971, "lng": 24.689115}, {"lat": 54.79111, "lng": 24.689606}, {"lat": 54.791223, "lng": 24.690008}, {"lat": 54.791313, "lng": 24.690293}, {"lat": 54.793425, "lng": 24.689436}, {"lat": 54.793642, "lng": 24.689347}, {"lat": 54.794532, "lng": 24.688963}, {"lat": 54.794211, "lng": 24.688414}, {"lat": 54.792291, "lng": 24.685133}, {"lat": 54.792638, "lng": 24.682394}, {"lat": 54.792245, "lng": 24.68164}], "center": {"lat": 54.791953, "lng": 24.686911}, "plotas": "9.6755", "pask": 610}, "7910/0001:0050": {"path": [{"lat": 54.790982, "lng": 24.679702}, {"lat": 54.79094, "lng": 24.681556}, {"lat": 54.790817, "lng": 24.683943}, {"lat": 54.791148, "lng": 24.684282}, {"lat": 54.791388, "lng": 24.684529}, {"lat": 54.791606, "lng": 24.684752}, {"lat": 54.792245, "lng": 24.68164}, {"lat": 54.791381, "lng": 24.680315}, {"lat": 54.790982, "lng": 24.679702}], "center": {"lat": 54.791277, "lng": 24.682269}, "plotas": "3.0500", "pask": 610}, "7910/0001:0023": {"path": [{"lat": 54.796081, "lng": 24.685332}, {"lat": 54.796125, "lng": 24.685388}, {"lat": 54.796352, "lng": 24.685669}, {"lat": 54.796696, "lng": 24.683786}, {"lat": 54.796722, "lng": 24.683674}, {"lat": 54.794575, "lng": 24.681621}, {"lat": 54.794499, "lng": 24.681966}, {"lat": 54.79431, "lng": 24.682815}, {"lat": 54.796081, "lng": 24.685332}], "center": {"lat": 54.795716, "lng": 24.683954}, "plotas": "3.1300", "pask": 610}, "7910/0001:0431": {"path": [{"lat": 54.79431, "lng": 24.682815}, {"lat": 54.794499, "lng": 24.681966}, {"lat": 54.791381, "lng": 24.680315}, {"lat": 54.792245, "lng": 24.68164}, {"lat": 54.793762, "lng": 24.682503}, {"lat": 54.793984, "lng": 24.682629}, {"lat": 54.794194, "lng": 24.682749}, {"lat": 54.794212, "lng": 24.682759}, {"lat": 54.79431, "lng": 24.682815}], "center": {"lat": 54.793655, "lng": 24.682243}, "plotas": "1.6750", "pask": 610}, "7910/0001:0430": {"path": [{"lat": 54.794575, "lng": 24.681621}, {"lat": 54.794628, "lng": 24.68135}, {"lat": 54.790991, "lng": 24.679441}, {"lat": 54.790982, "lng": 24.679702}, {"lat": 54.791381, "lng": 24.680315}, {"lat": 54.794499, "lng": 24.681966}, {"lat": 54.794575, "lng": 24.681621}], "center": {"lat": 54.79309, "lng": 24.680859}, "plotas": "1.6750", "pask": 610}, "7910/0001:0429": {"path": [{"lat": 54.794628, "lng": 24.68135}, {"lat": 54.794758, "lng": 24.680682}, {"lat": 54.791009, "lng": 24.678914}, {"lat": 54.790991, "lng": 24.679441}, {"lat": 54.794628, "lng": 24.68135}], "center": {"lat": 54.792942, "lng": 24.680143}, "plotas": "1.6750", "pask": 610}, "7910/0001:0428": {"path": [{"lat": 54.791037, "lng": 24.678107}, {"lat": 54.791009, "lng": 24.678914}, {"lat": 54.794758, "lng": 24.680682}, {"lat": 54.795008, "lng": 24.679392}, {"lat": 54.791037, "lng": 24.678107}], "center": {"lat": 54.79312, "lng": 24.679336}, "plotas": "3.0500", "pask": 610}, "7910/0001:0432": {"path": [{"lat": 54.795008, "lng": 24.679392}, {"lat": 54.795126, "lng": 24.678788}, {"lat": 54.794703, "lng": 24.678564}, {"lat": 54.794433, "lng": 24.678494}, {"lat": 54.794364, "lng": 24.678476}, {"lat": 54.794326, "lng": 24.678465}, {"lat": 54.794272, "lng": 24.678451}, {"lat": 54.792784, "lng": 24.67806}, {"lat": 54.792331, "lng": 24.678116}, {"lat": 54.792077, "lng": 24.678132}, {"lat": 54.79182, "lng": 24.678095}, {"lat": 54.791611, "lng": 24.677974}, {"lat": 54.791483, "lng": 24.677806}, {"lat": 54.791373, "lng": 24.67757}, {"lat": 54.791289, "lng": 24.67747}, {"lat": 54.791064, "lng": 24.677344}, {"lat": 54.791037, "lng": 24.678107}, {"lat": 54.795008, "lng": 24.679392}], "center": {"lat": 54.793236, "lng": 24.678506}, "plotas": "1.6750", "pask": 610}};
@@ -970,6 +1035,71 @@
       el.textContent = 'v' + v.split(' ')[0];
       el.title = 'Versija ' + v;
     });
+
+    // ---- App: update notice, offline worker, install ----
+    // The deploy publishes version.json with the deployed commit. When it differs
+    // from the running page, a newer version exists: offer a reload. Checked on
+    // open, when the app comes back to the foreground, and every 30 minutes.
+    const RUNNING_VERSION = window.BUILD_VERSION || '__BUILD_VERSION__';
+    let updateDismissed = null;
+    async function checkUpdate() {
+      if (RUNNING_VERSION.startsWith('__')) return;          // local dev without config
+      const running = RUNNING_VERSION.split(' ')[0];
+      try {
+        const r = await fetch('version.json?t=' + Date.now(), {cache: 'no-store'});
+        if (!r.ok) return;                                   // local server: no file
+        const v = await r.json();
+        if (!v.sha || v.sha === running || v.sha === updateDismissed) return;
+        document.getElementById('updateText').textContent =
+          `Yra nauja puslapio versija (v${v.sha}${v.when ? ', ' + v.when : ''}).`;
+        document.getElementById('updateBar').dataset.sha = v.sha;
+        document.getElementById('updateBar').classList.add('show');
+      } catch (e) {}
+    }
+    function hideUpdate() {
+      const bar = document.getElementById('updateBar');
+      updateDismissed = bar.dataset.sha || null;             // ask again only for a newer one
+      bar.classList.remove('show');
+    }
+    async function applyUpdate() {
+      try {
+        const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+        if (reg) await reg.update();
+      } catch (e) {}
+      location.reload();
+    }
+    window.addEventListener('load', () => {
+      setTimeout(checkUpdate, 3000);
+      setInterval(checkUpdate, 30 * 60 * 1000);
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') checkUpdate();
+    });
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+
+    // Chrome / Edge / Android offer their own install dialog; keep it for the button
+    let installEvt = null;
+    function installStateText() {
+      const el = document.getElementById('installState');
+      if (!el) return;
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+      el.textContent = standalone ? '✓ Programėlė jau įdiegta ir dabar atidaryta.' :
+        installEvt ? 'Šioje naršyklėje galima įdiegti vienu mygtuku:' : '';
+      document.getElementById('installBtn').hidden = !installEvt || standalone;
+    }
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault(); installEvt = e; installStateText();
+    });
+    window.addEventListener('appinstalled', () => { installEvt = null; installStateText(); });
+    document.addEventListener('DOMContentLoaded', installStateText);
+    async function installApp() {
+      if (!installEvt) return;
+      installEvt.prompt();
+      try { await installEvt.userChoice; } catch (e) {}
+      installEvt = null; installStateText();
+    }
 
     function themeLabel() {
       const dark = document.documentElement.getAttribute('data-theme') === 'dark';
