@@ -10,12 +10,12 @@
     html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; }
 
     /* Two view modes under a fixed bar:
-         - "Žemėlapis" fills the window; Legenda rides as a slim side panel
+         - "Žemėlapis" fills the window; the "Sluoksniai" layers panel rides at its side
            because it only makes sense next to what it labels
          - "Rinka" and "Tyrimas" are full-window documents with a comfortable
            reading measure. They do not need the map beside them, and squeezing
            prose into a 380px column was the reason this UI was unreadable. */
-    :root { --bar-h: 46px; --legend-w: 380px; }
+    :root { --bar-h: 46px; --legend-w: 330px; }
 
     #map { position: absolute; top: var(--bar-h); left: 0; right: 0; bottom: 0; }
 
@@ -103,7 +103,7 @@
     .rlegend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11.5px; color: #444; }
     .rlegend > span { display: inline-flex; align-items: center; white-space: nowrap; }
     .dot-sw { border: 1px solid #333; border-radius: 50%; }
-    .minibtn { font-size: 11px; padding: 2px 7px; cursor: pointer; border: 1px solid #ccc;
+    .minibtn { font-size: 11px; padding: 2px 7px; cursor: pointer; border: 1px solid #ccc; color: #23303c;
                background: #f4f6f8; border-radius: 3px; font-family: inherit; }
     .minibtn:hover { background: #e8ecf0; }
     .rnote { margin-top: 6px; font-size: 11px; color: #666; line-height: 1.45; }
@@ -178,6 +178,43 @@
     .sznsTypes { list-style: none; padding-left: 2px; }
     .sznsTypes li { margin: 2px 0; }
     .sznsLegend small { color: #666; }
+
+    /* --- Layers panel: one row per layer --- */
+    .hint { margin: 0 0 12px; font-size: 12px; line-height: 1.45; color: #5b6b7a; }
+    .lgroup { margin: 0 0 14px; }
+    .lgroup h4 {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 0 0 4px; padding-bottom: 3px; border-bottom: 1px solid #e3e8ec;
+      font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+      color: #6b7a88;
+    }
+    .lgroup h4 button {
+      font: inherit; font-size: 10.5px; text-transform: none; letter-spacing: 0;
+      font-weight: 600; padding: 1px 7px; border-radius: 3px; cursor: pointer;
+      border: 1px solid #ccd4db; background: #f4f6f8; color: #4a5a68;
+    }
+    .lrow {
+      display: flex; align-items: center; gap: 7px; padding: 3px 0;
+      font-size: 12.5px; cursor: pointer; user-select: none;
+    }
+    .lrow:hover .nm { text-decoration: underline; text-decoration-color: #9aa7b3; }
+    .lrow input { margin: 0; flex: none; }
+    .lrow .sw { flex: none; margin: 0; width: 14px; height: 12px; }
+    .lrow .nm { flex: 1; }
+    .swtxt { font-size: 9px; font-weight: 700; line-height: 12px; text-align: center;
+             color: #fff; background: #4a5a68; }
+    .info { flex: none; color: #8a97a3; cursor: help; font-size: 13px; padding: 0 2px; }
+    .info:hover { color: #1a73e8; }
+    .lsub { margin: 2px 0 4px 22px; font-size: 11.5px; }
+    .lsub .rlegend { font-size: 11px; }
+    .lnote { margin: 4px 0 0 22px; font-size: 11px; color: #7c8894; }
+    #listCount { margin-top: 3px; color: #666; font-size: 11px; }
+    html[data-theme="dark"] .hint,
+    html[data-theme="dark"] .lnote { color: #93a0ac; }
+    html[data-theme="dark"] .lgroup h4 { color: #93a0ac; border-bottom-color: #33414e; }
+    html[data-theme="dark"] .lgroup h4 button { background: #222e3a; color: #c5d0da; border-color: #3a4855; }
+    html[data-theme="dark"] .lgroup h4 button:hover { background: #2e3c4a; }
+    html[data-theme="dark"] .info:hover { color: #6db3ff; }
 
     /* Theme switch: dark is the default, light keeps the original look. Light
        rules above stay untouched; dark only overrides them. */
@@ -273,51 +310,121 @@
     </nav>
     <div class="spacer"></div>
     <div class="tools">
-      <button onclick="fitAll()">Centruoti</button>
-      <button id="btnLegend" class="on" onclick="toggleLegend()">Legenda</button>
-      <button id="btnListings" onclick="toggleListingsBtn()">Parduodami</button>
-      <button onclick="toggleLabels()">Label</button>
-      <button onclick="toggleNames()">Vardai</button>
+      <button onclick="fitAll()" title="Grąžinti vaizdą į šeimos sklypus">Centruoti</button>
+      <button id="btnLegend" class="on" onclick="toggleLegend()" title="Rodyti / slėpti sluoksnių skydelį">Sluoksniai</button>
     </div>
     <button id="btnTheme" onclick="toggleTheme()" title="Perjungti šviesią / tamsią temą">Tema: tamsi</button>
   </div>
 
+  <!-- One row per map layer: checkbox + colour + short name; the longer
+       explanation sits in the ⓘ tooltip so the panel stays scannable.
+       data-layer names the layer key that setLayer() switches. -->
   <div id="panel">
     <div id="panelHead">
-      <span>Legenda</span>
-      <button onclick="hidePanel()" title="Slėpti legendą">×</button>
+      <span>Sluoksniai</span>
+      <button onclick="hidePanel()" title="Slėpti skydelį">×</button>
     </div>
     <div id="panelBody">
-      <div id="tabLegenda" class="tabPane active">
-      <span class="sw" style="background:#FFFF00;border:2px dashed #FF0000"></span><b>Apjungtas blokas 0429+0430+0431</b> — 5.0250 ha, iš jų laisva statybai <b>3.39 ha</b> (atmetus dujotiekių AZ ir paveldo zoną; kelio AZ neskaičiuojama — per ją tik įvaža)<br>
-      <span class="sw" style="background:#FFF176;border:2px solid #FFFF00"></span>šeimos sklypai <b>0428–0431</b> — ryški geltona, su vardu/Nr./plotu<br>
-      <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span>kiti sklypai (Rimi 0922, kaimynai, precedentas) — neon žalia<br>
-      <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span><b>7910/0001:0005</b> — paskirties keitimas (0.314 ha)<br>
-      <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span><b>7910/0001:0922</b> — Rimi logistikos centras (12.85 ha, veikia)<br>
-      <label class="sznsToggle" style="margin-top:4px">
-        <input type="checkbox" checked onchange="toggleAz(this.checked)">
-        <span><span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span><b>Statybų draudimo AZ</b> (dujotiekiai 25 m + kelias 20 m) · <span class="sw" style="background:#FFB300;border:2px solid #FF8F00"></span><b>paveldo AZ 119</b> (KPD derinimas). Zonos persidengia; bloko ir 0428 skaičiai — meniu „Tyrimas“<br>
-          <span class="sw" style="background:#00E5FF;border:1px solid #006064"></span><b>Pakrantės juosta (164)</b> — statyti draudžiama ·
-          <span class="sw" style="background:#2979FF;opacity:.6;border:1px solid #1565C0"></span><b>50 m nuo juostos</b> — pastatų statyti draudžiama ·
-          <span class="sw" style="background:#fff;border:2px dashed #4FC3F7"></span><b>vandens telkinio AZ (163)</b> — leidžiama su sąlygomis</span>
-      </label><br>
-      <small>Label ant kiekvieno: pilnas kadastro Nr. + plotas</small>
-      <div class="szns">
-        <label class="sznsToggle">
-          <input type="checkbox" id="sznsChk" onchange="toggleSzns(this.checked)">
-          <b>SŽNS apribojimai</b> (RC sluoksnis)
-        </label>
-        <div id="sznsLegend" class="sznsLegend">
-          Sklypą kerta (RC SŽNS spalvos):
+      <p class="hint">Pažymėk, ką rodyti žemėlapyje. Užvesk pelę ant ⓘ, ir pamatysi
+        paaiškinimą. Parduodamą sklypą spustelėk, ir pamatysi jo kainą.</p>
+
+      <div class="lgroup">
+        <h4>Mūsų sklypai <button onclick="toggleGroup(this)" title="Įjungti / išjungti visą grupę">visi</button></h4>
+        <label class="lrow"><input type="checkbox" data-layer="family" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:#FFF176;border:2px solid #FFFF00"></span>
+          <span class="nm">Šeimos sklypai 0428–0431</span>
+          <span class="info" onclick="event.preventDefault()" title="Ryški geltona. Ant kiekvieno sklypo — kadastro Nr. ir plotas.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="merged" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:#FFFF00;border:2px dashed #FF0000"></span>
+          <span class="nm">Apjungtas blokas 0429+0430+0431</span>
+          <span class="info" onclick="event.preventDefault()" title="5.0250 ha, raudonas brūkšninis kontūras. Oranžinė linija — 51.9 m riba su keliu 4728. Kiek ploto laisva statybai — skirtukas „Tyrimas“.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="labels" checked onchange="onLayerChk(this)">
+          <span class="sw swtxt">12</span>
+          <span class="nm">Sklypų numeriai ir plotai</span>
+          <span class="info" onclick="event.preventDefault()" title="Užrašai ant sklypų. Labai nutolinus, smulkūs užrašai pasislepia patys.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="names" checked onchange="onLayerChk(this)">
+          <span class="sw swtxt">Aa</span>
+          <span class="nm">Savininkų vardai</span>
+          <span class="info" onclick="event.preventDefault()" title="Geltoni vardai virš sklypų numerių. Rodomi tik tada, kai įjungti ir numeriai.">ⓘ</span></label>
+      </div>
+
+      <div class="lgroup">
+        <h4>Aplinka <button onclick="toggleGroup(this)" title="Įjungti / išjungti visą grupę">visi</button></h4>
+        <label class="lrow"><input type="checkbox" data-layer="p0005" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span>
+          <span class="nm">0005 — paskirties keitimas</span>
+          <span class="info" onclick="event.preventDefault()" title="7910/0001:0005, 0.314 ha. Prašymas keisti žemės paskirtį (01.3-192).">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="rimi" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:#FFFFFF;border:2px solid #FFFFFF;box-shadow:0 0 0 1px #8a97a3"></span>
+          <span class="nm">Rimi logistikos centras</span>
+          <span class="info" onclick="event.preventDefault()" title="7910/0001:0922, 12.85 ha, veikia. Ribojasi su bloku vakaruose.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="neighbors" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span>
+          <span class="nm">Kiti kaimynų sklypai</span>
+          <span class="info" onclick="event.preventDefault()" title="Gretimi sklypai (0023, 0048, 0050, 0432, 0949, 1014) ir pramonės precedentas 7910/0005:0094 prie Vievio (3.00 ha, ~7 km į rytus).">ⓘ</span></label>
+      </div>
+
+      <div class="lgroup">
+        <h4>Apribojimai <button onclick="toggleGroup(this)" title="Įjungti / išjungti visą grupę">visi</button></h4>
+        <label class="lrow"><input type="checkbox" data-layer="azHard" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span>
+          <span class="nm">Statyti draudžiama (dujotiekiai, kelias)</span>
+          <span class="info" onclick="event.preventDefault()" title="Dujotiekių apsaugos zona (25 m) ir kelio 4728 zona (20 m). Statyti draudžiama. Per kelio zoną galima įvaža. Rodoma blokui, 0428 ir 0432.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="azHerit" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:#FFB300;border:2px solid #FF8F00"></span>
+          <span class="nm">Paveldo zona (119)</span>
+          <span class="info" onclick="event.preventDefault()" title="Kultūros paveldo apsaugos zona. Statyti galima tik su KPD (Kultūros paveldo departamento) pritarimu.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="waterStrip" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:#00E5FF;border:1px solid #006064"></span>
+          <span class="nm">Pakrantės juosta (164)</span>
+          <span class="info" onclick="event.preventDefault()" title="Vandens telkinio pakrantės apsaugos juosta. Statyti draudžiama.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="waterBand" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:#2979FF;opacity:.6;border:1px solid #1565C0"></span>
+          <span class="nm">50 m nuo pakrantės juostos</span>
+          <span class="info" onclick="event.preventDefault()" title="50 m pločio ruožas už pakrantės juostos. Pastatų statyti draudžiama.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="water163" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:transparent;border:2px dashed #4FC3F7"></span>
+          <span class="nm">Vandens telkinio zona (163)</span>
+          <span class="info" onclick="event.preventDefault()" title="Vandens telkinio apsaugos zona. Statyti leidžiama, bet su sąlygomis.">ⓘ</span></label>
+        <label class="lrow"><input type="checkbox" data-layer="szns" id="sznsChk" onchange="onLayerChk(this)">
+          <span class="sw" style="background:linear-gradient(90deg,#74FFE0 33%,#FF7F7F 33% 66%,#FFE100 66%)"></span>
+          <span class="nm">RC SŽNS žemėlapis</span>
+          <span class="info" onclick="event.preventDefault()" title="Oficialus Registrų centro specialiųjų žemės naudojimo sąlygų (SŽNS) sluoksnis. Spalvos — RC.">ⓘ</span></label>
+        <div id="sznsLegend" class="sznsLegend lsub">
+          Bloką kerta:
           <ul class="sznsTypes">
             <li><span class="sw" style="background:#74FFE0;border:1px solid #2bbfa0"></span>Magistralinių dujotiekių AZ (107) — Ambergrid</li>
             <li><span class="sw" style="background:#74FFE0;border:1px solid #2bbfa0"></span>Dujotiekių vietovių klasės (171)</li>
             <li><span class="sw" style="background:#FF7F7F;border:1px solid #d05050"></span>Elektros tinklų AZ (106)</li>
             <li><span class="sw" style="background:#FFE100;border:1px solid #c0a800"></span>Kultūros paveldo AZ (119)</li>
           </ul>
-          <small>Spalvos – RC default. 107 ir 171 abu turkio (RC neskiria). Kitos žemėlapio linijos – gretimų sklypų zonos (ne mūsų).</small>
+          <small>107 ir 171 abu turkio (RC jų neskiria). Kitos linijos — gretimų sklypų zonos.</small>
         </div>
+        <div class="lnote">Zonos persidengia. Laisvo ploto skaičiai — skirtukas „Tyrimas“.</div>
       </div>
+
+      <div class="lgroup">
+        <h4>Rinka</h4>
+        <label class="lrow"><input type="checkbox" data-layer="listings" id="listChk" onchange="onLayerChk(this)">
+          <span class="sw dot-sw" style="background:#E040FB"></span>
+          <span class="nm">Parduodami sklypai (126)</span>
+          <span class="info" onclick="event.preventDefault()" title="aruodas.lt skelbimai, 2026-10-09. Plotas su ribomis — tiksli sklypo vieta (22). Taškas — tik kaimo centras (104). Visas sąrašas — skirtukas „Rinka“.">ⓘ</span></label>
+        <div class="lsub">
+          <div class="rlegend">
+            <span><span class="sw dot-sw" style="background:#E040FB"></span>Pramonė / sandėl.</span>
+            <span><span class="sw dot-sw" style="background:#FF6E40"></span>Komercinė</span>
+            <span><span class="sw dot-sw" style="background:#FFEB3B"></span>Žemės ūkio</span>
+            <span><span class="sw dot-sw" style="background:#40C4FF"></span>Gyvenamoji</span>
+            <span><span class="sw dot-sw" style="background:#BDBDBD"></span>Kita</span>
+          </div>
+          <div style="margin-top:6px">
+            Rodyti iki:
+            <button class="minibtn" onclick="fitListings(3)">3 km</button>
+            <button class="minibtn" onclick="fitListings(8)">8 km</button>
+            <button class="minibtn" onclick="fitListings(99)">visi</button>
+          </div>
+          <div id="listCount"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -329,23 +436,16 @@
           spustelėk „→ rodyti“ ir sklypas atsidarys žemėlapyje</div>
 
         <div id="rinkaTop">
-          <label class="sznsToggle" style="margin-bottom:6px">
-            <input type="checkbox" id="listChk" onchange="toggleListings(this.checked)">
-            <span>Rodyti žemėlapyje — <b>126 skelbimai</b>:
-              <b>22 su tiksliomis ribomis</b>, 104 taškais</span>
-          </label>
+          <div style="margin-bottom:6px">
+            <b>126 skelbimai</b>: <b>22 su tiksliomis ribomis</b>, 104 taškais.
+            Žemėlapyje juos įjungia skydelis „Sluoksniai“ → „Parduodami sklypai“.
+          </div>
           <div class="rlegend">
             <span><span class="sw dot-sw" style="background:#E040FB"></span>Pramonė / sandėl.</span>
             <span><span class="sw dot-sw" style="background:#FF6E40"></span>Komercinė</span>
             <span><span class="sw dot-sw" style="background:#FFEB3B"></span>Žemės ūkio</span>
             <span><span class="sw dot-sw" style="background:#40C4FF"></span>Gyvenamoji</span>
             <span><span class="sw dot-sw" style="background:#BDBDBD"></span>Kita</span>
-          </div>
-          <div style="margin:6px 0 2px">
-            <button class="minibtn" onclick="fitListings(3)">≤3 km</button>
-            <button class="minibtn" onclick="fitListings(8)">≤8 km</button>
-            <button class="minibtn" onclick="fitListings(99)">visi</button>
-            <span id="listCount" style="color:#666;font-size:11px;margin-left:4px"></span>
           </div>
           <details class="rnote">
             <summary>Du tikslumo lygiai — ką reiškia ženklai</summary>
@@ -720,7 +820,21 @@
     let map, labels = [], labelsOn = true, TextLabel;
     const namedLabels = [];   // labels with an owner name, sized together
     let sznsOverlay = null;
-    let azShapes = [];
+
+    // Every map object belongs to one layer of the "Sluoksniai" panel; the
+    // panel checkbox with the same data-layer key switches it. Labels ride with
+    // their parcel's layer, so hiding a parcel hides its label too.
+    const LAYERS = {};
+    function put(id, obj) {
+      (LAYERS[id] = LAYERS[id] || []).push(obj);
+      return obj;
+    }
+    const FAMILY_KN = ['7910/0001:0428', '7910/0001:0429', '7910/0001:0430', '7910/0001:0431'];
+    function layerOf(kn) {
+      if (FAMILY_KN.includes(kn)) return 'family';
+      if (kn === '7910/0001:0005') return 'p0005';
+      return 'neighbors';
+    }
 
     // No-build zones inside the merged block, derived offline
     // (.firecrawl/restricted_v2.py): hard ban = pipeline AZ 25 m (OSM axes,
@@ -940,7 +1054,8 @@
             // visible ones, so Virginija and J. J. read as the same kind of label
             let s = own;
             if (this.group) {
-              const fits = this.group.map(l => l.nw ? l.fitScale(proj) : 1).filter(f => f >= 0.35);
+              // l.div: a label whose layer is switched off must not shrink the rest
+              const fits = this.group.map(l => l.div && l.nw ? l.fitScale(proj) : 1).filter(f => f >= 0.35);
               if (fits.length) s = Math.min(own, ...fits);
             }
             this.div.style.transform = `translate(-50%, -50%) scale(${s})`;
@@ -966,10 +1081,11 @@
       });
       for (const [kn, d] of Object.entries(DATA)) {
         const st = STYLE[kn] || NEIGHBOR;
-        new google.maps.Polygon({
+        const layer = layerOf(kn);
+        put(layer, new google.maps.Polygon({
           paths: d.path, strokeColor: st.stroke, strokeWeight: st.w || 1,
           fillColor: st.fill, fillOpacity: st.op, zIndex: st.z, map
-        });
+        }));
         const fit = fitLabelPoint(d.path, d.center);
         const nm = NAMES[kn] ? `<span class="pname">${NAMES[kn]}<br></span>` : '';
         const lbl = new TextLabel(
@@ -979,13 +1095,14 @@
         );
         if (NAMES[kn]) { lbl.group = namedLabels; namedLabels.push(lbl); }
         lbl.setMap(map);
-        labels.push(lbl);
+        labels.push(put(layer, lbl));
       }
-      // Rimi logistics centre parcel (teal) just W of the block
-      new google.maps.Polygon({
-        paths: RIMI.path, strokeColor: '#39FF14', strokeWeight: 2,
-        fillColor: '#76FF03', fillOpacity: 0.10, zIndex: 10, map
-      });
+      // Rimi logistics centre parcel just W of the block: white, so it does not
+      // read as one more neon-green neighbour
+      put('rimi', new google.maps.Polygon({
+        paths: RIMI.path, strokeColor: '#FFFFFF', strokeWeight: 2.5,
+        fillColor: '#FFFFFF', fillOpacity: 0.10, zIndex: 10, map
+      }));
       const rimiFit = fitLabelPoint(RIMI.path, RIMI.center);
       const rimiLbl = new TextLabel(
         new google.maps.LatLng(rimiFit.pos.lat, rimiFit.pos.lng),
@@ -993,89 +1110,71 @@
         rimiFit.span
       );
       rimiLbl.setMap(map);
-      labels.push(rimiLbl);
-      // precedent plot (violet) near Vievis/A1 — outside fitAll bounds on purpose
-      new google.maps.Polygon({
+      labels.push(put('rimi', rimiLbl));
+      // precedent plot near Vievis/A1 — outside fitAll bounds on purpose
+      put('neighbors', new google.maps.Polygon({
         paths: PRECEDENT.path, strokeColor: '#39FF14', strokeWeight: 2,
         fillColor: '#76FF03', fillOpacity: 0.15, zIndex: 10, map
-      });
+      }));
       const precLbl = new TextLabel(
         new google.maps.LatLng(PRECEDENT.center.lat, PRECEDENT.center.lng),
         `${PRECEDENT.kn}<br><small>3.00 ha — pramonė, 130 k€/ha</small>`,
         chordSpans(PRECEDENT.path, PRECEDENT.center)
       );
       precLbl.setMap(map);
-      labels.push(precLbl);
+      labels.push(put('neighbors', precLbl));
       // merged block outline (red) + total-area label, offset south of strip labels
-      new google.maps.Polygon({
+      put('merged', new google.maps.Polygon({
         paths: MERGED.path, strokeOpacity: 0,
         fillColor: '#FFFF00', fillOpacity: 0.08, zIndex: 12, map
-      });
+      }));
       // dashed red outline (Polygon has no dash support -> Polyline + icons)
-      new google.maps.Polyline({
+      put('merged', new google.maps.Polyline({
         path: MERGED.path, strokeOpacity: 0, zIndex: 12, map,
         icons: [{
           icon: {path: 'M 0,-1 0,1', strokeOpacity: 1, strokeColor: '#FF0000',
                  strokeWeight: 2, scale: 3},
           offset: '0', repeat: '12px'
         }]
-      });
-      // no-build AZ zones: outlined + hatched, toggle in legend
-      for (const ring of RESTRICTED.hardOutline) {
-        azShapes.push(new google.maps.Polygon({
-          paths: ring, strokeColor: '#B71C1C', strokeWeight: 2,
-          fillColor: '#FF0000', fillOpacity: 0.08, zIndex: 7, map
-        }));
-      }
-      for (const seg of RESTRICTED.hardHatch) {
-        azShapes.push(new google.maps.Polyline({
-          path: seg, strokeColor: '#D32F2F', strokeWeight: 1,
-          strokeOpacity: 0.9, zIndex: 7, map
-        }));
-      }
-      // heritage AZ 119: softer restriction (KPD approval), amber, no hatch
-      for (const ring of RESTRICTED.heritOutline) {
-        azShapes.push(new google.maps.Polygon({
-          paths: ring, strokeColor: '#FF8F00', strokeWeight: 2,
-          fillColor: '#FFB300', fillOpacity: 0.13, zIndex: 6, map
-        }));
-      }
-      // same AZ layers for neighbours 0428 and 0432
-      for (const R of [RESTRICTED_0428, RESTRICTED_0432]) {
-      for (const ring of R.hardOutline) {
-        azShapes.push(new google.maps.Polygon({
-          paths: ring, strokeColor: '#B71C1C', strokeWeight: 2,
-          fillColor: '#FF0000', fillOpacity: 0.08, zIndex: 7, map
-        }));
-      }
-      for (const seg of R.hardHatch) {
-        azShapes.push(new google.maps.Polyline({
-          path: seg, strokeColor: '#D32F2F', strokeWeight: 1,
-          strokeOpacity: 0.9, zIndex: 7, map
-        }));
-      }
-      for (const ring of R.heritOutline) {
-        azShapes.push(new google.maps.Polygon({
-          paths: ring, strokeColor: '#FF8F00', strokeWeight: 2,
-          fillColor: '#FFB300', fillOpacity: 0.13, zIndex: 6, map
-        }));
-      }
+      }));
+      // AZ zones for the block and neighbours 0428, 0432: hard no-build ban
+      // outlined + hatched; heritage AZ 119 is a softer restriction (KPD
+      // approval), amber, no hatch
+      for (const R of [RESTRICTED, RESTRICTED_0428, RESTRICTED_0432]) {
+        for (const ring of R.hardOutline) {
+          put('azHard', new google.maps.Polygon({
+            paths: ring, strokeColor: '#B71C1C', strokeWeight: 2,
+            fillColor: '#FF0000', fillOpacity: 0.08, zIndex: 7, map
+          }));
+        }
+        for (const seg of R.hardHatch) {
+          put('azHard', new google.maps.Polyline({
+            path: seg, strokeColor: '#D32F2F', strokeWeight: 1,
+            strokeOpacity: 0.9, zIndex: 7, map
+          }));
+        }
+        for (const ring of R.heritOutline) {
+          put('azHerit', new google.maps.Polygon({
+            paths: ring, strokeColor: '#FF8F00', strokeWeight: 2,
+            fillColor: '#FFB300', fillOpacity: 0.13, zIndex: 6, map
+          }));
+        }
       }
       // water zones: 163 dashed outline, 50 m no-building band blue, strip cyan
       for (const ring of WATER.band50) {
-        azShapes.push(new google.maps.Polygon({
+        put('waterBand', new google.maps.Polygon({
           paths: ring, strokeColor: '#1565C0', strokeWeight: 1,
           fillColor: '#2979FF', fillOpacity: 0.22, zIndex: 6, map
         }));
       }
       for (const ring of WATER.strip164) {
-        azShapes.push(new google.maps.Polygon({
+        put('waterStrip', new google.maps.Polygon({
           paths: ring, strokeColor: '#006064', strokeWeight: 1,
           fillColor: '#00E5FF', fillOpacity: 0.6, zIndex: 7, map
         }));
       }
       for (const ring of WATER.az163) {
-        azShapes.push(new google.maps.Polyline({
+        put('water163', new google.maps.Polyline({
           path: ring, strokeOpacity: 0, zIndex: 6, map,
           icons: [{icon: {path: 'M 0,-1 0,1', strokeOpacity: 0.9, strokeColor: '#4FC3F7',
                           strokeWeight: 2, scale: 2}, offset: '0', repeat: '9px'}]
@@ -1087,22 +1186,22 @@
         chordSpans(MERGED.path, {lat: 54.7921, lng: 24.68045})
       );
       mergedLbl.setMap(map);
-      labels.push(mergedLbl);
+      labels.push(put('merged', mergedLbl));
       // merged-block frontage on road 4728 (51.9 m: 0429 ~35 m + 0430 ~16.8 m)
       const edge4728 = [
         {lat: 54.790982, lng: 24.679702}, {lat: 54.790991, lng: 24.679441},
         {lat: 54.791009, lng: 24.678914}
       ];
-      new google.maps.Polyline({
+      put('merged', new google.maps.Polyline({
         path: edge4728, strokeColor: '#FF6D00', strokeWeight: 4, zIndex: 13, map
-      });
+      }));
       const edgeLbl = new TextLabel(
         new google.maps.LatLng(54.790925, 24.679308),
         '51.9 m<br><small>riba su keliu 4728</small>',
         {w: 0.002, h: 0.001}  // hides when zoomed out past usefulness
       );
       edgeLbl.setMap(map);
-      labels.push(edgeLbl);
+      labels.push(put('merged', edgeLbl));
       buildListings();
       fitAll();
     }
@@ -1272,24 +1371,18 @@
 
     function toggleListings(on) {
       listingsOn = on;
-      const btn = document.getElementById('btnListings');
-      if (btn) btn.classList.toggle('on', on);
+      document.getElementById('listChk').checked = on;
       listingMarkers.forEach(m => m.setMap(on ? map : null));
       listingShapes.forEach(s => s.setMap(on ? map : null));
       listingLabels.forEach(l => l.setMap(on ? map : null));
       if (!on && listingInfo) listingInfo.close();
-      // The colour key now lives in the Rinka section and is always visible
-      // there, so there is no separate legend block to reveal.
     }
 
     // Fit to the listings that are actually comparable, not the whole
     // municipality — a few far-flung ones would zoom out past Vilnius and make
     // the near cluster unreadable.
     function fitListings(maxKm) {
-      if (!listingsOn) {
-        document.getElementById('listChk').checked = true;
-        toggleListings(true);
-      }
+      if (!listingsOn) toggleListings(true);
       const lim = maxKm || 8;
       const b = new google.maps.LatLngBounds();
       for (const d of Object.values(DATA)) d.path.forEach(p => b.extend(p));
@@ -1309,12 +1402,25 @@
         `rodoma ${n} vietų ≤${lim} km` + (far ? ` · ${far} toliau (nerodoma kadre)` : '');
     }
 
-    function toggleAz(on) {
-      azShapes.forEach(s => s.setMap(on ? map : null));
+    // ---- Layers panel ----
+    function setLayer(id, on) {
+      if (id === 'szns') return toggleSzns(on);
+      if (id === 'listings') return toggleListings(on);
+      if (id === 'labels') return setLabels(on);
+      if (id === 'names') return setNames(on);
+      (LAYERS[id] || []).forEach(o => o.setMap(on ? map : null));
     }
+    function onLayerChk(el) { setLayer(el.dataset.layer, el.checked); }
+    // "visi" in a group header: any row off -> all on, otherwise all off
+    function toggleGroup(btn) {
+      const boxes = [...btn.closest('.lgroup').querySelectorAll('input[data-layer]')];
+      const on = boxes.some(b => !b.checked);
+      boxes.forEach(b => { if (b.checked !== on) { b.checked = on; onLayerChk(b); } });
+    }
+
     let activeTab = 'Zemelapis';
 
-    // Three views. "Zemelapis" is the map with its legend panel; the other two
+    // Three views. "Zemelapis" is the map with its layers panel; the other two
     // are full-window documents -- prose and a wide table do not need the map
     // beside them, and a narrow column was what made them hard to read.
     function showTab(name) {
@@ -1330,14 +1436,7 @@
       }
       document.getElementById('panel').classList.toggle('hidden', isDoc || !legendOn);
 
-      if (name === 'Rinka') {
-        if (!listingsOn) {          // rows are useless if the layer is off
-          const chk = document.getElementById('listChk');
-          if (chk) chk.checked = true;
-          toggleListings(true);
-        }
-        renderRinka();
-      }
+      if (name === 'Rinka') renderRinka();
       // Google Maps must be told the viewport changed, otherwise it keeps the
       // stale size it measured while hidden and renders a grey strip.
       if (!isDoc && map) {
@@ -1355,14 +1454,6 @@
       legendOn = false;
       document.getElementById('panel').classList.add('hidden');
       document.getElementById('btnLegend').classList.remove('on');
-    }
-
-    // Layer toggle lives in the top bar now; the legend checkbox stays in sync.
-    function toggleListingsBtn() {
-      const on = !listingsOn;
-      const chk = document.getElementById('listChk');
-      if (chk) chk.checked = on;
-      toggleListings(on);
     }
 
     // ---- Market table ----
@@ -1474,6 +1565,8 @@
         requestAnimationFrame(() => gotoRinka(r));
         return;
       }
+      // the row points at a listing, so its layer must be visible
+      if (!listingsOn) toggleListings(true);
       // Keep the target clear of the side panel rather than centring it
       // underneath: pad by the panel's real width when it is open.
       const panel = document.getElementById('panel');
@@ -1499,12 +1592,12 @@
       for (const d of Object.values(DATA)) d.path.forEach(p => b.extend(p));
       map.fitBounds(b);
     }
-    function toggleLabels() {
-      labelsOn = !labelsOn;
+    function setLabels(on) {
+      labelsOn = on;
       labels.forEach(l => l.setVisible(labelsOn));
     }
-    function toggleNames() {
-      document.body.classList.toggle('names-off');
+    function setNames(on) {
+      document.body.classList.toggle('names-off', !on);
       // label boxes changed size — re-measure and re-fit each one
       labels.forEach(l => {
         if (!l.div) return;
