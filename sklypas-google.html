@@ -197,17 +197,16 @@
       border: 1px solid #ccd4db; background: #f4f6f8; color: #4a5a68;
     }
     .lrow {
-      display: flex; align-items: center; gap: 7px; padding: 3px 0;
+      display: flex; align-items: flex-start; gap: 7px; padding: 3px 0;
       font-size: 12.5px; cursor: pointer; user-select: none;
     }
     .lrow:hover .nm { text-decoration: underline; text-decoration-color: #9aa7b3; }
-    .lrow input { margin: 0; flex: none; }
-    .lrow .sw { flex: none; margin: 0; width: 14px; height: 12px; }
+    .lrow input { margin: 2px 0 0; flex: none; }
+    .lrow .sw { flex: none; margin: 2px 0 0; width: 14px; height: 12px; }
+    .ldesc { display: block; font-size: 11px; line-height: 1.35; color: #6b7a88; }
     .lrow .nm { flex: 1; }
     .swtxt { font-size: 9px; font-weight: 700; line-height: 12px; text-align: center;
              color: #fff; background: #4a5a68; }
-    .info { flex: none; color: #8a97a3; cursor: help; font-size: 13px; padding: 0 2px; }
-    .info:hover { color: #1a73e8; }
     .lsub { margin: 2px 0 4px 22px; font-size: 11.5px; }
     .lsub .rlegend { font-size: 11px; }
     .lnote { margin: 4px 0 0 22px; font-size: 11px; color: #7c8894; }
@@ -217,7 +216,7 @@
     html[data-theme="dark"] .lgroup h4 { color: #93a0ac; border-bottom-color: #33414e; }
     html[data-theme="dark"] .lgroup h4 button { background: #222e3a; color: #c5d0da; border-color: #3a4855; }
     html[data-theme="dark"] .lgroup h4 button:hover { background: #2e3c4a; }
-    html[data-theme="dark"] .info:hover { color: #6db3ff; }
+    html[data-theme="dark"] .ldesc { color: #93a0ac; }
 
     /* Theme switch: dark is the default, light keeps the original look. Light
        rules above stay untouched; dark only overrides them. */
@@ -323,7 +322,8 @@
   </div>
 
   <!-- One row per map layer: checkbox + colour + short name; the longer
-       explanation sits in the ⓘ tooltip so the panel stays scannable.
+       explanation sits in the row's hover title. The visible second line says
+       what the layer looks like on the map: hover-only text was missed.
        data-layer names the layer key that setLayer() switches. -->
   <div id="panel">
     <div id="panelHead">
@@ -331,71 +331,58 @@
       <button onclick="hidePanel()" title="Slėpti skydelį">×</button>
     </div>
     <div id="panelBody">
-      <p class="hint">Pažymėk, ką rodyti žemėlapyje. Užvesk pelę ant ⓘ, ir pamatysi
-        paaiškinimą. Parduodamą sklypą spustelėk, ir pamatysi jo kainą.</p>
+      <p class="hint">Pažymėk, ką rodyti žemėlapyje. Po kiekvienu pavadinimu parašyta,
+        kaip jis atrodo žemėlapyje ir ką reiškia.</p>
 
       <div class="lgroup">
         <h4>Mūsų sklypai <button onclick="toggleGroup(this)" title="Įjungti / išjungti visą grupę">visi</button></h4>
-        <label class="lrow"><input type="checkbox" data-layer="family" checked onchange="onLayerChk(this)">
+        <label class="lrow" title="Ryški geltona. Ant kiekvieno sklypo — kadastro Nr. ir plotas."><input type="checkbox" data-layer="family" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#FFF176;border:2px solid #FFFF00"></span>
-          <span class="nm">Šeimos sklypai 0428–0431</span>
-          <span class="info" onclick="event.preventDefault()" title="Ryški geltona. Ant kiekvieno sklypo — kadastro Nr. ir plotas.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="merged" checked onchange="onLayerChk(this)">
+          <span class="nm">Šeimos sklypai 0428–0431<small class="ldesc">geltona; ant sklypų — Nr. ir plotas</small></span></label>
+        <label class="lrow" title="5.0250 ha, raudonas brūkšninis kontūras. Oranžinė linija — 51.9 m riba su keliu 4728. Kiek ploto laisva statybai — skirtukas „Tyrimas“."><input type="checkbox" data-layer="merged" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#FFFF00;border:2px dashed #FF0000"></span>
-          <span class="nm">Apjungtas blokas 0429+0430+0431</span>
-          <span class="info" onclick="event.preventDefault()" title="5.0250 ha, raudonas brūkšninis kontūras. Oranžinė linija — 51.9 m riba su keliu 4728. Kiek ploto laisva statybai — skirtukas „Tyrimas“.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="labels" checked onchange="onLayerChk(this)">
+          <span class="nm">Apjungtas blokas 0429+0430+0431<small class="ldesc">raudonas punktyras; oranžinė linija — 51.9 m prie kelio</small></span></label>
+        <label class="lrow" title="Užrašai ant sklypų. Labai nutolinus, smulkūs užrašai pasislepia patys."><input type="checkbox" data-layer="labels" checked onchange="onLayerChk(this)">
           <span class="sw swtxt">12</span>
-          <span class="nm">Sklypų numeriai ir plotai</span>
-          <span class="info" onclick="event.preventDefault()" title="Užrašai ant sklypų. Labai nutolinus, smulkūs užrašai pasislepia patys.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="names" checked onchange="onLayerChk(this)">
+          <span class="nm">Sklypų numeriai ir plotai<small class="ldesc">užrašai ant sklypų</small></span></label>
+        <label class="lrow" title="Geltoni vardai virš sklypų numerių. Rodomi tik tada, kai įjungti ir numeriai."><input type="checkbox" data-layer="names" checked onchange="onLayerChk(this)">
           <span class="sw swtxt">Aa</span>
-          <span class="nm">Savininkų vardai</span>
-          <span class="info" onclick="event.preventDefault()" title="Geltoni vardai virš sklypų numerių. Rodomi tik tada, kai įjungti ir numeriai.">ⓘ</span></label>
+          <span class="nm">Savininkų vardai<small class="ldesc">geltoni vardai virš sklypų numerių</small></span></label>
       </div>
 
       <div class="lgroup">
         <h4>Aplinka <button onclick="toggleGroup(this)" title="Įjungti / išjungti visą grupę">visi</button></h4>
-        <label class="lrow"><input type="checkbox" data-layer="p0005" checked onchange="onLayerChk(this)">
+        <label class="lrow" title="7910/0001:0005, 0.314 ha. Prašymas keisti žemės paskirtį (01.3-192)."><input type="checkbox" data-layer="p0005" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#00AAFF;border:2px solid #0066FF"></span>
-          <span class="nm">0005 — paskirties keitimas</span>
-          <span class="info" onclick="event.preventDefault()" title="7910/0001:0005, 0.314 ha. Prašymas keisti žemės paskirtį (01.3-192).">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="rimi" checked onchange="onLayerChk(this)">
+          <span class="nm">0005 — paskirties keitimas<small class="ldesc">mėlynas kontūras; prašymas keisti paskirtį</small></span></label>
+        <label class="lrow" title="7910/0001:0922, 12.85 ha, veikia. Ribojasi su bloku vakaruose."><input type="checkbox" data-layer="rimi" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#FFFFFF;border:2px solid #FFFFFF;box-shadow:0 0 0 1px #8a97a3"></span>
-          <span class="nm">Rimi logistikos centras</span>
-          <span class="info" onclick="event.preventDefault()" title="7910/0001:0922, 12.85 ha, veikia. Ribojasi su bloku vakaruose.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="neighbors" checked onchange="onLayerChk(this)">
+          <span class="nm">Rimi logistikos centras<small class="ldesc">baltas kontūras; 12.85 ha, veikia</small></span></label>
+        <label class="lrow" title="Gretimi sklypai (0023, 0048, 0050, 0432, 0949, 1014) ir pramonės precedentas 7910/0005:0094 prie Vievio (3.00 ha, ~7 km į rytus)."><input type="checkbox" data-layer="neighbors" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span>
-          <span class="nm">Kiti kaimynų sklypai</span>
-          <span class="info" onclick="event.preventDefault()" title="Gretimi sklypai (0023, 0048, 0050, 0432, 0949, 1014) ir pramonės precedentas 7910/0005:0094 prie Vievio (3.00 ha, ~7 km į rytus).">ⓘ</span></label>
+          <span class="nm">Kiti kaimynų sklypai<small class="ldesc">žalias kontūras; ir precedentas prie Vievio</small></span></label>
       </div>
 
       <div class="lgroup">
         <h4>Apribojimai <button onclick="toggleGroup(this)" title="Įjungti / išjungti visą grupę">visi</button></h4>
-        <label class="lrow"><input type="checkbox" data-layer="azHard" checked onchange="onLayerChk(this)">
+        <label class="lrow" title="Dujotiekių apsaugos zona (25 m) ir kelio 4728 zona (20 m). Statyti draudžiama. Per kelio zoną galima įvaža. Rodoma blokui, 0428 ir 0432."><input type="checkbox" data-layer="azHard" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:repeating-linear-gradient(45deg,#fff,#fff 2px,#D32F2F 2px,#D32F2F 4px);border:2px solid #B71C1C"></span>
-          <span class="nm">Statyti draudžiama (dujotiekiai, kelias)</span>
-          <span class="info" onclick="event.preventDefault()" title="Dujotiekių apsaugos zona (25 m) ir kelio 4728 zona (20 m). Statyti draudžiama. Per kelio zoną galima įvaža. Rodoma blokui, 0428 ir 0432.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="azHerit" checked onchange="onLayerChk(this)">
+          <span class="nm">Statyti draudžiama (dujotiekiai, kelias)<small class="ldesc">raudoni brūkšniai — statyti negalima</small></span></label>
+        <label class="lrow" title="Kultūros paveldo apsaugos zona. Statyti galima tik su KPD (Kultūros paveldo departamento) pritarimu."><input type="checkbox" data-layer="azHerit" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#FFB300;border:2px solid #FF8F00"></span>
-          <span class="nm">Paveldo zona (119)</span>
-          <span class="info" onclick="event.preventDefault()" title="Kultūros paveldo apsaugos zona. Statyti galima tik su KPD (Kultūros paveldo departamento) pritarimu.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="waterStrip" checked onchange="onLayerChk(this)">
+          <span class="nm">Paveldo zona (119)<small class="ldesc">oranžinė — statyti tik su KPD leidimu</small></span></label>
+        <label class="lrow" title="Vandens telkinio pakrantės apsaugos juosta. Statyti draudžiama."><input type="checkbox" data-layer="waterStrip" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#00E5FF;border:1px solid #006064"></span>
-          <span class="nm">Pakrantės juosta (164)</span>
-          <span class="info" onclick="event.preventDefault()" title="Vandens telkinio pakrantės apsaugos juosta. Statyti draudžiama.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="waterBand" checked onchange="onLayerChk(this)">
+          <span class="nm">Pakrantės juosta (164)<small class="ldesc">žydra — statyti negalima</small></span></label>
+        <label class="lrow" title="50 m pločio ruožas už pakrantės juostos. Pastatų statyti draudžiama."><input type="checkbox" data-layer="waterBand" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#2979FF;opacity:.6;border:1px solid #1565C0"></span>
-          <span class="nm">50 m nuo pakrantės juostos</span>
-          <span class="info" onclick="event.preventDefault()" title="50 m pločio ruožas už pakrantės juostos. Pastatų statyti draudžiama.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="water163" checked onchange="onLayerChk(this)">
+          <span class="nm">50 m nuo pakrantės juostos<small class="ldesc">mėlyna — pastatų statyti negalima</small></span></label>
+        <label class="lrow" title="Vandens telkinio apsaugos zona. Statyti leidžiama, bet su sąlygomis."><input type="checkbox" data-layer="water163" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:transparent;border:2px dashed #4FC3F7"></span>
-          <span class="nm">Vandens telkinio zona (163)</span>
-          <span class="info" onclick="event.preventDefault()" title="Vandens telkinio apsaugos zona. Statyti leidžiama, bet su sąlygomis.">ⓘ</span></label>
-        <label class="lrow"><input type="checkbox" data-layer="szns" id="sznsChk" onchange="onLayerChk(this)">
+          <span class="nm">Vandens telkinio zona (163)<small class="ldesc">šviesiai mėlynas punktyras — statyti galima su sąlygomis</small></span></label>
+        <label class="lrow" title="Oficialus Registrų centro specialiųjų žemės naudojimo sąlygų (SŽNS) sluoksnis. Spalvos — RC."><input type="checkbox" data-layer="szns" id="sznsChk" onchange="onLayerChk(this)">
           <span class="sw" style="background:linear-gradient(90deg,#74FFE0 33%,#FF7F7F 33% 66%,#FFE100 66%)"></span>
-          <span class="nm">RC SŽNS žemėlapis</span>
-          <span class="info" onclick="event.preventDefault()" title="Oficialus Registrų centro specialiųjų žemės naudojimo sąlygų (SŽNS) sluoksnis. Spalvos — RC.">ⓘ</span></label>
+          <span class="nm">RC SŽNS žemėlapis<small class="ldesc">oficialus RC žemėlapis; įjungus — spalvų paaiškinimas</small></span></label>
         <div id="sznsLegend" class="sznsLegend lsub">
           Bloką kerta:
           <ul class="sznsTypes">
@@ -411,10 +398,9 @@
 
       <div class="lgroup">
         <h4>Rinka</h4>
-        <label class="lrow"><input type="checkbox" data-layer="listings" id="listChk" onchange="onLayerChk(this)">
+        <label class="lrow" title="aruodas.lt skelbimai, 2026-10-09. Plotas su ribomis — tiksli sklypo vieta (22). Taškas — tik kaimo centras (104). Visas sąrašas — skirtukas „Rinka“."><input type="checkbox" data-layer="listings" id="listChk" onchange="onLayerChk(this)">
           <span class="sw dot-sw" style="background:#E040FB"></span>
-          <span class="nm">Parduodami sklypai (126)</span>
-          <span class="info" onclick="event.preventDefault()" title="aruodas.lt skelbimai, 2026-10-09. Plotas su ribomis — tiksli sklypo vieta (22). Taškas — tik kaimo centras (104). Visas sąrašas — skirtukas „Rinka“.">ⓘ</span></label>
+          <span class="nm">Parduodami sklypai (126)<small class="ldesc">spalva — paskirtis; spustelėk, ir matysi kainą</small></span></label>
         <div class="lsub">
           <div class="rlegend">
             <span><span class="sw dot-sw" style="background:#E040FB"></span>Pramonė / sandėl.</span>
@@ -758,7 +744,8 @@
           <li>Kairėje yra skydelis <b>Sluoksniai</b>. Pažymėk žymę ☑, ir tas sluoksnis
             atsiras žemėlapyje. Nuimk žymę, ir jis dings.</li>
           <li>Prie kiekvieno sluoksnio yra spalva. Taip jis atrodo žemėlapyje.</li>
-          <li>Užvesk pelę ant <b>ⓘ</b>, ir pamatysi, ką tas sluoksnis reiškia.</li>
+          <li>Po pavadinimu smulkiu šriftu parašyta, kaip sluoksnis atrodo žemėlapyje ir ką reiškia.
+            Užvedus pelę ant eilutės, atsiranda išsamesnis paaiškinimas.</li>
           <li>Mygtukas <b>visi</b> grupės antraštėje įjungia arba išjungia visą grupę iš karto.</li>
           <li>Priartinti ar nutolinti — pelės ratuku. Paslinkti — tempk žemėlapį pele.
             Visas ekranas — mygtukas ⛶ dešinėje viršuje.</li>
