@@ -438,18 +438,25 @@
       </div>
 
       <div class="lgroup">
-        <h4>Rinka</h4>
-        <label class="lrow" title="aruodas.lt skelbimai, 2026-10-09. Plotas su ribomis — tiksli sklypo vieta (22). Taškas — tik kaimo centras (104). Visas sąrašas — skirtukas „Rinka“."><input type="checkbox" data-layer="listings" id="listChk" onchange="onLayerChk(this)">
+        <h4>Parduodami sklypai <button onclick="toggleGroup(this)" title="Įjungti / išjungti visas paskirtis">visi</button></h4>
+        <div class="lnote" style="margin:0 0 4px">aruodas.lt, 2026-10-09 · pažymėk paskirtį, kurią rodyti.
+          Plotas — tiksli vieta, taškas — tik kaimo centras. Spustelėk, ir matysi kainą.</div>
+        <label class="lrow"><input type="checkbox" data-layer="lc:industrial" onchange="onLayerChk(this)">
           <span class="sw dot-sw" style="background:#E040FB"></span>
-          <span class="nm">Parduodami sklypai (126)<small class="ldesc">spalva — paskirtis; spustelėk, ir matysi kainą</small></span></label>
+          <span class="nm">Pramonė / sandėliavimas <span class="lcnt" data-cat="industrial"></span></span></label>
+        <label class="lrow"><input type="checkbox" data-layer="lc:commercial" onchange="onLayerChk(this)">
+          <span class="sw dot-sw" style="background:#FF6E40"></span>
+          <span class="nm">Komercinė <span class="lcnt" data-cat="commercial"></span></span></label>
+        <label class="lrow"><input type="checkbox" data-layer="lc:agri" onchange="onLayerChk(this)">
+          <span class="sw dot-sw" style="background:#FFEB3B"></span>
+          <span class="nm">Žemės ūkio <span class="lcnt" data-cat="agri"></span></span></label>
+        <label class="lrow"><input type="checkbox" data-layer="lc:residential" onchange="onLayerChk(this)">
+          <span class="sw dot-sw" style="background:#40C4FF"></span>
+          <span class="nm">Gyvenamoji <span class="lcnt" data-cat="residential"></span></span></label>
+        <label class="lrow"><input type="checkbox" data-layer="lc:other" onchange="onLayerChk(this)">
+          <span class="sw dot-sw" style="background:#BDBDBD"></span>
+          <span class="nm">Kita <span class="lcnt" data-cat="other"></span></span></label>
         <div class="lsub">
-          <div class="rlegend">
-            <span><span class="sw dot-sw" style="background:#E040FB"></span>Pramonė / sandėl.</span>
-            <span><span class="sw dot-sw" style="background:#FF6E40"></span>Komercinė</span>
-            <span><span class="sw dot-sw" style="background:#FFEB3B"></span>Žemės ūkio</span>
-            <span><span class="sw dot-sw" style="background:#40C4FF"></span>Gyvenamoji</span>
-            <span><span class="sw dot-sw" style="background:#BDBDBD"></span>Kita</span>
-          </div>
           <div style="margin-top:6px">
             Rodyti iki:
             <button class="minibtn" onclick="fitListings(3)">3 km</button>
@@ -482,7 +489,8 @@
         <div id="rinkaTop">
           <div style="margin-bottom:6px">
             <b>126 skelbimai</b>: <b>22 su tiksliomis ribomis</b>, 104 taškais.
-            Žemėlapyje juos įjungia skydelis „Sluoksniai“ → „Parduodami sklypai“.
+            Žemėlapyje juos rodo skydelis „Sluoksniai“ → grupė „Parduodami sklypai“
+            (kiekviena paskirtis atskirai).
           </div>
           <div class="rlegend">
             <span><span class="sw dot-sw" style="background:#E040FB"></span>Pramonė / sandėl.</span>
@@ -854,8 +862,9 @@
 
         <h3>Parduodami sklypai</h3>
         <ul>
-          <li>Skydelyje pažymėk <b>Parduodami sklypai</b>. Spalva rodo paskirtį
-            (pramonė, komercinė, žemės ūkio, gyvenamoji, kita).</li>
+          <li>Skydelio grupėje <b>Parduodami sklypai</b> pažymėk paskirtis, kurias nori matyti:
+            pramonė / sandėliavimas, komercinė, žemės ūkio, gyvenamoji, kita. Kiekviena turi
+            savo spalvą. Mygtukas <b>visi</b> įjungia arba išjungia visas iš karto.</li>
           <li>Mygtukai <b>3 km / 8 km / visi</b> parodo skelbimus iki to atstumo nuo mūsų bloko.</li>
           <li>Spustelėk sklypą arba tašką, ir pamatysi plotą ir kainą.</li>
           <li><b>Plotas su ribomis</b> — tikra sklypo vieta. <b>Taškas</b> — tik kaimo centras,
@@ -1407,6 +1416,9 @@
     };
     let listingMarkers = [], listingShapes = [], listingLabels = [],
         listingInfo = null, listingsOn = false;
+    // which purpose categories of the for-sale layer are shown (all off at start)
+    const listCats = {industrial: false, commercial: false, agri: false,
+                      residential: false, other: false};
 
     function eur(n) {
       return (n == null) ? '?' : n.toLocaleString('lt-LT');
@@ -1495,6 +1507,7 @@
           listingInfo.setPosition(e.center);
           listingInfo.open(map);
         });
+        poly.cat = e.cat in LCOLOR ? e.cat : 'other';
         listingShapes.push(poly);
 
         // Price on the parcel itself, so the map is readable without clicking.
@@ -1509,58 +1522,96 @@
           {w: Math.max(...lx) - Math.min(...lx), h: Math.max(...ly) - Math.min(...ly)}
         );
         lbl.setMap(null);          // shown only while the layer is on
+        lbl.cat = poly.cat;
         listingLabels.push(lbl);
       }
 
+      // Village points: one marker per (village, purpose), so each purpose can be
+      // switched on its own. Several purposes in one village sit side by side.
       for (const g of LISTINGS) {
-        const color = LCOLOR[g.cat] || LCOLOR.other;
-        const m = new google.maps.Marker({
-          position: {lat: g.lat, lng: g.lng},
-          title: `${g.village} — ${g.n} skelb. (${g.dist_km} km)`,
-          zIndex: 60,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: g.n > 1 ? 9 : 7,
-            fillColor: color, fillOpacity: 0.95,
-            strokeColor: '#000', strokeWeight: 1.5
-          },
-          label: g.n > 1 ? {text: String(g.n), color: '#000',
+        const byCat = {};
+        g.items.forEach(it => {
+          const c = it.cat in LCOLOR ? it.cat : 'other';
+          (byCat[c] = byCat[c] || []).push(it);
+        });
+        const keys = Object.keys(byCat);
+        keys.forEach((c, ki) => {
+          const items = byCat[c];
+          const n = items.length;
+          const scale = n > 1 ? 9 : 7;
+          const dx = (ki - (keys.length - 1) / 2) * 2.3;   // in symbol units (radius 1)
+          const m = new google.maps.Marker({
+            position: {lat: g.lat, lng: g.lng},
+            title: `${g.village} — ${LNAME[c]}: ${n} skelb. (${g.dist_km} km)`,
+            zIndex: 60,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE, scale,
+              anchor: new google.maps.Point(-dx, 0), labelOrigin: new google.maps.Point(dx, 0),
+              fillColor: LCOLOR[c], fillOpacity: 0.95,
+              strokeColor: '#000', strokeWeight: 1.5
+            },
+            label: n > 1 ? {text: String(n), color: '#000',
                             fontSize: '10px', fontWeight: '700'} : null
+          });
+          m.cat = c;
+          m.gidx = LISTINGS.indexOf(g);
+          const rows = items.map(it => `
+            <tr>
+              <td style="padding:2px 6px 2px 0">${it.street || '—'}</td>
+              <td style="padding:2px 6px;text-align:right">${it.area_ha} ha</td>
+              <td style="padding:2px 6px;text-align:right"><b>${eur(it.price_eur)} €</b></td>
+              <td style="padding:2px 0 2px 6px;text-align:right;color:#555">${eur(it.price_per_ha)} €/ha</td>
+            </tr>
+            <tr><td colspan="4" style="padding:0 0 6px 0;color:#777;font-size:11px">${purposeLt(it.purpose)}
+              ${it.url ? ' · ' + adLink(it.url, 'skelbimas ↗') : ''}</td></tr>`).join('');
+          m.addListener('click', () => {
+            listingInfo.setContent(`
+              <div style="font:12.5px system-ui;max-width:min(340px, calc(100vw - 90px));overflow-wrap:anywhere">
+                <div style="font-size:13px;font-weight:600;margin-bottom:2px">${g.village}</div>
+                <div style="color:#666;margin-bottom:6px">${g.dist_km} km nuo bloko ·
+                  ${LNAME[c]} · ${n} skelbimas(-ai)</div>
+                <table style="border-collapse:collapse">${rows}</table>
+                <div style="margin-top:6px;color:#999;font-size:11px">
+                  Koordinatė — kaimo centras (Google geocode), ne tikslus sklypas.<br>
+                  Skelbimų kainos, ne sandoriai. aruodas.lt, 2026-10-09
+                  (skelbimas jau gali būti išimtas).
+                </div>
+              </div>`);
+            listingInfo.open(map, m);
+          });
+          listingMarkers.push(m);
         });
-        const rows = g.items.map(it => `
-          <tr>
-            <td style="padding:2px 6px 2px 0">${it.street || '—'}</td>
-            <td style="padding:2px 6px;text-align:right">${it.area_ha} ha</td>
-            <td style="padding:2px 6px;text-align:right"><b>${eur(it.price_eur)} €</b></td>
-            <td style="padding:2px 0 2px 6px;text-align:right;color:#555">${eur(it.price_per_ha)} €/ha</td>
-          </tr>
-          <tr><td colspan="4" style="padding:0 0 6px 0;color:#777;font-size:11px">${purposeLt(it.purpose)}
-            ${it.url ? ' · ' + adLink(it.url, 'skelbimas ↗') : ''}</td></tr>`).join('');
-        m.addListener('click', () => {
-          listingInfo.setContent(`
-            <div style="font:12.5px system-ui;max-width:min(340px, calc(100vw - 90px));overflow-wrap:anywhere">
-              <div style="font-size:13px;font-weight:600;margin-bottom:2px">${g.village}</div>
-              <div style="color:#666;margin-bottom:6px">${g.dist_km} km nuo bloko · ${g.n} skelbimas(-ai)</div>
-              <table style="border-collapse:collapse">${rows}</table>
-              <div style="margin-top:6px;color:#999;font-size:11px">
-                Koordinatė — kaimo centras (Google geocode), ne tikslus sklypas.<br>
-                Skelbimų kainos, ne sandoriai. aruodas.lt, 2026-10-09
-                (skelbimas jau gali būti išimtas).
-              </div>
-            </div>`);
-          listingInfo.open(map, m);
-        });
-        listingMarkers.push(m);
       }
+      // listing counts per purpose, shown next to each panel row
+      const cnt = {};
+      (typeof LISTING_PARCELS !== 'undefined' ? LISTING_PARCELS : []).forEach(e => {
+        const c = e.cat in LCOLOR ? e.cat : 'other'; cnt[c] = (cnt[c] || 0) + 1;
+      });
+      LISTINGS.forEach(g => g.items.forEach(it => {
+        const c = it.cat in LCOLOR ? it.cat : 'other'; cnt[c] = (cnt[c] || 0) + 1;
+      }));
+      document.querySelectorAll('.lcnt').forEach(el => {
+        el.textContent = `(${cnt[el.dataset.cat] || 0})`;
+      });
     }
 
+    // Show the for-sale objects of the enabled purposes only.
+    function applyListCats() {
+      listingsOn = Object.values(listCats).some(Boolean);
+      const vis = o => (listCats[o.cat] ? map : null);
+      listingMarkers.forEach(m => m.setMap(vis(m)));
+      listingShapes.forEach(sh => sh.setMap(vis(sh)));
+      listingLabels.forEach(l => l.setMap(vis(l)));
+      document.querySelectorAll('input[data-layer^="lc:"]').forEach(b => {
+        b.checked = listCats[b.dataset.layer.slice(3)];
+      });
+      if (listingInfo) listingInfo.close();
+    }
+    function setListCat(cat, on) { listCats[cat] = on; applyListCats(); }
+    // all purposes at once (used when a jump needs the layer visible)
     function toggleListings(on) {
-      listingsOn = on;
-      document.getElementById('listChk').checked = on;
-      listingMarkers.forEach(m => m.setMap(on ? map : null));
-      listingShapes.forEach(s => s.setMap(on ? map : null));
-      listingLabels.forEach(l => l.setMap(on ? map : null));
-      if (!on && listingInfo) listingInfo.close();
+      Object.keys(listCats).forEach(k => { listCats[k] = on; });
+      applyListCats();
     }
 
     // Fit to the listings that are actually comparable, not the whole
@@ -1572,17 +1623,22 @@
       const b = new google.maps.LatLngBounds();
       for (const d of Object.values(DATA)) d.path.forEach(p => b.extend(p));
       let n = 0;
+      // only what is visible: the enabled purposes
+      const shown = c => listCats[c in LCOLOR ? c : 'other'];
       LISTINGS.forEach(g => {
-        if (g.dist_km != null && g.dist_km <= lim) { b.extend({lat: g.lat, lng: g.lng}); n++; }
+        if (g.dist_km != null && g.dist_km <= lim && g.items.some(it => shown(it.cat))) {
+          b.extend({lat: g.lat, lng: g.lng}); n++;
+        }
       });
       (typeof LISTING_PARCELS !== 'undefined' ? LISTING_PARCELS : []).forEach(e => {
-        if (e.dist_km <= lim) { e.paths.forEach(r => r.forEach(p => b.extend(p))); n++; }
+        if (e.dist_km <= lim && shown(e.cat)) { e.paths.forEach(r => r.forEach(p => b.extend(p))); n++; }
       });
       const pnl = document.getElementById('panel');
       const padL = pnl.classList.contains('hidden')
         ? 40 : pnl.getBoundingClientRect().width + 40;
       map.fitBounds(b, {top: 40, right: 40, bottom: 40, left: padL});
-      const far = LISTINGS.filter(g => g.dist_km == null || g.dist_km > lim).length;
+      const far = LISTINGS.filter(g => (g.dist_km == null || g.dist_km > lim)
+                                      && g.items.some(it => shown(it.cat))).length;
       document.getElementById('listCount').textContent =
         `rodoma ${n} vietų ≤${lim} km` + (far ? ` · ${far} toliau (nerodoma kadre)` : '');
     }
@@ -1590,7 +1646,7 @@
     // ---- Layers panel ----
     function setLayer(id, on) {
       if (id === 'szns') return toggleSzns(on);
-      if (id === 'listings') return toggleListings(on);
+      if (id.startsWith('lc:')) return setListCat(id.slice(3), on);
       if (id === 'labels') return setLabels(on);
       if (id === 'names') return setNames(on);
       (LAYERS[id] || []).forEach(o => o.setMap(on ? map : null));
@@ -1754,8 +1810,9 @@
         requestAnimationFrame(() => gotoRinka(r));
         return;
       }
-      // the row points at a listing, so its layer must be visible
-      if (!listingsOn) toggleListings(true);
+      // the row points at a listing, so its purpose must be visible
+      const rc = r.cat in LCOLOR ? r.cat : 'other';
+      if (!listCats[rc]) setListCat(rc, true);
       // Keep the target clear of the side panel rather than centring it
       // underneath: pad by the panel's real width when it is open.
       const panel = document.getElementById('panel');
@@ -1773,7 +1830,8 @@
         b.extend({lat: r.center.lat - d, lng: r.center.lng - d});
         b.extend({lat: r.center.lat + d, lng: r.center.lng + d});
         map.fitBounds(b, {top: 80, right: 80, bottom: 80, left: padLeft});
-        google.maps.event.trigger(listingMarkers[r.gidx], 'click');
+        const mk = listingMarkers.find(m => m.gidx === r.gidx && m.cat === rc);
+        if (mk) google.maps.event.trigger(mk, 'click');
       }
     }
     function fitAll() {
