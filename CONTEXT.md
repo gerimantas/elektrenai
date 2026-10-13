@@ -6,7 +6,8 @@ layer, per-purpose for-sale toggles, "Planuojama plėtra" layer), "Kaip naudotis
 source links everywhere, responsive on phones/tablets, installable app with a
 new-version notice; installed on the user's tablet via the top-bar "Įdiegti" button
 (Chrome menu install is blocked by the same-origin bug —
-`wiki/frameworks/chrome-android-pwa-install-same-origin.md`). Live: v01b70a7.
+`wiki/frameworks/chrome-android-pwa-install-same-origin.md`). Live: v28be8ce (help
+tab: install section first).
 The buyer's offer is out of every public file; negotiation docs are git-ignored.
 Municipal plans checked: near the block only housing/commercial (189–539 m), no
 industrial plan in 2026, general plan stalled since 2026-03-17.
@@ -104,6 +105,8 @@ user sends both to the tenant for review. Landlord details still blank.
   commits cdbd34c..5743a57); outputs in `contracts/current/` (git-ignored).
 - **Entry point:** `python C:/Users/retco/.ai-skills/elektrenai/scripts/build_lease_proposal.py contracts/current/0431-susitarimas-musu-redakcija-2026-10.docx`
 - **Not measured:** tenant's reply; Tesseract-OCR left installed (`C:\Program Files\Tesseract-OCR`).
+- **After close:** help tab — "Įdiegti kaip programėlę" moved to the top
+  (`sklypas-google.html`); pushed, live v28be8ce.
 
 ### Session 2026-10-13 (2nd)
 - **Map usability**: layers panel with a row per layer + visible descriptions, groups
