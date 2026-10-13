@@ -43,15 +43,16 @@
       font-weight: 600;
     }
     #topbar .spacer { flex: 1; }
-    #topbar .tools { display: flex; align-items: center; gap: 4px; padding: 0 10px; }
+    #topbar .tools { display: flex; align-items: center; gap: 4px; padding: 0 12px;
+                     border-left: 1px solid rgba(255,255,255,.12); }
     #topbar .tools button {
       background: rgba(255,255,255,.09); border: none; color: #dfe7ee; cursor: pointer;
       font-size: 11.5px; padding: 5px 9px; border-radius: 4px; font-family: inherit;
     }
     #topbar .tools button:hover { background: rgba(255,255,255,.19); color: #fff; }
     #topbar .tools button.on { background: #4da3ff; color: #08243d; font-weight: 600; }
-    /* map-only controls are pointless while reading a document */
-    body.doc #topbar .tools { display: none; }
+    /* map controls stay visible in document views (a bar that changes shape
+       per tab is confusing); pressing one switches to the map */
 
     /* --- Legend: side panel over the map --- */
     #panel {
@@ -87,6 +88,8 @@
     .docInner.table { max-width: 1180px; }
     .docInner h2 { font-size: 19px; margin: 0 0 4px; color: #16222e; }
     .docInner .lead { color: #64727f; font-size: 12.5px; margin-bottom: 18px; }
+    .docInner h3 { font-size: 15px; margin: 20px 0 4px; color: #16222e; }
+    #tabPagalba li { margin-bottom: 4px; }
     #tabTyrimas li { margin-bottom: 6px; }
     #tabTyrimas summary { padding: 4px 0; font-size: 14px; }
     #tabTyrimas details { margin: 10px 0; border-bottom: 1px solid #e8edf1;
@@ -219,7 +222,7 @@
     /* Theme switch: dark is the default, light keeps the original look. Light
        rules above stay untouched; dark only overrides them. */
     #btnTheme {
-      align-self: center; margin-right: 10px; background: rgba(255,255,255,.09);
+      align-self: center; background: rgba(255,255,255,.09);
       border: none; color: #dfe7ee; cursor: pointer; font-size: 11.5px;
       padding: 5px 9px; border-radius: 4px; font-family: inherit; white-space: nowrap;
     }
@@ -232,7 +235,8 @@
     html[data-theme="dark"] #panelBody { color: #d3dce4; }
     html[data-theme="dark"] #doc { background: #151d26; }
     html[data-theme="dark"] .docInner { color: #d3dce4; }
-    html[data-theme="dark"] .docInner h2 { color: #eef3f7; }
+    html[data-theme="dark"] .docInner h2,
+    html[data-theme="dark"] .docInner h3 { color: #eef3f7; }
     html[data-theme="dark"] .docInner .lead,
     html[data-theme="dark"] .rnote,
     html[data-theme="dark"] #rinkaCount,
@@ -307,13 +311,15 @@
       <button id="tabBtnZemelapis" class="active" onclick="showTab('Zemelapis')">Žemėlapis</button>
       <button id="tabBtnRinka" onclick="showTab('Rinka')">Rinka</button>
       <button id="tabBtnTyrimas" onclick="showTab('Tyrimas')">Tyrimas</button>
+      <button id="tabBtnPagalba" onclick="showTab('Pagalba')">Kaip naudotis</button>
     </nav>
-    <div class="spacer"></div>
+    <!-- all controls sit right after the tabs, in one group: split across the
+         bar they were missed -->
     <div class="tools">
       <button onclick="fitAll()" title="Grąžinti vaizdą į šeimos sklypus">Centruoti</button>
       <button id="btnLegend" class="on" onclick="toggleLegend()" title="Rodyti / slėpti sluoksnių skydelį">Sluoksniai</button>
+      <button id="btnTheme" onclick="toggleTheme()" title="Perjungti šviesią / tamsią temą">Tema: tamsi</button>
     </div>
-    <button id="btnTheme" onclick="toggleTheme()" title="Perjungti šviesią / tamsią temą">Tema: tamsi</button>
   </div>
 
   <!-- One row per map layer: checkbox + colour + short name; the longer
@@ -728,6 +734,63 @@
           </ul>
           <span class="src">Šaltinis: SŽNS įstatymas 19 str. (infolex.lt/ta/540499:str19)</span>
         </details>
+      </div>
+    </div>
+    <div id="tabPagalba" class="tabPane">
+      <div class="docInner">
+        <h2>Kaip naudotis</h2>
+        <div class="lead">Šis puslapis rodo šeimos sklypus 7910/0001:0428–0431
+          (Kakliniškių k., Elektrėnų sav.), jų apribojimus ir parduodamus sklypus aplink.</div>
+
+        <h3>Viršutinė juosta</h3>
+        <ul>
+          <li><b>Žemėlapis</b> — palydovinis žemėlapis su sklypais. Čia pradėk.</li>
+          <li><b>Rinka</b> — parduodamų sklypų lentelė su kainomis.</li>
+          <li><b>Tyrimas</b> — išvados: kiek ploto galima užstatyti, kas pasikeitė, ką daryti.</li>
+          <li><b>Kaip naudotis</b> — šis puslapis.</li>
+          <li><b>Centruoti</b> — grąžina žemėlapį į šeimos sklypus.</li>
+          <li><b>Sluoksniai</b> — atidaro arba paslepia kairėje esantį skydelį.</li>
+          <li><b>Tema</b> — perjungia tamsų arba šviesų vaizdą.</li>
+        </ul>
+
+        <h3>Žemėlapis</h3>
+        <ul>
+          <li>Kairėje yra skydelis <b>Sluoksniai</b>. Pažymėk žymę ☑, ir tas sluoksnis
+            atsiras žemėlapyje. Nuimk žymę, ir jis dings.</li>
+          <li>Prie kiekvieno sluoksnio yra spalva. Taip jis atrodo žemėlapyje.</li>
+          <li>Užvesk pelę ant <b>ⓘ</b>, ir pamatysi, ką tas sluoksnis reiškia.</li>
+          <li>Mygtukas <b>visi</b> grupės antraštėje įjungia arba išjungia visą grupę iš karto.</li>
+          <li>Priartinti ar nutolinti — pelės ratuku. Paslinkti — tempk žemėlapį pele.
+            Visas ekranas — mygtukas ⛶ dešinėje viršuje.</li>
+        </ul>
+
+        <h3>Parduodami sklypai</h3>
+        <ul>
+          <li>Skydelyje pažymėk <b>Parduodami sklypai</b>. Spalva rodo paskirtį
+            (pramonė, komercinė, žemės ūkio, gyvenamoji, kita).</li>
+          <li>Mygtukai <b>3 km / 8 km / visi</b> parodo skelbimus iki to atstumo nuo mūsų bloko.</li>
+          <li>Spustelėk sklypą arba tašką, ir pamatysi plotą ir kainą.</li>
+          <li><b>Plotas su ribomis</b> — tikra sklypo vieta. <b>Taškas</b> — tik kaimo centras,
+            ne tikslus sklypas.</li>
+          <li>Kainos yra <b>skelbimų</b> kainos, ne įvykusių pardavimų.</li>
+        </ul>
+
+        <h3>Rinka (lentelė)</h3>
+        <ul>
+          <li>Spustelėk stulpelio pavadinimą, ir lentelė susirikiuos pagal jį. Spustelėk dar kartą,
+            ir tvarka apsivers.</li>
+          <li>Viršuje esantys filtrai atrenka pagal atstumą, paskirtį, plotą ar kaimo pavadinimą.</li>
+          <li><b>→ rodyti</b> atidaro tą sklypą žemėlapyje.</li>
+          <li>Mėlyna juosta eilutės kairėje reiškia, kad sklypo ribos žinomos tiksliai.</li>
+        </ul>
+
+        <h3>Tyrimas</h3>
+        <ul>
+          <li>Spustelėk skyriaus pavadinimą, ir jis išsiskleis. Spustelėk dar kartą, ir jis susiskleis.</li>
+        </ul>
+
+        <div class="lead" style="margin-top:18px">Duomenys surinkti 2026-10-09. Data rodoma
+          viršutinėje juostoje šalia pavadinimo.</div>
       </div>
     </div>
   </div>
@@ -1420,21 +1483,22 @@
 
     let activeTab = 'Zemelapis';
 
-    // Three views. "Zemelapis" is the map with its layers panel; the other two
-    // are full-window documents -- prose and a wide table do not need the map
+    // Four views. "Zemelapis" is the map with its layers panel; the other three
+    // are full-window documents -- prose, a wide table and the help page do not need the map
     // beside them, and a narrow column was what made them hard to read.
     function showTab(name) {
       activeTab = name;
-      const isDoc = (name === 'Rinka' || name === 'Tyrimas');
+      const isDoc = (name !== 'Zemelapis');
       document.body.classList.toggle('doc', isDoc);
 
-      for (const t of ['Rinka', 'Tyrimas']) {
+      for (const t of ['Rinka', 'Tyrimas', 'Pagalba']) {
         document.getElementById('tab' + t).classList.toggle('active', t === name);
       }
-      for (const t of ['Zemelapis', 'Rinka', 'Tyrimas']) {
+      for (const t of ['Zemelapis', 'Rinka', 'Tyrimas', 'Pagalba']) {
         document.getElementById('tabBtn' + t).classList.toggle('active', t === name);
       }
       document.getElementById('panel').classList.toggle('hidden', isDoc || !legendOn);
+      document.getElementById('btnLegend').classList.toggle('on', !isDoc && legendOn);
 
       if (name === 'Rinka') renderRinka();
       // Google Maps must be told the viewport changed, otherwise it keeps the
@@ -1446,6 +1510,8 @@
 
     let legendOn = true;
     function toggleLegend() {
+      // from a document view the button means "show me the layers"
+      if (activeTab !== 'Zemelapis') { legendOn = false; showTab('Zemelapis'); }
       legendOn = !legendOn;
       document.getElementById('panel').classList.toggle('hidden', !legendOn);
       document.getElementById('btnLegend').classList.toggle('on', legendOn);
@@ -1588,6 +1654,11 @@
       }
     }
     function fitAll() {
+      if (activeTab !== 'Zemelapis') {
+        showTab('Zemelapis');
+        requestAnimationFrame(fitAll);   // let the revealed map measure itself first
+        return;
+      }
       const b = new google.maps.LatLngBounds();
       for (const d of Object.values(DATA)) d.path.forEach(p => b.extend(p));
       map.fitBounds(b);
