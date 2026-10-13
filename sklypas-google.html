@@ -392,6 +392,7 @@
       <button onclick="fitAll()" title="Grąžinti vaizdą į šeimos sklypus">Centruoti</button>
       <button id="btnLegend" class="on" onclick="toggleLegend()" title="Rodyti / slėpti sluoksnių skydelį">Sluoksniai</button>
       <button id="btnTheme" onclick="toggleTheme()" title="Perjungti šviesią / tamsią temą">Tema: tamsi</button>
+      <button id="btnInstall" class="on" hidden onclick="installApp()" title="Įdiegti šį puslapį kaip programėlę">Įdiegti</button>
     </div>
     <div class="meta" title="Duomenų data ir puslapio versija"><span class="metaLbl">duomenys </span>2026-10-09 · <span id="buildVer">dev</span></div>
   </div>
@@ -930,13 +931,17 @@
         <p id="installState" style="margin:4px 0"></p>
         <button class="installBtn" id="installBtn" hidden onclick="installApp()">Įdiegti dabar</button>
         <ul>
-          <li><b>Android telefonas (Chrome):</b> atidaryk puslapį → meniu <b>⋮</b> viršuje dešinėje →
-            <b>„Įdiegti programą“</b> arba <b>„Pridėti prie pagrindinio ekrano“</b> → <b>„Įdiegti“</b>.</li>
+          <li><b>Android telefonas ar planšetė (Chrome):</b> spausk mygtuką <b>„Įdiegti“</b> viršutinėje
+            juostoje (arba „Įdiegti dabar“ čia) → <b>„Įdiegti“</b>.
+            <b>Nenaudok Chrome meniu ⋮ → „Įdiegti“:</b> jei telefone jau yra kita programėlė iš
+            gerimantas.github.io (pvz. BinDay, Grafikai, BakeStack), Chrome klaidingai parašys
+            „Ši programa jau įdiegta“. Mygtukas puslapyje šią klaidą apeina.
+            Mygtuko nėra? Atnaujink puslapį (⟳) ir palauk kelias sekundes.</li>
           <li><b>iPhone / iPad (Safari):</b> atidaryk puslapį Safari naršyklėje → apačioje
             <b>Bendrinti</b> (kvadratas su rodykle aukštyn) → <b>„Pridėti prie pradžios ekrano“</b>
             (Add to Home Screen) → <b>„Pridėti“</b>. Kitose iPhone naršyklėse to padaryti negalima.</li>
-          <li><b>Kompiuteris (Chrome arba Edge):</b> adreso juostos dešinėje spustelėk piktogramą
-            <b>„Įdiegti“</b> (ekranas su rodykle) arba meniu <b>⋮</b> → <b>„Įdiegti Elektrėnai“</b>.</li>
+          <li><b>Kompiuteris (Chrome arba Edge):</b> mygtukas <b>„Įdiegti“</b> viršutinėje juostoje,
+            arba adreso juostos dešinėje piktograma <b>„Įdiegti“</b> (ekranas su rodykle).</li>
           <li><b>Atnaujinimai:</b> kai paskelbiama nauja versija, apačioje atsiras pranešimas
             <b>„Yra nauja puslapio versija“</b>. Paspausk <b>„Atnaujinti“</b>. Programėlės iš naujo
             diegti nereikia.</li>
@@ -1088,6 +1093,8 @@
       el.textContent = standalone ? '✓ Programėlė jau įdiegta ir dabar atidaryta.' :
         installEvt ? 'Šioje naršyklėje galima įdiegti vienu mygtuku:' : '';
       document.getElementById('installBtn').hidden = !installEvt || standalone;
+      document.getElementById('btnInstall').hidden = !installEvt || standalone;
+      if (typeof syncBarHeight === 'function') syncBarHeight();
     }
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault(); installEvt = e; installStateText();
