@@ -7,7 +7,8 @@
   <!-- inline icon: without one the browser requests /favicon.ico and gets a 404 -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23142433'/%3E%3Crect x='4' y='2.5' width='8' height='11' fill='%23FFEB3B' stroke='%23F9A825'/%3E%3C/svg%3E">
   <style>
-    html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; }
+    html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif;
+                 overflow: hidden; }
 
     /* Two view modes under a fixed bar:
          - "Žemėlapis" fills the window; the "Sluoksniai" layers panel rides at its side
@@ -20,7 +21,7 @@
     #map { position: absolute; top: var(--bar-h); left: 0; right: 0; bottom: 0; }
 
     #topbar {
-      position: absolute; top: 0; left: 0; right: 0; height: var(--bar-h);
+      position: absolute; top: 0; left: 0; right: 0; height: 46px;
       z-index: 20; display: flex; align-items: stretch;
       background: #1f2b38; color: #e8edf2;
       box-shadow: 0 1px 6px rgba(0,0,0,.35);
@@ -32,6 +33,7 @@
     }
     #topbar .brand small { font-weight: 400; opacity: .65; font-size: 11.5px; }
     #topbar nav { display: flex; align-items: stretch; }
+    #topbar nav button { white-space: nowrap; }
     #topbar nav button {
       background: none; border: none; color: #cfd8e2; cursor: pointer;
       font-size: 13px; padding: 0 16px; border-bottom: 3px solid transparent;
@@ -57,7 +59,7 @@
     /* --- Legend: side panel over the map --- */
     #panel {
       position: absolute; top: var(--bar-h); left: 0; bottom: 0; z-index: 15;
-      width: var(--legend-w); background: #fff; overflow: hidden;
+      width: min(var(--legend-w), calc(100vw - 44px)); background: #fff; overflow: hidden;
       display: flex; flex-direction: column;
       box-shadow: 2px 0 10px rgba(0,0,0,.25);
       transition: transform .18s ease;
@@ -210,6 +212,37 @@
     .lsub { margin: 2px 0 4px 22px; font-size: 11.5px; }
     .lsub .rlegend { font-size: 11px; }
     .lnote { margin: 4px 0 0 22px; font-size: 11px; color: #7c8894; }
+
+    /* --- Narrow screens (phones, small tablets) ---
+       The bar wraps: row 1 = name + tabs (tabs scroll sideways if they still do not
+       fit), row 2 = map buttons. syncBarHeight() feeds the real height to --bar-h so
+       the map, panel and documents start right under it. */
+    @media (max-width: 900px) {
+      #topbar { height: auto; flex-wrap: wrap; }
+      #topbar .brand { padding: 0 10px; border-right: none; min-height: 40px; }
+      #topbar .brand small { display: none; }
+      #topbar nav { flex: 1; overflow-x: auto; scrollbar-width: none; min-height: 40px; }
+      #topbar nav::-webkit-scrollbar { display: none; }
+      #topbar nav button { padding: 0 10px; font-size: 12.5px; }
+      #topbar .tools { flex-basis: 100%; padding: 5px 10px; gap: 6px;
+                       border-left: none; border-top: 1px solid rgba(255,255,255,.12); }
+      #topbar .tools button { font-size: 12px; padding: 6px 10px; }
+      .docInner { padding: 16px 16px 48px; font-size: 13.5px; }
+      .docInner.table { padding: 16px 10px 48px; }
+      #rinkaFilters select, #rinkaFilters input { font-size: 13px; padding: 4px; }
+      .lrow { font-size: 13px; padding: 4px 0; }
+      .lgroup h4 button { padding: 3px 9px; }
+      table.rt { font-size: 12px; }
+    }
+    /* Phones: the name gives its row-1 space to the tabs and moves to row 2,
+       beside the map buttons, so no tab is cut off */
+    @media (max-width: 520px) {
+      #topbar nav { order: 0; flex-basis: 100%; }
+      #topbar .tools { order: 1; flex-basis: auto; }
+      #topbar .brand { order: 2; margin-left: auto; min-height: 0; font-size: 12px;
+                       border-top: 1px solid rgba(255,255,255,.12); }
+      #topbar nav button { padding: 0 9px; }
+    }
     .lsrc div { margin: 0 0 4px; font-size: 11px; line-height: 1.4; color: #6b7a88; }
     html[data-theme="dark"] .lsrc div { color: #93a0ac; }
     #listCount { margin-top: 3px; color: #666; font-size: 11px; }
@@ -282,6 +315,9 @@
     html[data-theme="dark"] [style*="color:#777"] { color: #aab6c1 !important; }
     html[data-theme="dark"] [style*="color:#888"],
     html[data-theme="dark"] [style*="color:#999"] { color: #93a0ac !important; }
+    /* Popup content wraps to the window (see the inline max-width), so the
+       sideways scrollbar Google adds for a few stray pixels is not needed */
+    .gm-style .gm-style-iw-d { overflow-x: hidden !important; }
     /* Google Maps popups */
     html[data-theme="dark"] .gm-style .gm-style-iw-c { background: #1e2833; color: #dbe3ea; }
     html[data-theme="dark"] .gm-style .gm-style-iw-d { color: #dbe3ea; }
@@ -938,6 +974,27 @@
     }
     document.addEventListener('DOMContentLoaded', themeLabel);
 
+    // The bar can wrap to two rows on a narrow screen; everything below it is
+    // positioned from --bar-h, so feed it the bar's real height.
+    function syncBarHeight() {
+      const h = document.getElementById('topbar').offsetHeight;
+      document.documentElement.style.setProperty('--bar-h', h + 'px');
+      if (typeof map !== 'undefined' && map) google.maps.event.trigger(map, 'resize');
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      syncBarHeight();
+      // on a phone the layers panel would cover the map: start it closed
+      if (window.matchMedia('(max-width: 760px)').matches) hidePanel();
+    });
+    // the bar's height changes when it wraps (resize, rotation, font load)
+    if (window.ResizeObserver) {
+      document.addEventListener('DOMContentLoaded', () =>
+        new ResizeObserver(syncBarHeight).observe(document.getElementById('topbar')));
+    }
+    // resize too: a ResizeObserver callback can be skipped while the tab is hidden
+    window.addEventListener('resize', () => requestAnimationFrame(syncBarHeight));
+    window.addEventListener('resize', () => setTimeout(syncBarHeight, 250));
+
     // owner first names per parcel, toggled with the "Vardai" button
     const NAMES = {
       '7910/0001:0428': 'Virginija',
@@ -1388,7 +1445,7 @@
       // Built first: both the polygon and marker handlers below reference it.
       // Narrow, anchored above the marker, so it stays clear of the left panel.
       listingInfo = new google.maps.InfoWindow({
-        maxWidth: 340,
+        maxWidth: Math.min(340, window.innerWidth - 60),
         pixelOffset: new google.maps.Size(0, -6)
       });
 
@@ -1408,11 +1465,7 @@
         });
         poly.addListener('click', () => {
           listingInfo.setContent(`
-            <div style="font:12.5px system-ui;max-width:340px">
-              <button onclick="closeListingInfo()" title="Uždaryti"
-                style="float:right;border:none;background:#eee;border-radius:3px;
-                       cursor:pointer;font-size:14px;line-height:1;padding:2px 7px;
-                       margin:-2px -2px 2px 6px;color:#444">×</button>
+            <div style="font:12.5px system-ui;max-width:min(340px, calc(100vw - 90px));overflow-wrap:anywhere">
               <div style="font-size:13px;font-weight:600">${e.village || e.kadastro_nr}</div>
               <div style="color:#666;margin-bottom:6px">${e.dist_km} km nuo bloko ·
                 ${e.kadastro_nr || ''} · tikslios ribos</div>
@@ -1485,11 +1538,7 @@
             ${it.url ? ' · ' + adLink(it.url, 'skelbimas ↗') : ''}</td></tr>`).join('');
         m.addListener('click', () => {
           listingInfo.setContent(`
-            <div style="font:12.5px system-ui;max-width:340px">
-              <button onclick="closeListingInfo()" title="Uždaryti"
-                style="float:right;border:none;background:#eee;border-radius:3px;
-                       cursor:pointer;font-size:14px;line-height:1;padding:2px 7px;
-                       margin:-2px -2px 2px 6px;color:#444">×</button>
+            <div style="font:12.5px system-ui;max-width:min(340px, calc(100vw - 90px));overflow-wrap:anywhere">
               <div style="font-size:13px;font-weight:600;margin-bottom:2px">${g.village}</div>
               <div style="color:#666;margin-bottom:6px">${g.dist_km} km nuo bloko · ${g.n} skelbimas(-ai)</div>
               <table style="border-collapse:collapse">${rows}</table>
@@ -1504,9 +1553,6 @@
         listingMarkers.push(m);
       }
     }
-
-    // Called from the inline onclick in both info windows, so it must be global.
-    function closeListingInfo() { if (listingInfo) listingInfo.close(); }
 
     function toggleListings(on) {
       listingsOn = on;
@@ -1785,7 +1831,7 @@
           }));
           poly.addListener('click', ev => {
             listingInfo.setContent(`
-              <div style="font:12.5px system-ui;max-width:340px">
+              <div style="font:12.5px system-ui;max-width:min(340px, calc(100vw - 90px));overflow-wrap:anywhere">
                 <div style="font-size:13px;font-weight:600;margin-bottom:2px">${pl.title}</div>
                 <div style="color:#666;margin-bottom:6px">${pl.dist} nuo bloko · ${pl.area} · ${pl.kn}</div>
                 <div>${pl.what}</div>
