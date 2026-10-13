@@ -29,3 +29,9 @@ _site_test.html
 
 # Contract drafts -- private family business, repo is public
 contracts/
+
+# Negotiation analysis -- offer and counter-offer figures, repo is public.
+# Kept on disk for the family; never commit (removed from tracking 2026-10-13).
+TYRIMO-ISVADOS.md
+.planning/dashboard-analysis-content.md
+docs/superpowers/plans/2026-06-14-dashboard-v1.md

@@ -19,7 +19,7 @@
 - Scraping pipeline built (CDP cookie method solved DataDome)
 - 134 listings scraped, 45 unique, 15 within 8 km
 - All 16 purpose-change requests catalogued via OCR
-- Negotiation analysis: counter 16–18k€/ha (22–25k if 0005 approved)
+- Negotiation analysis (figures in the private elektrenai skill, removed from this public repo 2026-10-13)
 - Facts → [[wiki/elektrenai/rinkos-skenas-4728-apylinke]], [[wiki/elektrenai/sklypai-master-sarasas]]
 
 ### Session 2026-06-15
@@ -39,7 +39,7 @@
 
 ### Session 2026-06-17 (šis)
 - Aruodas pilnas Elektrėnų sav. skenas: 119 unikalių skelbimų (6 puslapiai, CDP metodas)
-- Agri 3–8 ha mediana: ~8 600 €/ha; anonimiaus pasiūlymas 10k€/ha ties vidurkiu
+- Agri 3–8 ha mediana: ~8 600 €/ha (pasiūlymo palyginimas — privačiame skill'e)
 - Dashboard 1 turinio spec sukurta: `.planning/dashboard-analysis-content.md`
 - Mūsų blokas (0428–0431) = **Kakliniškių k., Elektrėnų sen.** — ne Ausieniškių k. Ausieniškių k. egzistuoja Elektrėnų sen. (~3.5 km, 7910/0007 blokas); atskirai egzistuoja Vievio sen. Ausieniškės (~7 km, pramoninis rajonas prie A1). 5+ sesijų halucinacija taisyta 2026-06-17.
 - Wiki atnaujinta: sklypai-master-sarasas.md, sklypas-4400-1563-8352.md, paskirties-keitimo-precedentai.md, dashboard-v1-koncepcija.md
