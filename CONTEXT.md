@@ -1,15 +1,17 @@
 # Elektrenai — CONTEXT
 
 ## Status
-2026-10-13: private negotiation track — the counter-proposal was audited twice
-(lawyer + notary review), all findings fixed; latest versions (docx/md/pdf) in the
-git-ignored `contracts/current/`. Waits for the user's personal details and the
-co-owner's matching copy. Details only in the private skill (`references/lease.md`,
-section "Our draft — current terms") — this repo is public. New private skill
-`lt-land-lawyer` holds the legal review method and verbatim law texts.
-Market state unchanged since the 2026-10-09 refresh (Rimi OPERATING ~300 staff;
-0005 undecided ~4 months; no industrial request within 11 km; analogue asks flat).
-Map live with dark theme, water zones and 0432 zones. Code all pushed.
+2026-10-13 (2nd session): map rebuilt for use — one "Sluoksniai" panel (a row per
+layer, per-purpose for-sale toggles, "Planuojama plėtra" layer), "Kaip naudotis" tab,
+source links everywhere, responsive on phones/tablets, installable app with a
+new-version notice; installed on the user's tablet via the top-bar "Įdiegti" button
+(Chrome menu install is blocked by the same-origin bug —
+`wiki/frameworks/chrome-android-pwa-install-same-origin.md`). Live: v01b70a7.
+The buyer's offer is out of every public file; negotiation docs are git-ignored.
+Municipal plans checked: near the block only housing/commercial (189–539 m), no
+industrial plan in 2026, general plan stalled since 2026-03-17.
+Private negotiation track unchanged: counter-proposal audited, waits for the user's
+details and the co-owner's copy (skill `references/lease.md`).
 
 ## Next Tasks
 - Private negotiation track — fill in details, co-owner's copy, optional lawyer read,
@@ -19,7 +21,6 @@ Map live with dark theme, water zones and 0432 zones. Code all pushed.
   premises that are both gone; inputs: `wiki/elektrenai/rinkos-atnaujinimas-2026-10.md` § 5, 8
 - Check 0005 every 2–4 weeks: `python C:/Users/retco/.ai-skills/elektrenai/scripts/check_0005.py`
 - Monitor purpose-change requests: `C:/Users/retco/.ai-skills/elektrenai/scripts/check_requests.py`
-- Find out what is planned on re-parcelled 7930/0002:0730–0733 (0.2–0.3 km S)
 - Skill hardening (analysis 2026-10-09): one `rebuild_map_layer.py`; checks in
   `refresh_all.py` (parsed = Found N, no 6.69 km point, bot wall); move
   `restricted_parcel.py` / `water_zones.py` to the lt-parcels skill
@@ -35,6 +36,7 @@ Map live with dark theme, water zones and 0432 zones. Code all pushed.
 - RC/geoportal API research → [[wiki/elektrenai/geoportal-lt-api-research]]
 - Paskirties keitimo precedentai (16 prašymų; klasteris NEAUGO per 2026-06→08) → [[wiki/elektrenai/paskirties-keitimo-precedentai]]
 - **Spalio atnaujinimas (naujausi skaičiai)** → [[wiki/elektrenai/rinkos-atnaujinimas-2026-10]]
+- **Savivaldybės plėtra prie bloko (2026-10-13)** → [[wiki/elektrenai/savivaldybes-pletra-2026-10]]
 - Rugpjūčio atnaujinimas → [[wiki/elektrenai/rinkos-atnaujinimas-2026-08]]
 - **Realūs sandoriai + RC formulės blokui** → [[wiki/elektrenai/rc-sandoriu-duomenys-2026]]
 - Private negotiation material → skill `references/lease.md` + `contracts/` (git-ignored)
@@ -72,6 +74,10 @@ Map live with dark theme, water zones and 0432 zones. Code all pushed.
 - `.env` / `gen_config.py` / `config.js` — Maps API key (git-ignored)
 - `.github/workflows/deploy.yml` — Pages deploy (injects key + build version)
 - `serve.py` — local no-cache server, port 8123; top bar shows the commit
+- `manifest.json`, `sw.js`, `icons/` — installable app; deploy adds `version.json`
+  (polled for the update notice); `icons/qr-elektrenai.png|svg` — QR to the live map
+- `TYRIMO-ISVADOS.md`, `.planning/dashboard-analysis-content.md` — git-ignored
+  (hold offer figures), kept on disk
 - `legal/` — official law PDFs (IX-1314, XIII-2166, Civil Code) + README of articles used
 - `contracts/` — private working documents (git-ignored, never committed)
 - `.firecrawl/market_geo_2026-10-09.json` — 127 listings, geocoded + village fix
@@ -84,14 +90,20 @@ Map live with dark theme, water zones and 0432 zones. Code all pushed.
 
 ## Archive
 
-### Session 2026-10-13 (this)
-- **Private negotiation track** — counter-proposal reworked, audited twice and fixed;
-  agreement and arguments split into two documents, PDF export added; latest versions
-  only in `contracts/current/`. One benchmark claim overturned → skill
-  `references/history.md` § 13. All of it private (git-ignored / ai-skills repo).
-- **New skill `lt-land-lawyer`** (private ai-skills repo): lawyer + notary review
-  checklist, verbatim CK and IX-1314 art. 5 texts extracted from `legal/` PDFs.
-- `elektrenai` skill: lease reference restructured around a current-terms table.
+### Session 2026-10-13 (2nd, this)
+- **Map usability**: layers panel with a row per layer + visible descriptions, groups
+  reordered (restrictions second), per-purpose for-sale toggles, "Planuojama plėtra"
+  layer with plan + asking price, "Kaip naudotis" tab, source links on every tab and
+  every listing (aruodas URLs also kept by skill `gen_layer_v2.py`), responsive layout,
+  installable app + update notice + install button, QR code. Deployed v01b70a7.
+- **Research**: municipal planned development → wiki `savivaldybes-pletra-2026-10`;
+  the October "200–300 m" re-parcelling was ~510 m and is a housing plan (history § 14).
+- **Privacy**: buyer's offer removed from page and tracked files; three negotiation
+  docs untracked + git-ignored (still in older public commits).
+
+### Session 2026-10-13 (1st)
+Private track: counter-proposal audited twice, `lt-land-lawyer` skill created.
+Detail: `CONTEXT-ARCHIVE.md`.
 
 ### Session 2026-10-12
 Private track: original documents audited, first counter-proposal drafted (all

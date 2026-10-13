@@ -93,3 +93,12 @@
   drafted; all of it in the git-ignored `contracts/` and the skill's
   `references/lease.md` (generator: skill `scripts/build_lease_proposal.py`).
   Nothing about it belongs in this public repo.
+
+### Session 2026-10-13 (1st)
+- **Private negotiation track** — counter-proposal reworked, audited twice and fixed;
+  agreement and arguments split into two documents, PDF export added; latest versions
+  only in `contracts/current/`. One benchmark claim overturned → skill
+  `references/history.md` § 13. All of it private (git-ignored / ai-skills repo).
+- **New skill `lt-land-lawyer`** (private ai-skills repo): lawyer + notary review
+  checklist, verbatim CK and IX-1314 art. 5 texts extracted from `legal/` PDFs.
+- `elektrenai` skill: lease reference restructured around a current-terms table.
