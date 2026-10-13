@@ -1,16 +1,20 @@
 # Elektrenai — CONTEXT
 
 ## Status
-2026-10-12: private negotiation track advanced — the counter-proposal document is
-drafted and waits for the user's review; details only in the private skill
-(`references/lease.md`) and the git-ignored `contracts/` (this repo is public).
+2026-10-13: private negotiation track — the counter-proposal was audited twice
+(lawyer + notary review), all findings fixed; latest versions (docx/md/pdf) in the
+git-ignored `contracts/current/`. Waits for the user's personal details and the
+co-owner's matching copy. Details only in the private skill (`references/lease.md`,
+section "Our draft — current terms") — this repo is public. New private skill
+`lt-land-lawyer` holds the legal review method and verbatim law texts.
 Market state unchanged since the 2026-10-09 refresh (Rimi OPERATING ~300 staff;
 0005 undecided ~4 months; no industrial request within 11 km; analogue asks flat).
-Map live with dark theme, water zones and 0432 zones. All pushed.
+Map live with dark theme, water zones and 0432 zones. Code all pushed.
 
 ## Next Tasks
-- Private negotiation track — next step and open questions in the skill's
-  `references/lease.md` and `contracts/` (not in this public repo)
+- Private negotiation track — fill in details, co-owner's copy, optional lawyer read,
+  send; steps and open legal points in the skill's `references/lease.md` ("Status and
+  next step"), documents in `contracts/current/` (not in this public repo)
 - Re-derive the sale counter-offer from October inputs — the June range rested on
   premises that are both gone; inputs: `wiki/elektrenai/rinkos-atnaujinimas-2026-10.md` § 5, 8
 - Check 0005 every 2–4 weeks: `python C:/Users/retco/.ai-skills/elektrenai/scripts/check_0005.py`
@@ -80,11 +84,18 @@ Map live with dark theme, water zones and 0432 zones. All pushed.
 
 ## Archive
 
-### Session 2026-10-12 (this)
-- **Private negotiation track** — original documents audited and a counter-proposal
-  drafted; all of it in the git-ignored `contracts/` and the skill's
-  `references/lease.md` (generator: skill `scripts/build_lease_proposal.py`).
-  Nothing about it belongs in this public repo.
+### Session 2026-10-13 (this)
+- **Private negotiation track** — counter-proposal reworked, audited twice and fixed;
+  agreement and arguments split into two documents, PDF export added; latest versions
+  only in `contracts/current/`. One benchmark claim overturned → skill
+  `references/history.md` § 13. All of it private (git-ignored / ai-skills repo).
+- **New skill `lt-land-lawyer`** (private ai-skills repo): lawyer + notary review
+  checklist, verbatim CK and IX-1314 art. 5 texts extracted from `legal/` PDFs.
+- `elektrenai` skill: lease reference restructured around a current-terms table.
+
+### Session 2026-10-12
+Private track: original documents audited, first counter-proposal drafted (all
+private). Detail: `CONTEXT-ARCHIVE.md`.
 
 ### Session 2026-10-09
 Full data refresh, map zones and dark theme, private track opened, skill moved to

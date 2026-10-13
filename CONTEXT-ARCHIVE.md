@@ -87,3 +87,9 @@
   in `legal/`.
 - **Skill** moved from git-ignored `.claude/` to private ai-skills repo with the
   pipeline scripts; a private task added to the skill.
+
+### Session 2026-10-12
+- **Private negotiation track** — original documents audited and a counter-proposal
+  drafted; all of it in the git-ignored `contracts/` and the skill's
+  `references/lease.md` (generator: skill `scripts/build_lease_proposal.py`).
+  Nothing about it belongs in this public repo.
