@@ -363,6 +363,9 @@
         <label class="lrow" title="Gretimi sklypai (0023, 0048, 0050, 0432, 0949, 1014) ir pramonės precedentas 7910/0005:0094 prie Vievio (3.00 ha, ~7 km į rytus)."><input type="checkbox" data-layer="neighbors" checked onchange="onLayerChk(this)">
           <span class="sw" style="background:#76FF03;border:2px solid #39FF14"></span>
           <span class="nm">Kiti kaimynų sklypai<small class="ldesc">žalias kontūras; ir precedentas prie Vievio</small></span></label>
+        <label class="lrow" title="Trys detalieji planai 0.2–0.5 km nuo bloko (planuojustatau.lt, 2026-10-13). Spustelėk plotą žemėlapyje — aprašas, etapas, dokumentas ir skelbimo kaina, jei sklypas parduodamas."><input type="checkbox" data-layer="plans" checked onchange="onLayerChk(this)">
+          <span class="sw" style="background:linear-gradient(90deg,rgba(255,145,0,.35) 50%,rgba(0,176,255,.35) 50%);border:2px dashed #FF9100"></span>
+          <span class="nm">Planuojama plėtra (3 planai)<small class="ldesc">punktyras: oranžinis — komercija, mėlynas — daugiabučiai; spustelėk, ir matysi planą ir kainą</small></span></label>
       </div>
 
       <div class="lgroup">
@@ -534,12 +537,17 @@
             <li><b>Arti bloko — trys planai</b> (atstumas nuo bloko krašto):
               <ul>
                 <li><b>189 m</b> — Sabališkių g. 1H (0.97 ha): leista statyti dar vieną
-                  komercinį (paslaugų) pastatą. Aukščio ir tankio ribos nekeistos.</li>
+                  komercinį (paslaugų) pastatą. Aukščio ir tankio ribos nekeistos.
+                  <b>Parduodama:</b> 0.148 ha už 147 600 € (≈ 997 000 €/ha) — tikriausiai
+                  tik sklypo dalis; prašoma kaina, ne sandoris
+                  (<a href="https://www.aruodas.lt/sklypai-elektrenuose-sabaliskiu-g-parduodamas-komercines-paskirties-sklypas-11-1453209/" target="_blank" rel="noopener">skelbimas</a>).</li>
                 <li><b>511 m</b> — Sabališkių g. (~3 ha): <b>daugiaaukščių gyvenamųjų namų</b>
                   kvartalas. Detaliojo plano korektūra patvirtinta <b>2026-04-29</b>.</li>
                 <li><b>539 m</b> — tarp Šviesos g. ir A1 (1.30 ha): prekyba, paslaugos,
                   pramogos. Planas baigiamajame etape.</li>
-              </ul></li>
+              </ul>
+              Kitų dviejų sklypų skelbimų aruodas.lt nerasta. Visi trys rodomi žemėlapyje —
+              sluoksnis „Planuojama plėtra“.</li>
             <li><b>Pramonės planų nėra.</b> 2026 m. visoje savivaldybėje nepradėtas nė vienas
               pramonės ar sandėliavimo detalusis planas. Kiti nauji planai — gyvenamieji
               kvartalai (Balceriškiai, Vilkabaliai, Pastrėvys, Abromiškės ir kt.).</li>
@@ -902,6 +910,10 @@
       path: [{lat: 54.794575, lng: 24.681621}, {lat: 54.794499, lng: 24.681966}, {lat: 54.79431, lng: 24.682815}, {lat: 54.794212, lng: 24.682759}, {lat: 54.794194, lng: 24.682749}, {lat: 54.793984, lng: 24.682629}, {lat: 54.793762, lng: 24.682503}, {lat: 54.792245, lng: 24.68164}, {lat: 54.791381, lng: 24.680315}, {lat: 54.790982, lng: 24.679702}, {lat: 54.790991, lng: 24.679441}, {lat: 54.791009, lng: 24.678914}, {lat: 54.794758, lng: 24.680682}, {lat: 54.794628, lng: 24.68135}, {lat: 54.794575, lng: 24.681621}],
       center: {lat: 54.792967, lng: 24.680847}, plotas: '5.0250'
     };
+
+    // Planned development near the block (detailed-plan register, 2026-10-13);
+    // outlines from the RC ZIP 2026-10-09, distances edge to edge from the merged block
+    const PLANS = [{"paths": [[{"lat": 54.789358, "lng": 24.677974}, {"lat": 54.788327, "lng": 24.678114}, {"lat": 54.788271, "lng": 24.678638}, {"lat": 54.788235, "lng": 24.678897}, {"lat": 54.788192, "lng": 24.679152}, {"lat": 54.788769, "lng": 24.679357}, {"lat": 54.78926, "lng": 24.679481}, {"lat": 54.789358, "lng": 24.677974}]], "center": {"lat": 54.789019, "lng": 24.678719}, "kind": "commercial", "title": "Sabališkių g. 1H — dar vienas komercinis pastatas", "kn": "7930/0002:0349", "area": "0.97 ha", "dist": "189 m", "what": "Leista statyti dar vieną komercinės (paslaugų) paskirties pastatą. Išplėsta statybos zona; aukščio, tankio ir intensyvumo ribos nekeistos.", "stage": "Detaliojo plano korektūra patvirtinta (mero įsakymas; data dokumente neįskaitoma).", "tpd": "K-VT-00-25-775", "doc": "https://www.planuojustatau.lt/sites/default/files/D%C4%96L%20DETALIOJO%20PLANO%20KOREKT%C5%AAROS%20SKLYPO%20KAD.%20NR.%2079300002349%20ADRESU%20SABALI%C5%A0KI%C5%B2%20G.%201H%20ELEKTR%C4%96NAI%20RIBOSE%20TVIRTINIMO%20(1)%20(3).pdf", "ad": {"area": "0.148 ha", "price": "147 600 €", "pph": "≈ 997 000 €/ha", "note": "Skelbimo plotas (0.148 ha) daug mažesnis už sklypo (0.97 ha) — tikriausiai parduodama tik dalis.", "url": "https://www.aruodas.lt/sklypai-elektrenuose-sabaliskiu-g-parduodamas-komercines-paskirties-sklypas-11-1453209/"}}, {"paths": [[{"lat": 54.786069, "lng": 24.686243}, {"lat": 54.785947, "lng": 24.68649}, {"lat": 54.785773, "lng": 24.686804}, {"lat": 54.785805, "lng": 24.686859}, {"lat": 54.785702, "lng": 24.687046}, {"lat": 54.785363, "lng": 24.6865}, {"lat": 54.785104, "lng": 24.686021}, {"lat": 54.7851, "lng": 24.685819}, {"lat": 54.785184, "lng": 24.68524}, {"lat": 54.785234, "lng": 24.684906}, {"lat": 54.785254, "lng": 24.68481}, {"lat": 54.785298, "lng": 24.684714}, {"lat": 54.78536, "lng": 24.684615}, {"lat": 54.785403, "lng": 24.684625}, {"lat": 54.785647, "lng": 24.684271}, {"lat": 54.785693, "lng": 24.684234}, {"lat": 54.78572, "lng": 24.684225}, {"lat": 54.786023, "lng": 24.684263}, {"lat": 54.786055, "lng": 24.683269}, {"lat": 54.785833, "lng": 24.683256}, {"lat": 54.785732, "lng": 24.68307}, {"lat": 54.785519, "lng": 24.682714}, {"lat": 54.785751, "lng": 24.682041}, {"lat": 54.785904, "lng": 24.682082}, {"lat": 54.785897, "lng": 24.682313}, {"lat": 54.786022, "lng": 24.682325}, {"lat": 54.78603, "lng": 24.682118}, {"lat": 54.786093, "lng": 24.682137}, {"lat": 54.786164, "lng": 24.682434}, {"lat": 54.786284, "lng": 24.682563}, {"lat": 54.786366, "lng": 24.682695}, {"lat": 54.786381, "lng": 24.682668}, {"lat": 54.786398, "lng": 24.682691}, {"lat": 54.786741, "lng": 24.683246}, {"lat": 54.786906, "lng": 24.683356}, {"lat": 54.786703, "lng": 24.684194}, {"lat": 54.786734, "lng": 24.684198}, {"lat": 54.786656, "lng": 24.684515}, {"lat": 54.786629, "lng": 24.684512}, {"lat": 54.786524, "lng": 24.684951}, {"lat": 54.786414, "lng": 24.685339}, {"lat": 54.78632, "lng": 24.685621}, {"lat": 54.786179, "lng": 24.685991}, {"lat": 54.786069, "lng": 24.686243}]], "center": {"lat": 54.785979, "lng": 24.685348}, "kind": "residential", "title": "Sabališkių g. — daugiaaukščių gyvenamųjų namų kvartalas", "kn": "7930/0002:0730–0733 (buvę 0089, 0720, 0721)", "area": "3.05 ha", "dist": "511 m", "what": "Daugiaaukščių gyvenamųjų namų statybos teritorija, ribojama Sabališkių ir Šarkinės gatvių. 2026-08-18 sklypai perdalinti į keturis.", "stage": "Pradėta 2025-10-22; korektūra patvirtinta 2026-04-29 (mero įsakymas 01V-E-113).", "tpd": "K-VT-42-25-1330", "doc": "https://www.planuojustatau.lt/lt/planuoju_rtpd/elektrenu/bendrieji", "ad": null}, {"paths": [[{"lat": 54.789885, "lng": 24.669768}, {"lat": 54.789946, "lng": 24.669271}, {"lat": 54.789986, "lng": 24.668617}, {"lat": 54.789856, "lng": 24.668555}, {"lat": 54.789859, "lng": 24.668506}, {"lat": 54.789178, "lng": 24.668379}, {"lat": 54.78911, "lng": 24.669079}, {"lat": 54.789145, "lng": 24.669088}, {"lat": 54.789004, "lng": 24.67056}, {"lat": 54.789819, "lng": 24.670794}, {"lat": 54.789885, "lng": 24.669768}]], "center": {"lat": 54.789498, "lng": 24.66957}, "kind": "commercial", "title": "Tarp Šviesos g. ir A1 — prekyba, paslaugos, pramogos", "kn": "7930/0003:0251 (Sabališkių g. 1B)", "area": "1.30 ha", "dist": "539 m", "what": "Prekybos, paslaugų ir pramogų pastatų teritorijos detaliojo plano korektūra. Iniciatorius — UAB „Bikuva“.", "stage": "Darbų programa patvirtinta 2026-02-09; planas baigiamajame etape (pranešimas 2026-05-19).", "tpd": "K-VT-42-26-8", "doc": "https://www.planuojustatau.lt/sites/default/files/DP%20DARB%C5%B2%20PROGRAMA.pdf", "ad": null}];
 
     // Build version: local dev reads it from config.js (gen_config.py); the deploy
     // workflow replaces the placeholder with the deployed commit.
@@ -1321,6 +1333,7 @@
       edgeLbl.setMap(map);
       labels.push(put('merged', edgeLbl));
       buildListings();
+      buildPlans();
       fitAll();
     }
     // ---- Listings for sale (aruodas scan 2026-10-09) ----
@@ -1742,6 +1755,49 @@
         l.nh = l.div.offsetHeight;
         l.div.style.display = was;
         l.draw();
+      });
+    }
+
+    // ---- Planned development layer ----
+    // Dashed outline so a plan never reads as a for-sale listing of the same colour.
+    const PCOLOR = {commercial: '#FF9100', residential: '#00B0FF'};
+    function buildPlans() {
+      PLANS.forEach(pl => {
+        const color = PCOLOR[pl.kind];
+        const ad = pl.ad ? `
+              <div style="margin-top:6px;padding-top:6px;border-top:1px solid #ddd">
+                <b>Parduodama:</b> ${pl.ad.area} už <b>${pl.ad.price}</b> (${pl.ad.pph}).<br>
+                <span style="color:#777;font-size:11px">${pl.ad.note} Prašoma kaina, ne sandoris
+                (aruodas.lt, 2026-10-09).</span><br>
+                ${adLink(pl.ad.url, 'Atidaryti skelbimą aruodas.lt ↗')}
+              </div>` : `
+              <div style="margin-top:6px;color:#777;font-size:11px">Šio sklypo skelbimo
+                aruodas.lt nerasta (skenas 2026-10-09).</div>`;
+        pl.paths.forEach(ring => {
+          const poly = put('plans', new google.maps.Polygon({
+            paths: ring, strokeOpacity: 0, fillColor: color, fillOpacity: 0.18,
+            zIndex: 9, map
+          }));
+          put('plans', new google.maps.Polyline({
+            path: ring, strokeOpacity: 0, zIndex: 9, map, clickable: false,
+            icons: [{icon: {path: 'M 0,-1 0,1', strokeOpacity: 1, strokeColor: color,
+                            strokeWeight: 3, scale: 3}, offset: '0', repeat: '11px'}]
+          }));
+          poly.addListener('click', ev => {
+            listingInfo.setContent(`
+              <div style="font:12.5px system-ui;max-width:340px">
+                <div style="font-size:13px;font-weight:600;margin-bottom:2px">${pl.title}</div>
+                <div style="color:#666;margin-bottom:6px">${pl.dist} nuo bloko · ${pl.area} · ${pl.kn}</div>
+                <div>${pl.what}</div>
+                <div style="margin-top:4px"><b>Etapas:</b> ${pl.stage}</div>
+                <div style="margin-top:4px">Planas ${pl.tpd} ·
+                  <a href="${pl.doc}" target="_blank" rel="noopener">dokumentas ↗</a></div>
+                ${ad}
+              </div>`);
+            listingInfo.setPosition(ev.latLng || pl.center);
+            listingInfo.open(map);
+          });
+        });
       });
     }
     window.initMap = initMap;
