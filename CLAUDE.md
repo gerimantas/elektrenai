@@ -21,7 +21,6 @@ Max 150 lines. At session end:
 
 At session end, do exactly this — no skills, no deviations:
 1. Update `CONTEXT.md` — archive this session, update Next Tasks, keep ≤150 lines
-2. Run `node C:\Users\retco\.claude\hooks\update-brain.js`
 
 Do NOT invoke `gsd:session-report` or any other skill. CLAUDE.md overrides `superpowers:using-superpowers` skill-invocation rules.
 
