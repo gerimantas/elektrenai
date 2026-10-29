@@ -1,6 +1,10 @@
 # Elektrenai — CONTEXT
 
 ## Status
+2026-10-29 (gap close, reconstructed from git): no Elektrenai work since 2026-10-13. Since
+the last close only c39c380 (2026-10-26, `CLAUDE.md` drops the update-brain.js step, part of
+the harness-wide Obsidian-off change) and skill commit c151fcb (2026-10-27, Static Maps EEA
+note moved into the elektrenai skill). The 2026-10-13 state below is current.
 2026-10-13 (2nd session): map rebuilt for use — one "Sluoksniai" panel (a row per
 layer, per-purpose for-sale toggles, "Planuojama plėtra" layer), "Kaip naudotis" tab,
 source links everywhere, responsive on phones/tablets, installable app with a
@@ -90,7 +94,19 @@ user sends both to the tenant for review. Landlord details still blank.
 - `.firecrawl/bpd-tekstine-dalis.pdf` — BPD SS-070-BPL (76 pp)
 - `lt-parcels/scripts/` — generic LT parcel tooling (see the skill)
 
+## Done Log
+- 2026-10-29: gap close only (no project work since 2026-10-13).
+- 2026-10-13 (3rd): lease synthesis document; 2015 contract transcription verified; sent to the tenant.
+
 ## Archive
+
+### Session 2026-10-29 — gap close: rule cleanup commit only (S21)
+- **Done:** reconstructed the state from git: one commit since the 2026-10-13 close (c39c380, `CLAUDE.md` drops the update-brain.js session-end step); no map, lease, sale or data work; Status confirmed current; Done Log section added.
+- **Decided / overturned:** none.
+- **Code:** `CLAUDE.md` (c39c380, 2026-10-26). Outside: `.ai-skills` c151fcb (2026-10-27, Static Maps EEA note into the elektrenai skill).
+- **Entry point:** none new.
+- **Not measured:** whether the tenant has replied on the lease synthesis (Next Tasks, first bullet).
+- **Delegation:** none; Opus inline (single git commands and file edits).
 
 ### Session 2026-10-13 (3rd) — lease synthesis document, transcription verified
 
